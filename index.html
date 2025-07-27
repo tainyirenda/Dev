@@ -8,7 +8,7 @@
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement(
-        { pageLanguage: 'en' },
+        { pageLanguage: 'en', includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
         'google_translate_element'
       );
     }
@@ -25,6 +25,9 @@
     .text-primary { color: var(--deep-green); }
     .text-highlight { color: var(--warm-yellow); }
     .text-accent { color: var(--sky-blue); }
+    .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+    .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 10px; }
+    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body class="font-sans text-charcoal-navy">
@@ -36,44 +39,47 @@
       <option value="platform.html">🤖 Platform</option>
       <option value="partners.html">🤝 Partners</option>
       <option value="values.html">🌱 Values</option>
-      <option value="where.html">📺 Where We Work</option>
+      <option value="where.html">📻 Where We Work</option>
       <option value="impact.html">🚀 Impact</option>
       <option value="join.html">📬 Join Us</option>
       <option value="portal.html">🌐 TradeNet Portal</option>
     </select>
   </nav>
 
-  <div id="google_translate_element" class="text-right p-4"></div>
+  <div id="google_translate_element" class="text-right p-4 text-sm"></div>
 
   <section id="home" class="text-center py-20 bg-primary text-white">
     <img src="Logo.png" alt="Afro Ubuntu TradeNet Logo" class="mx-auto mb-6 w-56 h-auto" />
     <h1 class="text-4xl font-bold">Digitising Africa’s Informal Economy with Ethical AI</h1>
     <p class="mt-4 text-xl">Afro Ubuntu TradeNet is the first AI-powered platform built to unlock the potential of Africa’s $1.2T informal trade economy.</p>
     <div class="mt-6 space-x-4">
-      <a href="#form-section" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Join Our Pilot</a>
-      <a href="#form-section" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Partner With Us</a>
-      <a href="#form-section" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Get Updates</a>
+      <button onclick="document.getElementById('formModal').style.display='block'" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Join Our Pilot</button>
+      <button onclick="document.getElementById('formModal').style.display='block'" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Partner With Us</button>
+      <button onclick="document.getElementById('formModal').style.display='block'" class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Get Updates</button>
     </div>
   </section>
 
-  <section id="form-section" class="py-16 px-4 max-w-xl mx-auto">
-    <h2 class="text-2xl font-bold text-center mb-4">Sign Up for Updates or to Join Our Pilot</h2>
-    <form action="https://formspree.io/f/xwpqbkro" method="POST" class="space-y-4">
-      <div>
-        <label for="name" class="block mb-1">Name</label>
-        <input type="text" name="name" id="name" class="w-full border px-3 py-2 rounded" required />
-      </div>
-      <div>
-        <label for="email" class="block mb-1">Email</label>
-        <input type="email" name="email" id="email" class="w-full border px-3 py-2 rounded" required />
-      </div>
-      <div>
-        <label for="organisation" class="block mb-1">Organisation</label>
-        <input type="text" name="organisation" id="organisation" class="w-full border px-3 py-2 rounded" />
-      </div>
-      <button type="submit" class="bg-primary text-white px-6 py-2 rounded">Submit</button>
-    </form>
-  </section>
+  <div id="formModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('formModal').style.display='none'">&times;</span>
+      <h2 class="text-xl font-bold mb-4">Sign Up for Updates or to Join Our Pilot</h2>
+      <form action="https://formspree.io/f/xwpqbkro" method="POST" class="space-y-4">
+        <div>
+          <label for="name" class="block mb-1">Name</label>
+          <input type="text" name="name" id="name" class="w-full border px-3 py-2 rounded" required />
+        </div>
+        <div>
+          <label for="email" class="block mb-1">Email</label>
+          <input type="email" name="email" id="email" class="w-full border px-3 py-2 rounded" required />
+        </div>
+        <div>
+          <label for="organisation" class="block mb-1">Organisation</label>
+          <input type="text" name="organisation" id="organisation" class="w-full border px-3 py-2 rounded" />
+        </div>
+        <button type="submit" class="bg-primary text-white px-6 py-2 rounded">Submit</button>
+      </form>
+    </div>
+  </div>
 
   <footer class="bg-primary text-white text-center py-6">
     <p>🔗: <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="underline text-sky-blue">LinkedIn</a></p>
