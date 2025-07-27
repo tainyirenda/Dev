@@ -63,7 +63,7 @@
     <div class="modal-content">
       <span class="close" onclick="document.getElementById('formModal').style.display='none'">&times;</span>
       <h2 class="text-xl font-bold mb-4">Sign Up for Updates or to Join Our Pilot</h2>
-      <form action="https://formspree.io/f/xwpqbkro" method="POST" class="space-y-4">
+      <form id="signupForm" action="https://formspree.io/f/xwpqbkro" method="POST" class="space-y-4">
         <div>
           <label for="name" class="block mb-1">Name</label>
           <input type="text" name="name" id="name" class="w-full border px-3 py-2 rounded" required />
@@ -80,6 +80,16 @@
       </form>
     </div>
   </div>
+
+  <script>
+    // Auto-close modal on successful form submission
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      setTimeout(() => {
+        document.getElementById('formModal').style.display = 'none';
+        this.reset();
+      }, 1000); // Delay to allow formspree submission to start
+    });
+  </script>
 
   <footer class="bg-primary text-white text-center py-6">
     <p>🔗: <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="underline text-sky-blue">LinkedIn</a></p>
