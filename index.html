@@ -8,7 +8,11 @@
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement(
-        { pageLanguage: 'en', includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
         'google_translate_element'
       );
     }
@@ -25,9 +29,33 @@
     .text-primary { color: var(--deep-green); }
     .text-highlight { color: var(--warm-yellow); }
     .text-accent { color: var(--sky-blue); }
-    .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-    .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 10px; }
-    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 10px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="font-sans text-charcoal-navy">
@@ -59,6 +87,7 @@
     </div>
   </section>
 
+  <!-- Form Modal -->
   <div id="formModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="document.getElementById('formModal').style.display='none'">&times;</span>
@@ -81,13 +110,31 @@
     </div>
   </div>
 
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-xl font-bold mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-xl font-bold mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
   <script>
-    // Auto-close modal on successful form submission
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
+    // Auto-close form modal after submit
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
       setTimeout(() => {
         document.getElementById('formModal').style.display = 'none';
         this.reset();
-      }, 1000); // Delay to allow formspree submission to start
+      }, 1000);
     });
   </script>
 
@@ -97,8 +144,8 @@
     <p>📍: 124 City Road, London, United Kingdom, EC1V 2NX </p>
     <p class="mt-2">Built on Ubuntu</p>
     <p class="mt-2">
-      <a href="privacy-policy.html" class="underline text-sky-blue">Privacy Policy</a> | 
-      <a href="ethical-ai-policy.html" class="underline text-sky-blue">Ethical AI & Data Use</a>
+      <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" class="underline text-sky-blue">Privacy Policy</a> |
+      <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" class="underline text-sky-blue">Ethical AI & Data Use</a>
     </p>
     <ul class="mt-2">
       <li>&copy; 2025. Afro Ubuntu TradeNet Ltd. All rights reserved.</li>
