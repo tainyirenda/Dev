@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,120 +9,41 @@
   <style>
     :root {
       --deep-green: #064e3b;
-      --earthy-orange: #d97706;
       --warm-yellow: #fbbf24;
       --charcoal-navy: #1f2937;
       --sky-blue: #38bdf8;
-      --teal-accent: #14b8a6;
-    }
-    body {
-      background-color: white;
-      color: var(--charcoal-navy);
     }
     .bg-primary { background-color: var(--deep-green); }
-    .bg-secondary { background-color: var(--earthy-orange); }
-    .bg-highlight { background-color: var(--warm-yellow); }
     .text-primary { color: var(--deep-green); }
-    .text-secondary { color: var(--earthy-orange); }
     .text-highlight { color: var(--warm-yellow); }
-    .text-accent { color: var(--teal-accent); }
+    .text-accent { color: var(--sky-blue); }
   </style>
 </head>
-<body class="font-sans">
-  <!-- Navigation Bar -->
-  <nav class="bg-primary text-white px-6 py-4 sticky top-0 z-50 shadow-md">
-    <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <div class="text-xl font-bold">Afro Ubuntu TradeNet</div>
-      <div class="space-x-4">
-        <a href="#home" class="hover:underline">Home</a>
-        <a href="#our-why" class="hover:underline">Our Why</a>
-        <a href="#platform" class="hover:underline">Platform</a>
-        <a href="#partners" class="hover:underline">Partners</a>
-        <a href="#values" class="hover:underline">Values</a>
-        <a href="#where" class="hover:underline">Where We Work</a>
-        <a href="#impact" class="hover:underline">Impact</a>
-        <a href="#join" class="hover:underline">Join Us</a>
-      </div>
-    </div>
+<body class="font-sans text-charcoal-navy">
+  <nav class="bg-primary text-white px-6 py-4 flex justify-between items-center">
+    <div class="text-xl font-bold">Afro Ubuntu TradeNet</div>
+    <select class="text-charcoal-navy rounded px-2 py-1" onchange="if(this.value) window.location.href=this.value;">
+      <option value="">Navigate to...</option>
+      <option value="our-why.html">Our Why</option>
+      <option value="platform.html">Platform</option>
+      <option value="partners.html">Partners</option>
+      <option value="values.html">Values</option>
+      <option value="where.html">Where We Work</option>
+      <option value="impact.html">Impact</option>
+      <option value="join.html">Join Us</option>
+    </select>
   </nav>
 
-  <!-- Hero Section -->
   <section id="home" class="text-center py-20 bg-primary text-white">
     <h1 class="text-4xl font-bold">Digitising Africa’s Informal Economy with Ethical AI</h1>
     <p class="mt-4 text-xl">Afro Ubuntu TradeNet is the first AI-powered platform built to unlock the potential of Africa’s $1.2T informal trade economy.</p>
     <div class="mt-6 space-x-4">
-      <button class="bg-warm-yellow text-charcoal-navy px-4 py-2 rounded">Join Our Pilot</button>
-      <button class="bg-warm-yellow text-charcoal-navy px-4 py-2 rounded">Partner With Us</button>
-      <button class="bg-warm-yellow text-charcoal-navy px-4 py-2 rounded">Get Updates</button>
+      <button class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Join Our Pilot</button>
+      <button class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Partner With Us</button>
+      <button class="bg-yellow-400 text-charcoal-navy px-4 py-2 rounded">Get Updates</button>
     </div>
   </section>
 
-  <!-- Our Why -->
-  <section id="our-why" class="px-6 py-12 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-semibold text-primary mb-4">Informal Doesn’t Mean Invisible</h2>
-    <p>Over 85% of Africa’s trade is informal—unseen, unsupported, and underserved. We’re building the infrastructure to change that. Powered by AI, grounded in Ubuntu. Afro Ubuntu TradeNet is a digital platform created to bring Africa’s invisible economy online and provide Africa with a bridge to global trade. We empower small businesses and traders across the continent by connecting them with opportunity, insight, and fairer trade through technology grounded in Ubuntu. The belief that we rise by lifting each other - “I am because we are”.</p>
-  </section>
-
-  <!-- Platform Section -->
-  <section id="platform" class="bg-gray-50 px-6 py-12">
-    <h2 class="text-3xl font-semibold text-primary mb-6">AI-Powered Trade Intelligence for the Real Economy</h2>
-    <ul class="list-disc list-inside mb-6">
-      <li>Onboard retailers via WhatsApp or SMS</li>
-      <li>Track stock via photos and mobile messages</li>
-      <li>Generate forecasts and restock alerts</li>
-      <li>Enable ethical credit scoring from daily trade</li>
-    </ul>
-    <img src="/Platform_Architecture.png" alt="Platform Architecture" class="mx-auto w-full max-w-3xl" />
-  </section>
-
-  <!-- For Partners -->
-  <section id="partners" class="px-6 py-12 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-semibold text-primary mb-4">Unlock the Last Mile. Ethically.</h2>
-    <ul class="list-disc list-inside">
-      <li><strong>FMCG brands:</strong> Predict demand, reduce stockouts</li>
-      <li><strong>Fintechs:</strong> Enable credit scoring</li>
-      <li><strong>NGOs:</strong> Real-time insights into food security and supply chains</li>
-    </ul>
-  </section>
-
-  <!-- Our Values -->
-  <section id="values" class="bg-highlight px-6 py-12 text-center text-charcoal-navy">
-    <h2 class="text-3xl font-semibold mb-6">Our Values</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div>👥 Community-first commerce</div>
-      <div>⚖️ Fair trade & equity</div>
-      <div>👁️ Visibility for the invisible</div>
-      <div>📱 Mobile-first accessibility</div>
-      <div>🌍 Pan-African collaboration</div>
-    </div>
-  </section>
-
-  <!-- Where We Work -->
-  <section id="where" class="px-6 py-12 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-semibold text-primary mb-4">Phase 1 Launch Countries:</h2>
-    <p>Zimbabwe, Malawi, Zambia, Nigeria</p>
-    <img src="map-placeholder.jpg" alt="Launch Map" class="mt-4 w-full max-w-xl mx-auto" />
-  </section>
-
-  <!-- Our Impact Vision -->
-  <section id="impact" class="bg-gray-50 px-6 py-12">
-    <h2 class="text-3xl font-semibold text-primary mb-6">From Corner Shops to Global Trade</h2>
-    <p>Informal doesn’t mean unintelligent. It means unseen, unsupported and undeserved. Afro Ubuntu TradeNet exists to rewrite that story. We go beyond POS digitisation, embedding AI-driven insight and ethical data practices, into the heart of informal trade. We are Africa-first, committed to digitising and decoding the invisible economy and dignifying trade. We are embedding AI, not to replace, but to reveal the power that lies in the hands of unregistered vendors, bustling dukas and spaza shop owners surviving day to day.</p>
-    <p class="mt-4">Our vision is to empower informal trade through inclusive, AI-powered infrastructure that is scalable across the continent, and to the world. We unlock credit through contextual data, build trust through transparent sourcing, and foster pan-african collaboration. From Whatsapp messages to credit scores, from inventory snapshots to economic insights. By 2028-2030, Afro Ubuntu TradeNet will be the leading trade intelligence layer for the world’s informal economies, connecting the African street vendor to global opportunity built on Ubuntu (“I am, because we are”).</p>
-  </section>
-
-  <!-- Join Us -->
-  <section id="join" class="px-6 py-12 text-center">
-    <h2 class="text-3xl font-semibold text-primary mb-4">Be Part of Africa’s Trade Revolution</h2>
-    <div class="space-y-2">
-      <p><strong>Investors:</strong> Access to deal info</p>
-      <p><strong>Retailers:</strong> Join via WhatsApp</p>
-      <p><strong>Partners:</strong> Contact us for integration</p>
-      <p><strong>Newsletter:</strong> Sign up for updates</p>
-    </div>
-  </section>
-
-  <!-- Footer -->
   <footer class="bg-primary text-white text-center py-6">
     <p>🔗: <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="underline text-sky-blue">LinkedIn</a></p>
     <p>📧: <a href="mailto:info@afroubuntutrade.co.uk" class="underline text-sky-blue">info@afroubuntutrade.co.uk</a></p>
