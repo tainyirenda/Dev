@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afro Ubuntu TradeNet Ltd - Making the Invisible Visible</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border: none;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .close {
+      color: #6b7280;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close:hover {
+      color: var(--orange-600);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--orange-700), var(--green-700));
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Custom dropdown styling */
+    .custom-select {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      border: none;
+      color: white;
+    }
+    
+    .custom-select option {
+      background: white;
+      color: #374151;
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-orange-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">Afro Ubuntu TradeNet</h1>
+            <p class="text-sm text-orange-600">Rooted in Africa, Connected to the World.</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <select class="custom-select rounded-lg px-4 py-2 text-sm font-medium" onchange="if(this.value) window.location.href=this.value;">
+          <option value="">More</option>
+          <option value="our-why.html">💡 Our Why</option>
+          <option value="platform.html">🤖 Platform</option>
+          <option value="partners.html">🤝 Partners</option>
+          <option value="values.html">🌱 Values</option>
+          <option value="where.html">📻 Where We Work</option>
+          <option value="impact.html">🚀 Impact</option>
+          <option value="join.html">📬 Join Us</option>
+          <option value="portal.html">🌐 TradeNet Portal</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Google Translate -->
+  <div class="bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="google_translate_element" class="text-right py-2 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative bg-gradient-orange-green-light py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <!-- Logo -->
+      <div class="mb-8">
+        <img src="Logo2.jpg" alt="Afro Ubuntu TradeNet Logo" class="mx-auto w-56 h-auto rounded-lg shadow-lg" />
+      </div>
+      
+      <!-- Main Heading -->
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+        Making the <span class="text-gradient">Invisible</span> Visible
+      </h1>
+      
+      <!-- Subheading -->
+      <p class="text-xl md:text-2xl text-gray-600 mb-4 max-w-4xl mx-auto">
+        Digitising Africa's Informal Economy with Ethical AI
+      </p>
+      
+      <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
+        Afro Ubuntu TradeNet is the first AI-powered platform built to unlock the potential of Africa's 85% informal trade economy.
+      </p>
+      
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+        <button onclick="document.getElementById('formModal').style.display='block'" 
+                class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg">
+          Join Our Pilot
+        </button>
+        <button onclick="document.getElementById('formModal').style.display='block'" 
+                class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg">
+          Partner With Us
+        </button>
+        <button onclick="document.getElementById('formModal').style.display='block'" 
+        class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg">
+                
+          Get Updates
+        </button>
+      </div>
+
+      <!-- Key Features Grid -->
+      <div class="grid md:grid-cols-4 gap-6 mt-16">
+        <div class="feature-card bg-white p-6 rounded-lg shadow-sm border border-orange-100">
+          <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+            <i data-lucide="trending-up" class="h-6 w-6 text-orange-600"></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">$1.2T Economy</h3>
+          <p class="text-gray-600 text-sm">Unlocking new pathways for Africa's informal trade potential</p>
+        </div>
+        
+        <div class="feature-card bg-white p-6 rounded-lg shadow-sm border border-green-100">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+            <i data-lucide="users" class="h-6 w-6 text-green-600"></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">Ubuntu Philosophy</h3>
+          <p class="text-gray-600 text-sm">Connecting local vendors to global opportunities.</p>
+          <p class="text-gray-600 text-sm">"I am, because we are" - Built on connection.</p>
+        </div>
+        
+        <div class="feature-card bg-white p-6 rounded-lg shadow-sm border border-blue-100">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+            <i data-lucide="brain" class="h-6 w-6 text-blue-600"></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">Ethical AI</h3>
+          <p class="text-gray-600 text-sm">Creating reliable trading relationships</p>
+        </div>
+        
+        <div class="feature-card bg-white p-6 rounded-lg shadow-sm border border-purple-100">
+          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+            <i data-lucide="smartphone" class="h-6 w-6 text-purple-600"></i>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">AI-Powered</h3>
+          <p class="text-gray-600 text-sm">Smart insights from WhatsApp to analytics</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Modal -->
+  <div id="formModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('formModal').style.display='none'">&times;</span>
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-gradient-orange-green rounded-full flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="mail" class="h-8 w-8 text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Join Our Journey</h2>
+        <p class="text-gray-600">Sign up for updates or to join our pilot program</p>
+      </div>
+      
+      <form id="signupForm" action="https://formspree.io/f/xwpqbkro" method="POST" class="space-y-6">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+          <input type="text" name="name" id="name" 
+                 class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors" 
+                 required />
+        </div>
+        
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+          <input type="email" name="email" id="email" 
+                 class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors" 
+                 required />
+        </div>
+        
+        <div>
+          <label for="organisation" class="block text-sm font-medium text-gray-700 mb-2">Organisation</label>
+          <input type="text" name="organisation" id="organisation" 
+                 class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors" />
+        </div>
+        
+        <button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-lg font-semibold text-lg">
+          Join the Movement
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded-lg" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Company Info -->
+        <div class="col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+              <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
+              <p class="text-orange-400">Making the Invisible Visible</p>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Built on Ubuntu: "I am, because we are" - Unlocking Africa's $1.2T informal trade economy through ethical AI.
+          </p>
+          
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="text-gray-300 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-gray-300 hover:text-white transition-colors">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-400"></i>
+              <span class="text-gray-300">124 City Road, London, United Kingdom, EC1V 2NX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Ethical AI & Data Use
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+        <p class="text-gray-400">
+          © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Auto-close form modal after submit
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      setTimeout(() => {
+        document.getElementById('formModal').style.display = 'none';
+        this.reset();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

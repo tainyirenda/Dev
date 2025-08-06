@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Us - Be Part of Africa's Trade Revolution</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border: none;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .close {
+      color: #6b7280;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close:hover {
+      color: var(--orange-600);
+    }
+    
+    .join-card {
+      transition: all 0.3s ease;
+    }
+    
+    .join-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-orange-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Back Button -->
+        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
+          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <span>Back to Home</span>
+        </a>
+        
+        <!-- Page Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="users" class="h-4 w-4 text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-gray-900">Join Us</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+        Be Part of Africa's <span class="text-gradient">Trade Revolution</span>
+      </h1>
+      <p class="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+        Join thousands of traders, investors, and partners who are transforming Africa's informal economy
+      </p>
+    </div>
+  </section>
+
+  <!-- Join Options -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Investors -->
+        <div class="join-card bg-white p-8 rounded-xl shadow-sm border border-orange-100">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="trending-up" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Investors</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Access exclusive deal information and investment opportunities in Africa's growing informal economy.
+          </p>
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-orange-600"></i>
+              <span class="text-sm text-gray-600">Deal flow access</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-orange-600"></i>
+              <span class="text-sm text-gray-600">Market insights</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-orange-600"></i>
+              <span class="text-sm text-gray-600">Impact metrics</span>
+            </div>
+          </div>
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=Investor Interest" 
+             class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center block">
+            Get Deal Info
+          </a>
+        </div>
+
+        <!-- Retailers -->
+        <div class="join-card bg-white p-8 rounded-xl shadow-sm border border-green-100">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="store" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Retailers</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Join our platform via WhatsApp and start accessing AI-powered trade intelligence today.
+          </p>
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
+              <span class="text-sm text-gray-600">WhatsApp onboarding</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
+              <span class="text-sm text-gray-600">AI insights</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
+              <span class="text-sm text-gray-600">Credit access</span>
+            </div>
+          </div>
+          <a href="https://wa.me/+447123456789?text=Hi, I want to join Afro Ubuntu TradeNet" 
+             class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center block">
+            Join via WhatsApp
+          </a>
+        </div>
+
+        <!-- Partners -->
+        <div class="join-card bg-white p-8 rounded-xl shadow-sm border border-blue-100">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="handshake" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Partners</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Integrate with our platform and help us expand across Africa. Perfect for fintechs, NGOs, and brands.
+          </p>
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-600"></i>
+              <span class="text-sm text-gray-600">API integration</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-600"></i>
+              <span class="text-sm text-gray-600">Co-marketing</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-600"></i>
+              <span class="text-sm text-gray-600">Revenue sharing</span>
+            </div>
+          </div>
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=Partnership Inquiry" 
+             class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center block">
+            Contact for Integration
+          </a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="join-card bg-white p-8 rounded-xl shadow-sm border border-purple-100">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="mail" class="h-8 w-8 text-purple-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Newsletter</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Stay updated with the latest developments, insights, and opportunities in African trade.
+          </p>
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-600"></i>
+              <span class="text-sm text-gray-600">Weekly insights</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-600"></i>
+              <span class="text-sm text-gray-600">Market updates</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-600"></i>
+              <span class="text-sm text-gray-600">Event invites</span>
+            </div>
+          </div>
+          <a href="index.html#formModal" 
+             class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-center block">
+            Sign Up for Updates
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logo Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Join the Ubuntu Movement</h2>
+        <div class="w-56 h-56 mx-auto mb-6 bg-gradient-orange-green-light rounded-lg flex items-center justify-center border-2 border-dashed border-orange-300">
+          <div class="text-center">
+            <i data-lucide="image" class="h-16 w-16 text-orange-600 mx-auto mb-4"></i>
+            <p class="text-gray-600">AUTN Logo</p>
+          </div>
+        </div>
+        <p class="text-lg text-gray-600">
+          Together, we're building a more inclusive and connected African economy. 
+          <em class="text-green-600 font-semibold">"I am, because we are"</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ubuntu Philosophy -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-gradient-orange-green p-8 md:p-12 rounded-2xl text-white text-center">
+        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="heart" class="h-10 w-10 text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold mb-4">Why Join Us?</h2>
+        <p class="text-2xl font-semibold mb-6 opacity-90">"I am, because we are"</p>
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div>
+            <h4 class="font-semibold mb-3">🌍 Pan-African Impact</h4>
+            <p class="opacity-90 mb-4">Be part of a movement that's transforming trade across the entire continent.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">🤝 Community First</h4>
+            <p class="opacity-90 mb-4">Join a network built on Ubuntu principles where everyone succeeds together.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">🚀 Innovation</h4>
+            <p class="opacity-90 mb-4">Access cutting-edge AI technology designed specifically for African markets.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">📈 Growth</h4>
+            <p class="opacity-90 mb-4">Unlock new opportunities and scale your impact across Africa and beyond.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Transform African Trade?</h3>
+        <p class="text-gray-600 mb-6">
+          Choose your path and join thousands of others who are making the invisible visible.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="mailto:info@afroubuntutrade.co.uk" 
+             class="inline-flex items-center space-x-2 bg-gradient-orange-green text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+            <i data-lucide="mail" class="h-5 w-5"></i>
+            <span>Contact Us</span>
+          </a>
+          <a href="index.html#formModal" 
+             class="inline-flex items-center space-x-2 bg-white text-orange-600 border-2 border-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all">
+            <i data-lucide="user-plus" class="h-5 w-5"></i>
+            <span>Sign Up</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Company Info -->
+        <div class="col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+              <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
+              <p class="text-orange-400">Making the Invisible Visible</p>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Built on Ubuntu: "I am, because we are" - Unlocking Africa's $1.2T informal trade economy through ethical AI.
+          </p>
+          
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="text-gray-300 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-gray-300 hover:text-white transition-colors">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-400"></i>
+              <span class="text-gray-300">124 City Road, London, United Kingdom, EC1V 2NX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Ethical AI & Data Use
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+        <p class="text-gray-400">
+          © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded-lg" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

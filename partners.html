@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partners - Unlock the Last Mile. Ethically.</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border: none;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .close {
+      color: #6b7280;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close:hover {
+      color: var(--orange-600);
+    }
+    
+    .partner-card {
+      transition: all 0.3s ease;
+    }
+    
+    .partner-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-orange-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Back Button -->
+        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
+          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <span>Back to Home</span>
+        </a>
+        
+        <!-- Page Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="handshake" class="h-4 w-4 text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-gray-900">Partners</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+        Unlock the Last Mile. <span class="text-gradient">Ethically.</span>
+      </h1>
+      <p class="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+        Partner with us to reach Africa's informal economy through ethical AI and Ubuntu principles
+      </p>
+    </div>
+  </section>
+
+  <!-- Partner Types -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Partnership Opportunities</h2>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- FMCG Brands -->
+        <div class="partner-card bg-white p-8 rounded-xl shadow-sm border border-orange-100">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="package" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">FMCG Brands</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Connect directly with retailers across Africa's informal markets
+          </p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="trending-up" class="h-5 w-5 text-orange-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Predict Demand</h4>
+                <p class="text-sm text-gray-600">AI-powered demand forecasting for better inventory planning</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="alert-triangle" class="h-5 w-5 text-orange-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Reduce Stockouts</h4>
+                <p class="text-sm text-gray-600">Real-time alerts when retailers need restocking</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Last-Mile Insights</h4>
+                <p class="text-sm text-gray-600">Understand distribution patterns in informal markets</p>
+              </div>
+            </div>
+          </div>
+          
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=Fintech Partnership Inquiry" 
+             class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center block">
+            Partner With Us
+          </a>
+        </div>
+
+        <!-- Fintechs -->
+        <div class="partner-card bg-white p-8 rounded-xl shadow-sm border border-green-100">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="credit-card" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Fintechs</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Enable financial inclusion through ethical credit scoring
+          </p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="shield-check" class="h-5 w-5 text-green-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Ethical Credit Scoring</h4>
+                <p class="text-sm text-gray-600">Fair assessment based on trade patterns, not traditional metrics</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="users" class="h-5 w-5 text-green-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Reach Unbanked</h4>
+                <p class="text-sm text-gray-600">Access millions of previously invisible traders</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="bar-chart" class="h-5 w-5 text-green-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Risk Assessment</h4>
+                <p class="text-sm text-gray-600">AI-powered risk models based on real trade data</p>
+              </div>
+            </div>
+          </div>
+          
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=Fintech Partnership Inquiry" 
+             class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center block">
+            Enable Credit
+          </a>
+        </div>
+
+        <!-- NGOs -->
+        <div class="partner-card bg-white p-8 rounded-xl shadow-sm border border-blue-100">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="heart" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">NGOs</h3>
+          <p class="text-gray-600 mb-6 text-center">
+            Gain real-time insights into food security and supply chains
+          </p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="activity" class="h-5 w-5 text-blue-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Real-Time Insights</h4>
+                <p class="text-sm text-gray-600">Live data on food availability and pricing</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="truck" class="h-5 w-5 text-blue-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Supply Chain Visibility</h4>
+                <p class="text-sm text-gray-600">Track goods from source to informal retailers</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+              <i data-lucide="target" class="h-5 w-5 text-blue-600 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-900">Impact Measurement</h4>
+                <p class="text-sm text-gray-600">Measure program effectiveness with real data</p>
+              </div>
+            </div>
+          </div>
+          
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=NGO Partnership Inquiry" 
+             class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center block">
+            Get Insights
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partnership Benefits -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Why Partner With Us?</h2>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="eye" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Visibility</h3>
+          <p class="text-gray-600 text-sm">Access to previously invisible markets and trade patterns</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="shield" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Ethical AI</h3>
+          <p class="text-gray-600 text-sm">All partnerships built on ethical AI and Ubuntu principles</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="globe" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Scale</h3>
+          <p class="text-gray-600 text-sm">Reach across 6 countries in Phase 1, expanding continent-wide</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="trending-up" class="h-8 w-8 text-purple-600"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Impact</h3>
+          <p class="text-gray-600 text-sm">Measurable social and economic impact across Africa</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integration Process -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Integration Process</h2>
+      
+      <div class="space-y-8">
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span class="text-orange-600 font-bold">1</span>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Discovery Call</h3>
+            <p class="text-gray-600">We discuss your needs, goals, and how our platform can add value to your business</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span class="text-green-600 font-bold">2</span>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Pilot Program</h3>
+            <p class="text-gray-600">Start with a focused pilot in one market to demonstrate value and refine integration</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span class="text-blue-600 font-bold">3</span>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Full Integration</h3>
+            <p class="text-gray-600">Scale across all markets with full API integration and ongoing support</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ubuntu Partnership -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-gradient-orange-green p-8 md:p-12 rounded-2xl text-white text-center">
+        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="handshake" class="h-10 w-10 text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold mb-4">Partnership Built on Ubuntu</h2>
+        <p class="text-2xl font-semibold mb-6 opacity-90">"I am, because we are"</p>
+        <p class="text-lg opacity-90 max-w-2xl mx-auto mb-8">
+          Our partnerships are more than business relationships - they're collaborations built on mutual respect, 
+          shared values, and a commitment to lifting up Africa's informal economy together.
+        </p>
+        <div class="grid md:grid-cols-3 gap-6 text-left">
+          <div>
+            <h4 class="font-semibold mb-2">🤝 Mutual Benefit</h4>
+            <p class="opacity-90 text-sm">Success is shared - when our partners grow, we all grow</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2">🌍 Social Impact</h4>
+            <p class="opacity-90 text-sm">Every partnership contributes to African economic empowerment</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2">🔒 Ethical Foundation</h4>
+            <p class="opacity-90 text-sm">All data use and AI applications follow strict ethical guidelines</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Unlock the Last Mile?</h3>
+        <p class="text-gray-600 mb-6">
+          Join us in transforming how business reaches Africa's informal economy. Let's build something meaningful together.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=Partnership Inquiry" 
+             class="inline-flex items-center space-x-2 bg-gradient-orange-green text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+            <i data-lucide="mail" class="h-5 w-5"></i>
+            <span>Start Partnership</span>
+          </a>
+          <a href="index.html#formModal" 
+             class="inline-flex items-center space-x-2 bg-white text-orange-600 border-2 border-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all">
+            <i data-lucide="calendar" class="h-5 w-5"></i>
+            <span>Schedule Call</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Company Info -->
+        <div class="col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+              <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
+              <p class="text-orange-400">Making the Invisible Visible</p>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Built on Ubuntu: "I am, because we are" - Unlocking Africa's $1.2T informal trade economy through ethical AI.
+          </p>
+          
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="text-gray-300 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-gray-300 hover:text-white transition-colors">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-400"></i>
+              <span class="text-gray-300">124 City Road, London, United Kingdom, EC1V 2NX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Ethical AI & Data Use
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+        <p class="text-gray-400">
+          © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded-lg" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

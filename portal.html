@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platform Portal - Coming Soon</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border: none;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .close {
+      color: #6b7280;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close:hover {
+      color: var(--orange-600);
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .construction-card {
+      transition: all 0.3s ease;
+    }
+    
+    .construction-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-orange-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Back Button -->
+        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
+          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <span>Back to Home</span>
+        </a>
+        
+        <!-- Page Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="globe" class="h-4 w-4 text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-gray-900">TradeNet Portal</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="mb-8">
+        <div class="w-24 h-24 bg-gradient-orange-green rounded-full flex items-center justify-center mx-auto mb-6 pulse-animation">
+          <i data-lucide="settings" class="h-12 w-12 text-white"></i>
+        </div>
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+        <span class="text-gradient">AUTN Platform Portal</span>
+      </h1>
+      
+      <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-200 mb-12">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+            <i data-lucide="construction" class="h-8 w-8 text-orange-600"></i>
+          </div>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">🔧 Under Construction</h2>
+        <p class="text-xl text-gray-600 mb-6">Coming Soon ⏳</p>
+        
+        <div class="space-y-4 text-lg text-gray-700">
+          <p>
+            Get ready to enter the realms of <strong class="text-orange-600">AI-Powered Market Trade Intelligence</strong> with us.
+          </p>
+          <p>
+            We're not leaving anyone behind on the Ubuntu way journey - 
+            <em class="text-green-600 font-semibold">"I am, because WE are"</em> ❗
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Features -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">What's Coming</h2>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-orange-100 text-center">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="brain" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">AI Trade Intelligence</h3>
+          <p class="text-gray-600">
+            Advanced analytics and insights powered by ethical AI to help you make smarter trading decisions.
+          </p>
+        </div>
+        
+        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-green-100 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="smartphone" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Mobile-First Dashboard</h3>
+          <p class="text-gray-600">
+            Access your trade data, insights, and opportunities from any device, anywhere in Africa.
+          </p>
+        </div>
+        
+        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-blue-100 text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="users" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Community Network</h3>
+          <p class="text-gray-600">
+            Connect with traders across Africa, share insights, and grow together through Ubuntu.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Early Access -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-gradient-orange-green p-8 md:p-12 rounded-2xl text-white text-center">
+        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="key" class="h-10 w-10 text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold mb-4">Get Early Access</h2>
+        <p class="text-xl opacity-90 mb-6">
+          Be among the first to experience the future of African trade intelligence
+        </p>
+        <p class="text-lg opacity-90 mb-8">
+          <strong>Note:</strong> Early access can be requested via email
+        </p>
+        <a href="mailto:info@afroubuntutrade.co.uk?subject=Early Access Request" 
+           class="inline-flex items-center space-x-2 bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+          <i data-lucide="mail" class="h-5 w-5"></i>
+          <span>Request Early Access</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Development Timeline</h2>
+      
+      <div class="space-y-8">
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" class="h-6 w-6 text-orange-600"></i>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Phase 1: Foundation (Completed)</h3>
+            <p class="text-gray-600">Core AI models and mobile infrastructure development</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i data-lucide="clock" class="h-6 w-6 text-green-600"></i>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Phase 2: Portal Launch (Q4 2025)</h3>
+            <p class="text-gray-600">Beta release of the trader portal with core features</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-6">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i data-lucide="calendar" class="h-6 w-6 text-blue-600"></i>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+            <h3 class="font-bold text-gray-900 mb-2">Phase 3: Full Platform (Q1-2 2026)</h3>
+            <p class="text-gray-600">Complete platform with AI insights and community features</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Company Info -->
+        <div class="col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+              <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
+              <p class="text-orange-400">Making the Invisible Visible</p>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Built on Ubuntu: "I am, because we are" - Unlocking Africa's $1.2T informal trade economy through ethical AI.
+          </p>
+          
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="text-gray-300 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-gray-300 hover:text-white transition-colors">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-400"></i>
+              <span class="text-gray-300">124 City Road, London, United Kingdom, EC1V 2NX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Ethical AI & Data Use
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+        <p class="text-gray-400">
+          © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded-lg" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

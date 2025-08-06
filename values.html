@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Values - Afro Ubuntu TradeNet</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border: none;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .close {
+      color: #6b7280;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close:hover {
+      color: var(--orange-600);
+    }
+    
+    .value-card {
+      transition: all 0.3s ease;
+    }
+    
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-orange-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Back Button -->
+        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
+          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <span>Back to Home</span>
+        </a>
+        
+        <!-- Page Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="heart" class="h-4 w-4 text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-gray-900">Our Values</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Our <span class="text-gradient">Values</span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Built on Ubuntu philosophy, our values guide everything we do as we work to make the invisible visible
+        </p>
+      </div>
+
+      <!-- Values Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Community-first commerce -->
+        <div class="value-card bg-white p-8 rounded-xl shadow-sm border border-orange-100">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="users" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Community-First Commerce</h3>
+          <p class="text-gray-600 leading-relaxed">
+            We believe in putting community at the heart of every transaction. Trade should strengthen bonds, 
+            not just balance sheets. Ubuntu teaches us that we rise together.
+          </p>
+        </div>
+
+        <!-- Fair trade & equity -->
+        <div class="value-card bg-white p-8 rounded-xl shadow-sm border border-green-100">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="scale" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Fair Trade & Equity</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Every trader deserves fair access to markets and fair prices for their goods. 
+            We're building systems that level the playing field for all participants.
+          </p>
+        </div>
+
+        <!-- Visibility for the invisible -->
+        <div class="value-card bg-white p-8 rounded-xl shadow-sm border border-blue-100">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="eye" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Visibility for the Invisible</h3>
+          <p class="text-gray-600 leading-relaxed">
+            85% of Africa's trade happens in the shadows. We're bringing these vital economic activities 
+            into the light, giving them the recognition and support they deserve.
+          </p>
+        </div>
+
+        <!-- Mobile-first accessibility -->
+        <div class="value-card bg-white p-8 rounded-xl shadow-sm border border-purple-100">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="smartphone" class="h-8 w-8 text-purple-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Mobile-First Accessibility</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Technology should be accessible to everyone, everywhere. Our mobile-first approach ensures 
+            that even the most remote trader can participate in the global economy.
+          </p>
+        </div>
+
+        <!-- Pan-African collaboration -->
+        <div class="value-card bg-white p-8 rounded-xl shadow-sm border border-yellow-100">
+          <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="globe" class="h-8 w-8 text-yellow-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Pan-African Collaboration</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Africa's strength lies in its unity. We're building bridges across borders, 
+            connecting traders from Cape Town to Cairo in a network of mutual prosperity.
+          </p>
+        </div>
+
+        <!-- Ubuntu Philosophy -->
+        <div class="value-card bg-gradient-orange-green p-8 rounded-xl shadow-sm text-white">
+          <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="heart" class="h-8 w-8 text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">Ubuntu Philosophy</h3>
+          <p class="leading-relaxed opacity-90">
+            "I am, because we are" - This ancient African wisdom guides our every decision. 
+            Your success is our success, and together we build a stronger, more inclusive economy.
+          </p>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="text-center mt-16">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-2xl mx-auto">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Join Our Mission</h3>
+          <p class="text-gray-600 mb-6">
+            Ready to be part of a movement that's transforming Africa's trade landscape? 
+            Let's build the future together.
+          </p>
+          <a href="index.html#formModal" 
+             class="inline-flex items-center space-x-2 bg-gradient-orange-green text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+            <span>Get Involved</span>
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Company Info -->
+        <div class="col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+              <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
+              <p class="text-orange-400">Making the Invisible Visible</p>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Built on Ubuntu: "I am, because we are" - Unlocking Africa's $1.2T informal trade economy through ethical AI.
+          </p>
+          
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" class="text-gray-300 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-gray-300 hover:text-white transition-colors">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i data-lucide="map-pin" class="h-5 w-5 text-orange-400"></i>
+              <span class="text-gray-300">124 City Road, London, United Kingdom, EC1V 2NX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Ethical AI & Data Use
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+        <p class="text-gray-400">
+          © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('privacyModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Privacy Policy</h2>
+      <iframe src="privacy-policy.html" class="w-full h-96 border rounded-lg" title="Privacy Policy"></iframe>
+    </div>
+  </div>
+
+  <!-- Ethical AI Modal -->
+  <div id="ethicsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('ethicsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Ethical AI & Data Use</h2>
+      <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
