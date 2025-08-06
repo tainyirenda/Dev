@@ -8,7 +8,7 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     :root {
-      --orange-600: #ef4444;
+      --orange-600: #ea580c;
       --orange-700: #c2410c;
       --green-600: #16a34a;
       --green-700: #15803d;
@@ -23,6 +23,11 @@
     .bg-gradient-orange-green-light {
       background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
     }
+
+    .bg-custom-orange {
+      background-color: var(--orange-600);
+    }
+
     
     .text-gradient {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
@@ -319,7 +324,7 @@
       <!-- Map Legend -->
       <div class="mt-6 flex flex-wrap justify-center gap-4">
         <div class="flex items-center space-x-2">
-          <div class="w-4 h-4 bg-orange-600 rounded-full"></div>
+          <div class="w-4 h-4 bg-custom-orange rounded-full"></div>
           <span class="text-sm text-gray-600">West Africa</span>
         </div>
         <div class="flex items-center space-x-2">
