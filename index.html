@@ -4,8 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Afro Ubuntu TradeNet Ltd</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Tailwind v3 (modern color support) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Google Translate -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement(
@@ -16,9 +22,34 @@
         },
         'google_translate_element'
       );
+
+      // Wait for the dropdown to be inserted into the DOM
+      const observer = new MutationObserver(function (mutations, obs) {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          const savedLang = localStorage.getItem('selectedLang');
+          if (savedLang) {
+            combo.value = savedLang;
+            combo.dispatchEvent(new Event('change'));
+          }
+
+          combo.addEventListener('change', function () {
+            localStorage.setItem('selectedLang', this.value);
+          });
+
+          obs.disconnect(); // Stop observing after it's initialized
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
     }
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Custom Theme Styles -->
   <style>
     :root {
       --orange-600: #ea580c;
@@ -28,11 +59,11 @@
       --orange-50: #fff7ed;
       --green-50: #f0fdf4;
     }
-    
+
     .bg-gradient-orange-green {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
     }
-    
+
     .bg-gradient-orange-green-light {
       background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
     }
@@ -40,24 +71,26 @@
     .bg-custom-orange {
       background-color: var(--orange-600);
     }
-    
+
     .text-gradient {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
+
     .modal {
       display: none;
       position: fixed;
       z-index: 50;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
       background-color: rgba(0, 0, 0, 0.4);
       overflow: auto;
     }
-    
+
     .modal-content {
       background-color: #fff;
       margin: 5% auto;
@@ -70,7 +103,7 @@
       overflow-y: auto;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
-    
+
     .close {
       color: #6b7280;
       float: right;
@@ -79,42 +112,40 @@
       cursor: pointer;
       transition: color 0.3s ease;
     }
-    
+
     .close:hover {
       color: var(--orange-600);
     }
-    
+
     .btn-primary {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
       transition: all 0.3s ease;
     }
-    
+
     .btn-primary:hover {
       background: linear-gradient(135deg, var(--orange-700), var(--green-700));
       transform: translateY(-2px);
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    
+
     .feature-card {
       transition: all 0.3s ease;
     }
-    
+
     .feature-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
-    /* Mobile menu animations */
     .mobile-menu {
       transform: translateX(-100%);
       transition: transform 0.3s ease-in-out;
     }
-    
+
     .mobile-menu.open {
       transform: translateX(0);
     }
 
-    /* Navigation link hover effects */
     .nav-link {
       position: relative;
       transition: all 0.3s ease;
@@ -140,7 +171,6 @@
       width: 100%;
     }
 
-    /* Sticky navigation */
     .nav-sticky {
       backdrop-filter: blur(10px);
       background-color: rgba(255, 255, 255, 0.95);
@@ -148,6 +178,7 @@
     }
   </style>
 </head>
+
 
 <body class="font-sans text-gray-900">
   <!-- Dynamic Navigation -->
@@ -684,6 +715,7 @@
 </body>
 
 </html>
+
 
 
 
