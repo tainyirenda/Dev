@@ -6,6 +6,44 @@
   <title>Our Why - Afro Ubuntu TradeNet</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+      );
+
+      // Wait for the dropdown to be inserted into the DOM
+      const observer = new MutationObserver(function (mutations, obs) {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          const savedLang = localStorage.getItem('selectedLang');
+          if (savedLang) {
+            combo.value = savedLang;
+            combo.dispatchEvent(new Event('change'));
+          }
+
+          combo.addEventListener('change', function () {
+            localStorage.setItem('selectedLang', this.value);
+          });
+
+          obs.disconnect(); // Stop observing after it's initialized
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
   <style>
     :root {
       --orange-600: #ea580c;
@@ -100,6 +138,7 @@
             <i data-lucide="lightbulb" class="h-4 w-4 text-white"></i>
           </div>
           <span class="text-xl font-bold text-gray-900">Our Why</span>
+          <div id=google_translate_element></div>
         </div>
       </div>
     </div>
