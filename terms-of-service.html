@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service | Afro Ubuntu TradeNet</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+      );
+
+      // Wait for the dropdown to be inserted into the DOM
+      const observer = new MutationObserver(function (mutations, obs) {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          const savedLang = localStorage.getItem('selectedLang');
+          if (savedLang) {
+            combo.value = savedLang;
+            combo.dispatchEvent(new Event('change'));
+          }
+
+          combo.addEventListener('change', function () {
+            localStorage.setItem('selectedLang', this.value);
+          });
+
+          obs.disconnect(); // Stop observing after it's initialized
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-N6PKL5BZQF');
+  </script>
+  <style>
+    :root {
+      --orange-600: #ea580c;
+      --orange-700: #c2410c;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --orange-50: #fff7ed;
+      --green-50: #f0fdf4;
+    }
+    
+    .bg-gradient-orange-green {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+    }
+    
+    .bg-gradient-orange-green-light {
+      background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--orange-600), var(--green-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .section-card {
+      transition: all 0.3s ease;
+    }
+    
+    .section-card:hover {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toc-link {
+      transition: all 0.3s ease;
+    }
+    
+    .toc-link:hover {
+      color: var(--orange-600);
+      transform: translateX(4px);
+    }
+    
+    .section-anchor {
+      scroll-margin-top: 100px;
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+  <!-- Header -->
+  <header class="bg-gradient-orange-green text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+      <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="file-text" class="h-10 w-10 text-white"></i>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Terms of Service</h1>
+      <p class="text-xl opacity-90">Your agreement to use Afro Ubuntu TradeNet</p>
+      <p class="text-lg opacity-75 mt-2">Effective Date: July, 2025 | Version 1.1</p>
+    </div>
+  </header>
+
+  <!-- Navigation & Table of Contents -->
+  <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="globe" class="h-4 w-4 text-white"></i>
+          </div>
+          <span class="text-lg font-bold text-gray-900">AUTN Terms</span>
+        </div>
+        <button id="toc-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i data-lucide="menu" class="h-5 w-5 text-gray-700"></i>
+        </button>
+      </div>
+      
+      <!-- Table of Contents -->
+      <div id="toc-menu" class="hidden md:block pb-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+          <a href="#introduction" class="toc-link text-gray-600 hover:text-orange-600 py-1">1. Introduction</a>
+          <a href="#eligibility" class="toc-link text-gray-600 hover:text-orange-600 py-1">2. Eligibility</a>
+          <a href="#services" class="toc-link text-gray-600 hover:text-orange-600 py-1">3. Services</a>
+          <a href="#acceptable-use" class="toc-link text-gray-600 hover:text-orange-600 py-1">4. Acceptable Use</a>
+          <a href="#account" class="toc-link text-gray-600 hover:text-orange-600 py-1">5. Account Security</a>
+          <a href="#data-rights" class="toc-link text-gray-600 hover:text-orange-600 py-1">6. Data Rights</a>
+          <a href="#ai-decisions" class="toc-link text-gray-600 hover:text-orange-600 py-1">7. AI Decisions</a>
+          <a href="#fees" class="toc-link text-gray-600 hover:text-orange-600 py-1">8. Fees & Payment</a>
+          <a href="#ip" class="toc-link text-gray-600 hover:text-orange-600 py-1">9. Intellectual Property</a>
+          <a href="#confidentiality" class="toc-link text-gray-600 hover:text-orange-600 py-1">10. Confidentiality</a>
+          <a href="#compliance" class="toc-link text-gray-600 hover:text-orange-600 py-1">11. Compliance</a>
+          <a href="#liability" class="toc-link text-gray-600 hover:text-orange-600 py-1">12. Liability</a>
+          <a href="#termination" class="toc-link text-gray-600 hover:text-orange-600 py-1">13. Termination</a>
+          <a href="#force-majeure" class="toc-link text-gray-600 hover:text-orange-600 py-1">14. Force Majeure</a>
+          <a href="#pilot-services" class="toc-link text-gray-600 hover:text-orange-600 py-1">15. Pilot Services</a>
+          <a href="#third-party" class="toc-link text-gray-600 hover:text-orange-600 py-1">16. Third-Party Tools</a>
+          <a href="#governing-law" class="toc-link text-gray-600 hover:text-orange-600 py-1">17. Governing Law</a>
+          <a href="#changes" class="toc-link text-gray-600 hover:text-orange-600 py-1">18. Changes</a>
+          <a href="#contact" class="toc-link text-gray-600 hover:text-orange-600 py-1">19. Contact</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <!-- 1. Introduction -->
+    <div id="introduction" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+          <span class="text-orange-600 font-bold text-lg">1</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Introduction</h2>
+      </div>
+      
+      <div class="prose prose-lg max-w-none">
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Welcome to <strong>Afro Ubuntu TradeNet Ltd</strong> ("Afro Ubuntu TradeNet", "we", "our", "us").
+        </p>
+        
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200 mb-6">
+          <h4 class="font-semibold text-orange-800 mb-3">What We Do</h4>
+          <p class="text-orange-700 mb-3">
+            We provide an <strong>AI-powered B2B trade intelligence platform</strong> connecting informal and 
+            semi-formal African retailers with FMCG brands, NGOs, and fintech partners through:
+          </p>
+          <ul class="text-orange-700 text-sm space-y-1">
+            <li>• Digital insights and analytics</li>
+            <li>• Ethical data use and AI recommendations</li>
+            <li>• WhatsApp-based onboarding and communication</li>
+            <li>• Trade intelligence dashboards</li>
+          </ul>
+        </div>
+        
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+            <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+            Agreement to Terms
+          </h4>
+          <p class="text-red-700">
+            By accessing or using our website, platform, WhatsApp onboarding service, analytics dashboards, 
+            or related services (collectively, the <strong>"Services"</strong>), you agree to be bound by 
+            these Terms of Use and Terms of Service ("Terms").
+          </p>
+          <p class="text-red-700 mt-3 font-semibold">
+            If you do not agree, you may not use the Services.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Eligibility -->
+    <div id="eligibility" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+          <span class="text-green-600 font-bold text-lg">2</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Eligibility</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="calendar" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h4 class="font-semibold text-green-800 mb-2">Age Requirement</h4>
+          <p class="text-green-700 text-sm">You must be <strong>18 years or older</strong> to use the Services</p>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="building" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h4 class="font-semibold text-blue-800 mb-2">Business Use Only</h4>
+          <p class="text-blue-700 text-sm">You must be acting on behalf of a <strong>business or organisation</strong>; not for personal consumer use</p>
+        </div>
+        
+        <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="user-check" class="h-8 w-8 text-purple-600"></i>
+          </div>
+          <h4 class="font-semibold text-purple-800 mb-2">Authority</h4>
+          <p class="text-purple-700 text-sm">You confirm you have the <strong>authority to bind</strong> your organisation to these Terms</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Services We Provide -->
+    <div id="services" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <span class="text-blue-600 font-bold text-lg">3</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Services We Provide</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+            <h4 class="font-semibold text-orange-800 mb-3 flex items-center">
+              <i data-lucide="smartphone" class="h-5 w-5 mr-2"></i>
+              Retailer Onboarding
+            </h4>
+            <ul class="text-orange-700 text-sm space-y-1">
+              <li>• WhatsApp integration and communication</li>
+              <li>• SMS-based data collection</li>
+              <li>• Web portal access</li>
+              <li>• Multi-language support</li>
+            </ul>
+          </div>
+          
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+              <i data-lucide="bar-chart" class="h-5 w-5 mr-2"></i>
+              Trade Analytics
+            </h4>
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• Stock tracking and inventory management</li>
+              <li>• Pricing trends analysis</li>
+              <li>• Demand forecasting</li>
+              <li>• Market intelligence reports</li>
+            </ul>
+          </div>
+          
+          <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+              <i data-lucide="credit-card" class="h-5 w-5 mr-2"></i>
+              AI Credit Profiling
+            </h4>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Non-traditional trade data scoring</li>
+              <li>• Ethical credit assessment</li>
+              <li>• Risk profiling for lenders</li>
+              <li>• Financial inclusion insights</li>
+            </ul>
+          </div>
+          
+          <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
+            <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+              <i data-lucide="users" class="h-5 w-5 mr-2"></i>
+              Partner Services
+            </h4>
+            <ul class="text-purple-700 text-sm space-y-1">
+              <li>• Data insights for FMCGs</li>
+              <li>• NGO impact measurement</li>
+              <li>• Fintech integration support</li>
+              <li>• Pay-per-insight access</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h4 class="font-semibold text-yellow-800 mb-2 flex items-center">
+            <i data-lucide="settings" class="h-5 w-5 mr-2"></i>
+            Service Updates
+          </h4>
+          <p class="text-yellow-700">
+            We may modify or update the Services for operational, technical, or security reasons at any time. 
+            We will provide reasonable notice for material changes that affect your use of the Services.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Acceptable Use -->
+    <div id="acceptable-use" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <span class="text-red-600 font-bold text-lg">4</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Acceptable Use</h2>
+      </div>
+      
+      <div class="bg-red-50 p-6 rounded-lg border border-red-200 mb-6">
+        <h4 class="font-semibold text-red-800 mb-4 flex items-center">
+          <i data-lucide="x-circle" class="h-5 w-5 mr-2"></i>
+          You agree NOT to:
+        </h4>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h5 class="font-semibold text-red-800 mb-2">Prohibited Activities</h5>
+            <ul class="text-red-700 text-sm space-y-2">
+              <li class="flex items-start space-x-2">
+                <i data-lucide="alert-triangle" class="h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                <span>Use the Services for illegal, harmful, or fraudulent purposes</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <i data-lucide="upload" class="h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                <span>Upload false, misleading, or harmful data</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h5 class="font-semibold text-red-800 mb-2">Technical Restrictions</h5>
+            <ul class="text-red-700 text-sm space-y-2">
+              <li class="flex items-start space-x-2">
+                <i data-lucide="code" class="h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                <span>Reverse-engineer, copy, or interfere with our AI models, APIs, or systems</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <i data-lucide="shield-alert" class="h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                <span>Breach applicable laws, including data protection, trade compliance, and anti-corruption regulations</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+        <h4 class="font-semibold text-green-800 mb-2 flex items-center">
+          <i data-lucide="check-circle" class="h-5 w-5 mr-2"></i>
+          Ubuntu Principles
+        </h4>
+        <p class="text-green-700">
+          We encourage use that embodies Ubuntu philosophy - <em>"I am, because we are"</em>. 
+          Use our Services in ways that benefit not just your business, but the broader trading community.
+        </p>
+      </div>
+    </div>
+
+    <!-- 5. Account Registration & Security -->
+    <div id="account" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+          <span class="text-purple-600 font-bold text-lg">5</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Account Registration & Security</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="lock" class="h-8 w-8 text-purple-600"></i>
+          </div>
+          <h4 class="font-semibold text-purple-800 mb-2">Your Responsibility</h4>
+          <p class="text-purple-700 text-sm">You are responsible for maintaining your account credentials securely</p>
+        </div>
+        
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200 text-center">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="alert-circle" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h4 class="font-semibold text-orange-800 mb-2">Report Issues</h4>
+          <p class="text-orange-700 text-sm">Notify us immediately of any unauthorised use or security concerns</p>
+        </div>
+        
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200 text-center">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="user-x" class="h-8 w-8 text-red-600"></i>
+          </div>
+          <h4 class="font-semibold text-red-800 mb-2">Account Actions</h4>
+          <p class="text-red-700 text-sm">We may suspend or terminate accounts for security reasons or Terms violations</p>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Security Best Practices</h4>
+        <div class="grid md:grid-cols-2 gap-4">
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• Use strong, unique passwords</li>
+            <li>• Enable two-factor authentication when available</li>
+            <li>• Regularly review account activity</li>
+          </ul>
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• Don't share credentials with others</li>
+            <li>• Log out from shared devices</li>
+            <li>• Report suspicious activity immediately</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Data Ownership & Rights -->
+    <div id="data-rights" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+          <span class="text-green-600 font-bold text-lg">6</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Data Ownership & Rights</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+            <i data-lucide="shield-check" class="h-5 w-5 mr-2"></i>
+            Your Data Ownership
+          </h4>
+          <p class="text-green-700 mb-3">
+            <strong>You retain ownership</strong> of all data you provide to our Services. 
+            We respect your data sovereignty and Ubuntu principles of collective benefit.
+          </p>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+            <i data-lucide="settings" class="h-5 w-5 mr-2"></i>
+            Processing License
+          </h4>
+          <p class="text-blue-700 mb-3">
+            By submitting data, you grant Afro Ubuntu TradeNet a <strong>non-exclusive, royalty-free, worldwide licence</strong> to:
+          </p>
+          <ul class="text-blue-700 text-sm space-y-1">
+            <li>• Process and analyse your data for delivering Services</li>
+            <li>• Create anonymised insights for community benefit</li>
+            <li>• Generate AI recommendations and forecasts</li>
+            <li>• Improve our platform and algorithms</li>
+          </ul>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+            <h4 class="font-semibold text-orange-800 mb-3">What We DON'T Do</h4>
+            <ul class="text-orange-700 text-sm space-y-2">
+              <li class="flex items-center space-x-2">
+                <i data-lucide="x" class="h-4 w-4 text-red-600"></i>
+                <span>Sell personal or business-identifiable data</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <i data-lucide="x" class="h-4 w-4 text-red-600"></i>
+                <span>Share data without proper consent</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <i data-lucide="x" class="h-4 w-4 text-red-600"></i>
+                <span>Use data beyond stated purposes</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
+            <h4 class="font-semibold text-purple-800 mb-3">Policy Compliance</h4>
+            <p class="text-purple-700 text-sm mb-3">
+              All data usage complies with our:
+            </p>
+            <ul class="text-purple-700 text-sm space-y-1">
+              <li>• <a href="privacy-policy.html" class="underline hover:text-purple-800">Privacy Policy</a></li>
+              <li>• <a href="ethical-ai-policy.html" class="underline hover:text-purple-800">Ethical AI & Data Use Policy</a></li>
+              <li>• Applicable data protection laws</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. AI-Assisted Decisions -->
+    <div id="ai-decisions" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <span class="text-blue-600 font-bold text-lg">7</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">AI-Assisted Decisions</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h4 class="font-semibold text-yellow-800 mb-3 flex items-center">
+            <i data-lucide="info" class="h-5 w-5 mr-2"></i>
+            Important Disclaimer
+          </h4>
+          <p class="text-yellow-700">
+            AI recommendations are for <strong>informational purposes only</strong> and should be used alongside human judgement. 
+            We provide insights to support your decision-making, not replace it.
+          </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+              <i data-lucide="brain" class="h-5 w-5 mr-2"></i>
+              AI Services Include
+            </h4>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Demand forecasting and trends</li>
+              <li>• Inventory optimization suggestions</li>
+              <li>• Credit scoring and risk assessment</li>
+              <li>• Market opportunity identification</li>
+              <li>• Pricing recommendations</li>
+            </ul>
+          </div>
+          
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+              <i data-lucide="user-check" class="h-5 w-5 mr-2"></i>
+              Your Rights
+            </h4>
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• Request explanation of AI decisions</li>
+              <li>• Appeal automated recommendations</li>
+              <li>• Request human review for significant decisions</li>
+              <li>• Opt out of certain AI processing</li>
+              <li>• Access to decision-making criteria</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-2 flex items-center">
+            <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+            Your Responsibility
+          </h4>
+          <p class="text-red-700">
+            You remain fully responsible for all business decisions made using our AI recommendations. 
+            Always consider your specific circumstances, local market conditions, and seek professional advice when needed.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Fees & Payment -->
+    <div id="fees" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+          <span class="text-green-600 font-bold text-lg">8</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Fees & Payment</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+              <i data-lucide="credit-card" class="h-5 w-5 mr-2"></i>
+              Payment Terms
+            </h4>
+            <ul class="text-green-700 text-sm space-y-2">
+              <li>• Fees follow your subscription or per-insight agreement</li>
+              <li>• Payments are due per the agreed billing cycle</li>
+              <li>• All fees are exclusive of applicable taxes</li>
+              <li>• Payment methods: Bank transfer, card, mobile money</li>
+            </ul>
+          </div>
+          
+          <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+            <h4 class="font-semibold text-orange-800 mb-3 flex items-center">
+              <i data-lucide="clock" class="h-5 w-5 mr-2"></i>
+              Late Payments
+            </h4>
+            <p class="text-orange-700 text-sm">
+              Late payments may result in service suspension after 30 days. 
+              We'll provide advance notice and work with you to resolve payment issues.
+            </p>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+              <i data-lucide="trending-up" class="h-5 w-5 mr-2"></i>
+              Price Changes
+            </h4>
+            <p class="text-blue-700 text-sm mb-3">
+              Prices may be updated with <strong>30 days' written notice</strong>. 
+              You can choose to:
+            </p>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Accept the new pricing</li>
+              <li>• Downgrade your service level</li>
+              <li>• Cancel your subscription</li>
+            </ul>
+          </div>
+          
+          <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
+            <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+              <i data-lucide="heart" class="h-5 w-5 mr-2"></i>
+              Ubuntu Pricing
+            </h4>
+            <p class="text-purple-700 text-sm">
+              Our pricing reflects Ubuntu values - fair, transparent, and designed to support 
+              the growth of Africa's informal trade community.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Intellectual Property -->
+    <div id="ip" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+          <span class="text-purple-600 font-bold text-lg">9</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Intellectual Property</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
+          <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+            <i data-lucide="copyright" class="h-5 w-5 mr-2"></i>
+            Our Intellectual Property
+          </h4>
+          <p class="text-purple-700 text-sm mb-3">
+            All platform content, AI models, software, and branding are owned by Afro Ubuntu TradeNet, including:
+          </p>
+          <ul class="text-purple-700 text-sm space-y-1">
+            <li>• AI algorithms and models</li>
+            <li>• Platform software and interfaces</li>
+            <li>• Trademarks and branding</li>
+            <li>• Analytics and reporting tools</li>
+            <li>• Documentation and training materials</li>
+          </ul>
+        </div>
+        
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+            <i data-lucide="shield-alert" class="h-5 w-5 mr-2"></i>
+            Usage Restrictions
+          </h4>
+          <p class="text-red-700 text-sm mb-3">
+            You may not copy, modify, or distribute our IP without written consent. This includes:
+          </p>
+          <ul class="text-red-700 text-sm space-y-1">
+            <li>• Reverse engineering our AI models</li>
+            <li>• Copying our software or interfaces</li>
+            <li>• Using our branding without permission</li>
+            <li>• Creating derivative works</li>
+            <li>• Sublicensing to third parties</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-green-50 p-6 rounded-lg border border-green-200">
+        <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+          <i data-lucide="handshake" class="h-5 w-5 mr-2"></i>
+          Permitted Use
+        </h4>
+        <p class="text-green-700">
+          You may use our Services as intended for your business operations. 
+          For any other use cases or integration needs, please contact us for proper licensing arrangements.
+        </p>
+      </div>
+    </div>
+
+    <!-- 10. Confidentiality -->
+    <div id="confidentiality" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+          <span class="text-indigo-600 font-bold text-lg">10</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Confidentiality</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+          <h4 class="font-semibold text-indigo-800 mb-3 flex items-center">
+            <i data-lucide="lock" class="h-5 w-5 mr-2"></i>
+            Mutual Protection
+          </h4>
+          <p class="text-indigo-700 text-sm mb-3">
+            Both parties agree to protect each other's confidential information, including:
+          </p>
+          <ul class="text-indigo-700 text-sm space-y-1">
+            <li>• Business strategies and plans</li>
+            <li>• Technical specifications</li>
+            <li>• Customer data and insights</li>
+            <li>• Financial information</li>
+            <li>• Proprietary methodologies</li>
+          </ul>
+        </div>
+        
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h4 class="font-semibold text-yellow-800 mb-3 flex items-center">
+            <i data-lucide="alert-circle" class="h-5 w-5 mr-2"></i>
+            Exceptions
+          </h4>
+          <p class="text-yellow-700 text-sm mb-3">
+            Confidentiality obligations don't apply when disclosure is:
+          </p>
+          <ul class="text-yellow-700 text-sm space-y-1">
+            <li>• Legally required by court order</li>
+            <li>• Necessary for regulatory compliance</li>
+            <li>• Already in the public domain</li>
+            <li>• Independently developed</li>
+            <li>• Authorized by the disclosing party</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. Compliance & Cross-Border Data Transfers -->
+    <div id="compliance" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <span class="text-blue-600 font-bold text-lg">11</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Compliance & Cross-Border Data Transfers</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+            <i data-lucide="scale" class="h-5 w-5 mr-2"></i>
+            Your Compliance Obligations
+          </h4>
+          <p class="text-blue-700 text-sm mb-3">
+            You must comply with applicable laws in your jurisdiction, including:
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Data protection and privacy laws</li>
+              <li>• Trade and import/export regulations</li>
+              <li>• Anti-money laundering requirements</li>
+              <li>• Tax and financial reporting obligations</li>
+            </ul>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Consumer protection regulations</li>
+              <li>• Competition and antitrust laws</li>
+              <li>• Industry-specific regulations</li>
+              <li>• Local business licensing requirements</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+            <i data-lucide="globe" class="h-5 w-5 mr-2"></i>
+            Cross-Border Data Transfers
+          </h4>
+          <p class="text-green-700 text-sm mb-3">
+            Data transfers outside the UK, EU, or your jurisdiction will use appropriate safeguards:
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• Standard Contractual Clauses (SCCs)</li>
+              <li>• Adequacy decisions where available</li>
+              <li>• Binding Corporate Rules</li>
+              <li>• Explicit user consent</li>
+            </ul>
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• Local data residency options</li>
+              <li>• Transfer impact assessments</li>
+              <li>• Additional technical safeguards</li>
+              <li>• Regular compliance monitoring</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. Limitation of Liability -->
+    <div id="liability" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+          <span class="text-yellow-600 font-bold text-lg">12</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Limitation of Liability</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h4 class="font-semibold text-yellow-800 mb-3 flex items-center">
+            <i data-lucide="info" class="h-5 w-5 mr-2"></i>
+            Service Disclaimer
+          </h4>
+          <p class="text-yellow-700">
+            The Services are provided <strong>"as is"</strong> without guarantees of uninterrupted operation. 
+            While we strive for high availability and accuracy, technology systems can experience downtime or errors.
+          </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+            <h4 class="font-semibold text-red-800 mb-3">Liability Limitations</h4>
+            <p class="text-red-700 text-sm mb-3">
+              To the fullest extent allowed by law, we are not liable for:
+            </p>
+            <ul class="text-red-700 text-sm space-y-1">
+              <li>• Indirect or consequential damages</li>
+              <li>• Loss of profits or business opportunities</li>
+              <li>• Data loss or corruption</li>
+              <li>• Third-party service interruptions</li>
+              <li>• Business decisions based on our recommendations</li>
+            </ul>
+          </div>
+          
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3">What We Do Guarantee</h4>
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• Good faith effort to provide reliable services</li>
+              <li>• Prompt response to technical issues</li>
+              <li>• Transparent communication about problems</li>
+              <li>• Compliance with data protection laws</li>
+              <li>• Fair treatment under Ubuntu principles</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h4 class="font-semibold text-blue-800 mb-2 flex items-center">
+            <i data-lucide="shield" class="h-5 w-5 mr-2"></i>
+            Maximum Liability
+          </h4>
+          <p class="text-blue-700 text-sm">
+            Our total liability to you for any claims arising from these Terms or your use of the Services 
+            shall not exceed the amount you paid us in the 12 months preceding the claim.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Termination -->
+    <div id="termination" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <span class="text-red-600 font-bold text-lg">13</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Termination</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+            <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+            We May Suspend or Terminate Your Access If:
+          </h4>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <h5 class="font-semibold text-red-800 mb-2">Terms Violations</h5>
+              <ul class="text-red-700 text-sm space-y-1">
+                <li>• Breach of these Terms</li>
+                <li>• Violation of acceptable use policies</li>
+                <li>• Fraudulent or illegal activity</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-red-800 mb-2">Payment Issues</h5>
+              <ul class="text-red-700 text-sm space-y-1">
+                <li>• Failure to pay fees</li>
+                <li>• Disputed or reversed payments</li>
+                <li>• Expired payment methods</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-red-800 mb-2">Risk Management</h5>
+              <ul class="text-red-700 text-sm space-y-1">
+                <li>• Risk to our systems</li>
+                <li>• Harm to partners or users</li>
+                <li>• Security concerns</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+              <i data-lucide="user-x" class="h-5 w-5 mr-2"></i>
+              Your Right to Terminate
+            </h4>
+            <p class="text-blue-700 text-sm mb-3">
+              You may terminate your account at any time by:
+            </p>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li>• Contacting our support team</li>
+              <li>• Using account closure features</li>
+              <li>• Providing 30 days' written notice</li>
+            </ul>
+          </div>
+          
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+              <i data-lucide="download" class="h-5 w-5 mr-2"></i>
+              Data After Termination
+            </h4>
+            <p class="text-green-700 text-sm mb-3">
+              Upon termination:
+            </p>
+            <ul class="text-green-700 text-sm space-y-1">
+              <li>• You can export your data (30 days)</li>
+              <li>• We'll delete your data per our retention policy</li>
+              <li>• Anonymised insights may be retained</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. Force Majeure -->
+    <div id="force-majeure" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+          <span class="text-gray-600 font-bold text-lg">14</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Force Majeure</h2>
+      </div>
+      
+      <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+          <i data-lucide="cloud-lightning" class="h-5 w-5 mr-2"></i>
+          Events Beyond Our Control
+        </h4>
+        <p class="text-gray-700 text-sm mb-4">
+          We are not liable for delays or failures in performance caused by events beyond our reasonable control, including:
+        </p>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h5 class="font-semibold text-gray-800 mb-2">Natural Events</h5>
+            <ul class="text-gray-700 text-sm space-y-1">
+              <li>• Natural disasters and extreme weather</li>
+              <li>• Earthquakes, floods, or fires</li>
+              <li>• Pandemics or health emergencies</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h5 class="font-semibold text-gray-800 mb-2">Human Events</h5>
+            <ul class="text-gray-700 text-sm space-y-1">
+              <li>• Government restrictions or sanctions</li>
+              <li>• Civil unrest or political instability</li>
+              <li>• Internet outages or infrastructure failures</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <p class="text-blue-700 text-sm">
+            <strong>Our Commitment:</strong> During force majeure events, we'll communicate transparently about impacts 
+            and work to restore services as quickly as possible while ensuring user safety.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15. Pilot & Beta Services -->
+    <div id="pilot-services" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+          <span class="text-purple-600 font-bold text-lg">15</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Pilot & Beta Services</h2>
+      </div>
+      
+      <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 mb-6">
+        <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+          <i data-lucide="flask" class="h-5 w-5 mr-2"></i>
+          If You Participate in a Pilot or Beta Programme:
+        </h4>
+        <p class="text-purple-700 text-sm mb-4">
+          You're helping us build better services for Africa's trade community. Here's what to expect:
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200 text-center">
+          <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="alert-circle" class="h-8 w-8 text-yellow-600"></i>
+          </div>
+          <h4 class="font-semibold text-yellow-800 mb-2">Service Quality</h4>
+          <p class="text-yellow-700 text-sm">The Services may contain errors or be incomplete as we test and improve features</p>
+        </div>
+        
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200 text-center">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="settings" class="h-8 w-8 text-orange-600"></i>
+          </div>
+          <h4 class="font-semibold text-orange-800 mb-2">Feature Changes</h4>
+          <p class="text-orange-700 text-sm">We may limit, suspend, or discontinue pilot features without notice as we iterate</p>
+        </div>
+        
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="database" class="h-8 w-8 text-green-600"></i>
+          </div>
+          <h4 class="font-semibold text-green-800 mb-2">Data Usage</h4>
+          <p class="text-green-700 text-sm">Data collected during pilots may be used for testing, analysis, and product improvement</p>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-blue-50 p-6 rounded-lg border border-blue-200">
+        <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+          <i data-lucide="heart" class="h-5 w-5 mr-2"></i>
+          Ubuntu Pilot Principles
+        </h4>
+        <p class="text-blue-700 text-sm">
+          All pilot data usage follows our Privacy and Ethical AI policies. Your participation helps improve 
+          services for the entire African trade community - embodying <em>"I am, because we are"</em>.
+        </p>
+      </div>
+    </div>
+
+    <!-- 16. Third-Party Tools Disclaimer -->
+    <div id="third-party" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+          <span class="text-indigo-600 font-bold text-lg">16</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Third-Party Tools Disclaimer</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+          <h4 class="font-semibold text-indigo-800 mb-3 flex items-center">
+            <i data-lucide="link" class="h-5 w-5 mr-2"></i>
+            Third-Party Integrations
+          </h4>
+          <p class="text-indigo-700 text-sm mb-3">
+            Our Services may integrate with third-party platforms to provide you with seamless experiences:
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <ul class="text-indigo-700 text-sm space-y-1">
+              <li>• WhatsApp Business API</li>
+              <li>• SMS gateway providers</li>
+              <li>• Payment processing services</li>
+              <li>• Cloud storage platforms</li>
+            </ul>
+            <ul class="text-indigo-700 text-sm space-y-1">
+              <li>• Mapping and location services</li>
+              <li>• Analytics and monitoring tools</li>
+              <li>• Communication platforms</li>
+              <li>• Financial service APIs</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h4 class="font-semibold text-yellow-800 mb-3 flex items-center">
+            <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+            Important Disclaimer
+          </h4>
+          <p class="text-yellow-700 text-sm mb-3">
+            We are <strong>not responsible</strong> for:
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <ul class="text-yellow-700 text-sm space-y-1">
+              <li>• Interruptions in third-party services</li>
+              <li>• Changes to third-party terms or pricing</li>
+              <li>• Discontinuation of third-party platforms</li>
+            </ul>
+            <ul class="text-yellow-700 text-sm space-y-1">
+              <li>• Third-party data breaches or security issues</li>
+              <li>• Performance or availability of external services</li>
+              <li>• Third-party policy changes affecting functionality</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h4 class="font-semibold text-green-800 mb-2 flex items-center">
+            <i data-lucide="shield" class="h-5 w-5 mr-2"></i>
+            Our Commitment
+          </h4>
+          <p class="text-green-700 text-sm">
+            While we can't control third-party services, we carefully select partners who share our values 
+            and will work to minimize disruptions when external issues occur.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17. Governing Law & Dispute Resolution -->
+    <div id="governing-law" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <span class="text-red-600 font-bold text-lg">17</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Governing Law & Dispute Resolution</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+            <i data-lucide="scale" class="h-5 w-5 mr-2"></i>
+            Governing Law
+          </h4>
+          <p class="text-red-700 text-sm mb-3">
+            These Terms are governed by the <strong>laws of England and Wales</strong>.
+          </p>
+          <p class="text-red-700 text-sm">
+            Any legal proceedings will be subject to the exclusive jurisdiction of the English courts, 
+            unless prohibited by your local consumer protection laws.
+          </p>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+            <i data-lucide="handshake" class="h-5 w-5 mr-2"></i>
+            Dispute Resolution Process
+          </h4>
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+              <span class="text-blue-700 text-sm"><strong>Negotiation:</strong> Direct discussion to resolve issues</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+              <span class="text-blue-700 text-sm"><strong>Mediation:</strong> Independent mediator assistance</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+              <span class="text-blue-700 text-sm"><strong>Court Proceedings:</strong> Formal legal resolution</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-green-50 p-6 rounded-lg border border-green-200">
+        <h4 class="font-semibold text-green-800 mb-2 flex items-center">
+          <i data-lucide="heart" class="h-5 w-5 mr-2"></i>
+          Ubuntu Approach to Disputes
+        </h4>
+        <p class="text-green-700 text-sm">
+          We believe in resolving disputes through dialogue and mutual understanding, reflecting Ubuntu values. 
+          Our goal is always to find solutions that benefit both parties and strengthen our community relationships.
+        </p>
+      </div>
+    </div>
+
+    <!-- 18. Changes to These Terms -->
+    <div id="changes" class="section-anchor section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+          <span class="text-orange-600 font-bold text-lg">18</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Changes to These Terms</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+          <h4 class="font-semibold text-orange-800 mb-3 flex items-center">
+            <i data-lucide="edit" class="h-5 w-5 mr-2"></i>
+            Amendment Process
+          </h4>
+          <p class="text-orange-700 text-sm mb-3">
+            We may amend these Terms with <strong>30 days' notice</strong> via:
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <ul class="text-orange-700 text-sm space-y-1">
+              <li>• Email notification to your registered address</li>
+              <li>• Prominent notice on our website</li>
+              <li>• In-platform notifications</li>
+            </ul>
+            <ul class="text-orange-700 text-sm space-y-1">
+              <li>• WhatsApp message for active users</li>
+              <li>• Updated version posted with change log</li>
+              <li>• Clear highlighting of material changes</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+              <i data-lucide="check-circle" class="h-5 w-5 mr-2"></i>
+              Acceptance of Changes
+            </h4>
+            <p class="text-green-700 text-sm">
+              Continued use of the Services after changes means acceptance of the new Terms. 
+              We'll always clearly communicate what's changing and why.
+            </p>
+          </div>
+          
+          <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+              <i data-lucide="x-circle" class="h-5 w-5 mr-2"></i>
+              If You Disagree
+            </h4>
+            <p class="text-blue-700 text-sm">
+              If you don't agree with changes, you may terminate your account before the changes take effect. 
+              We'll help you export your data during this period.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 19. Contact Us -->
+    <div id="contact" class="section-anchor section-card bg-gradient-orange-green p-8 rounded-2xl text-white text-center">
+      <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="mail" class="h-8 w-8 text-white"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-4">Contact Us</h2>
+      <p class="text-lg opacity-90 mb-6">
+        Questions about these Terms or need support? We're here to help.
+      </p>
+      
+      <div class="grid md:grid-cols-2 gap-6 text-left">
+        <div class="bg-white bg-opacity-20 p-6 rounded-lg">
+          <h4 class="font-semibold mb-3 flex items-center">
+            <i data-lucide="mail" class="h-5 w-5 mr-2"></i>
+            Email Support
+          </h4>
+          <div class="space-y-2">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="help-circle" class="h-4 w-4"></i>
+              <a href="mailto:info@afroubuntutrade.co.uk" class="text-white hover:text-orange-200 transition-colors text-sm">
+                info@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="scale" class="h-4 w-4"></i>
+              <a href="mailto:legal@afroubuntutrade.co.uk" class="text-white hover:text-orange-200 transition-colors text-sm">
+                legal@afroubuntutrade.co.uk
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white bg-opacity-20 p-6 rounded-lg">
+          <h4 class="font-semibold mb-3 flex items-center">
+            <i data-lucide="map-pin" class="h-5 w-5 mr-2"></i>
+            Registered Address
+          </h4>
+          <div class="text-sm opacity-90">
+            <p>Afro Ubuntu TradeNet Ltd</p>
+            <p>124 City Road</p>
+            <p>London, United Kingdom</p>
+            <p>EC1V 2NX</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-8 bg-white bg-opacity-20 p-6 rounded-lg">
+        <h4 class="font-semibold mb-3">Ubuntu Support Promise</h4>
+        <p class="text-sm opacity-90">
+          We respond to all inquiries within 48 hours and approach every interaction with Ubuntu principles - 
+          <em>"I am, because we are"</em>. Your success is our success.
+        </p>
+      </div>
+    </div>
+
+    <!-- Effective Date & Version -->
+    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="calendar" class="h-8 w-8 text-gray-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-4">Terms Effective Date</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h5 class="font-semibold text-gray-800 mb-2">Effective Date</h5>
+          <p class="text-gray-700 text-sm">July, 2025</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h5 class="font-semibold text-gray-800 mb-2">Version</h5>
+          <p class="text-gray-700 text-sm">1.1</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h5 class="font-semibold text-gray-800 mb-2">Last Updated</h5>
+          <p class="text-gray-700 text-sm">July 12, 2025</p>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-green-50 p-6 rounded-lg border border-green-200">
+        <p class="text-green-700 text-sm">
+          <strong>Previous versions:</strong> Available upon request. We maintain a complete history of changes 
+          to ensure transparency and accountability in our Terms evolution.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+      <div class="flex items-center justify-center space-x-3 mb-4">
+        <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
+          <i data-lucide="globe" class="h-4 w-4 text-white"></i>
+        </div>
+        <span class="text-lg font-bold">Afro Ubuntu TradeNet</span>
+      </div>
+      <p class="text-gray-400 mb-2">
+        © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved.
+      </p>
+      <p class="text-orange-400 text-sm">
+        Built on Ubuntu: "I am, because we are"
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Mobile TOC toggle
+    document.getElementById('toc-toggle').addEventListener('click', function() {
+      const tocMenu = document.getElementById('toc-menu');
+      const isHidden = tocMenu.classList.contains('hidden');
+      
+      if (isHidden) {
+        tocMenu.classList.remove('hidden');
+        tocMenu.classList.add('block');
+        this.innerHTML = '<i data-lucide="x" class="h-5 w-5 text-gray-700"></i>';
+      } else {
+        tocMenu.classList.add('hidden');
+        tocMenu.classList.remove('block');
+        this.innerHTML = '<i data-lucide="menu" class="h-5 w-5 text-gray-700"></i>';
+      }
+      
+      // Re-initialize icons after DOM change
+      lucide.createIcons();
+    });
+    
+    // Smooth scrolling for TOC links
+    document.querySelectorAll('.toc-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+        
+        // Close mobile TOC after clicking
+        const tocMenu = document.getElementById('toc-menu');
+        if (window.innerWidth < 768) {
+          tocMenu.classList.add('hidden');
+          tocMenu.classList.remove('block');
+          document.getElementById('toc-toggle').innerHTML = '<i data-lucide="menu" class="h-5 w-5 text-gray-700"></i>';
+          lucide.createIcons();
+        }
+      });
+    });
+    
+    // Highlight active section in TOC
+    const observerOptions = {
+      root: null,
+      rootMargin: '-100px 0px -50% 0px',
+      threshold: 0
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Remove active class from all TOC links
+          document.querySelectorAll('.toc-link').forEach(link => {
+            link.classList.remove('text-orange-600', 'font-semibold');
+            link.classList.add('text-gray-600');
+          });
+          
+          // Add active class to current section's TOC link
+          const activeLink = document.querySelector(`a[href="#${entry.target.id}"]`);
+          if (activeLink) {
+            activeLink.classList.remove('text-gray-600');
+            activeLink.classList.add('text-orange-600', 'font-semibold');
+          }
+        }
+      });
+    }, observerOptions);
+    
+    // Observe all section anchors
+    document.querySelectorAll('.section-anchor').forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+</body>
+</html>
