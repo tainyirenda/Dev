@@ -400,6 +400,12 @@
                 Ethical AI & Data Use
               </a>
             </li>
+            li>
+              <a href="#" onclick="document.getElementById('ethicsModal').style.display='block'" 
+                 class="text-gray-300 hover:text-white transition-colors">
+                Terms of Service
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -429,6 +435,16 @@
       <iframe src="ethical-ai-policy.html" class="w-full h-96 border rounded-lg" title="Ethical AI Policy"></iframe>
     </div>
   </div>
+
+  <!-- Terms of Service Modal -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('termsModal').style.display='none'">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Terms of Service</h2>
+      <iframe src="terms-of-service.html" class="w-full h-96 border rounded-lg" title="Terms of Service"></iframe>
+    </div>
+  </div>
+
 
   <script>
     // Initialize Lucide icons
