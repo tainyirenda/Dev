@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Platform Portal - Coming Soon</title>
+  <title>AfroUbuntu Trade Portal - Making the Invisible Visible</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
@@ -52,6 +52,7 @@
 
     gtag('config', 'G-N6PKL5BZQF');
   </script>
+
   <style>
     :root {
       --orange-600: #ea580c;
@@ -73,7 +74,6 @@
     .bg-custom-orange {
       background-color: var(--orange-600);
     }
-
     
     .text-gradient {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
@@ -81,11 +81,6 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
-    .text-shadow {
-      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-    }
-
     
     .modal {
       display: none;
@@ -140,168 +135,500 @@
       transform: translateY(-5px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
+
+    /* Custom animations */
+    @keyframes gradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .animate-gradient {
+      background-size: 200% 200%;
+      animation: gradient 3s ease infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(251, 146, 60, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(251, 146, 60, 0.6); }
+    }
+    
+    .animate-pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: scale(1.05);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .btn-gradient {
+      background: linear-gradient(135deg, #ea580c, #16a34a);
+      transition: all 0.2s ease;
+    }
+    
+    .btn-gradient:hover {
+      background: linear-gradient(135deg, #c2410c, #15803d);
+      transform: scale(1.05);
+    }
+    
+    .loading-spinner {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #ea580c;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .hero-bg {
+      background: linear-gradient(135deg, #fff7ed, #ffffff, #f0fdf4);
+    }
+    
+    .feature-icon {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1);
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 2.5rem;
+        line-height: 1.1;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.125rem;
+      }
+    }
   </style>
 </head>
 
-<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
+<body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen hero-bg">
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-orange-50 via-white to-green-50 flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="w-16 h-16 bg-gradient-to-br from-orange-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+        <i data-lucide="globe" class="h-8 w-8 text-white"></i>
+      </div>
+      <div class="loading-spinner mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading AfroUbuntu Trade Portal...</p>
+    </div>
+  </div>
+
   <!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b border-orange-100">
+  <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-orange-100 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <!-- Back Button -->
-        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
-          <i data-lucide="arrow-left" class="h-5 w-5"></i>
-          <span>Back to Home</span>
-        </a>
-        
-        <!-- Page Title -->
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
-            <i data-lucide="globe" class="h-4 w-4 text-white"></i>
+          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+            <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
-          <span class="text-xl font-bold text-gray-900">TradeNet Portal</span>
-          <div id=google_translate_element></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">Afro Ubuntu TradeNet</h1>
+            <p class="text-sm text-gray-900 hidden sm:block">Making the Invisible Visible <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors"><i data-lucide="arrow-left" class="h-5 w-5"></i></a></p>
+          </div>
+        </div>
+        
+
+        <div class="flex items-center space-x-3">
+          <div id="auth-buttons" class="flex items-center space-x-2">
+            <button onclick="handleSignIn()" class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors">
+              <i data-lucide="log-in" class="h-4 w-4"></i>
+              <span>Sign In</span>
+            </button>
+            <button onclick="handleGetStarted()" class="flex items-center space-x-2 px-6 py-2 btn-gradient text-white rounded-lg shadow-lg">
+              <i data-lucide="user-plus" class="h-4 w-4"></i>
+              <span>Get Started</span>
+            </button>
+          </div>
+          <button id="dashboard-button" onclick="goToDashboard()" class="hidden flex items-center space-x-2 px-4 py-2 border border-orange-200 hover:bg-orange-50 rounded-lg transition-colors">
+            <i data-lucide="bar-chart-3" class="h-4 w-4"></i>
+            <span>Dashboard</span>
+          </button>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="py-20 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto text-center">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="google_translate_element" class="text-right py-2 text-sm"></div>
+    <!-- Hero Section -->
+    <div class="pt-16 pb-20 text-center">
       <div class="mb-8">
-        <div class="w-24 h-24 bg-gradient-orange-green rounded-full flex items-center justify-center mx-auto mb-6 pulse-animation">
-          <i data-lucide="settings" class="h-12 w-12 text-white"></i>
-        </div>
+        <span class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-green-100 text-blue-900 border border-orange-200 mb-6">
+          <i data-lucide="rocket" class="h-3 w-3 mr-1"></i>
+          New Platform Launch This September- Join Our Community
+        </span>
       </div>
       
-      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-        <span class="text-gradient">AUTN Platform Portal</span>
+      <h1 class="hero-title text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+        Trade Across Africa with 
+        <span class="text-gradient animate-gradient">Ubuntu Spirit</span>
       </h1>
       
-      <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-200 mb-12">
-        <div class="flex items-center justify-center mb-6">
-          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-            <i data-lucide="construction" class="h-8 w-8 text-orange-600"></i>
-          </div>
-        </div>
-        
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">🔧 Under Construction</h2>
-        <p class="text-xl text-gray-600 mb-6">Coming Soon ⏳</p>
-        
-        <div class="space-y-4 text-lg text-gray-700">
-          <p>
-            Get ready to enter the realms of <strong class="text-orange-600">AI-Powered Market Trade Intelligence</strong> with us.
-          </p>
-          <p>
-            We're not leaving anyone behind on the Ubuntu way journey - 
-            <em class="text-green-600 font-semibold">"I am, because WE are"</em> ❗
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+      <p class="hero-subtitle text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
+        We're building the future of African trade through AI-powered insights and WhatsApp integration. 
+        <span class="font-semibold text-orange-600">Join us as a founding member</span> and help shape the platform.
+      </p>
 
-  <!-- Coming Features -->
-  <section class="py-16 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">What's Coming</h2>
-      
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-orange-100 text-center">
-          <div class="w-16 h-16 bg-custom-orange rounded-full flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="brain" class="h-8 w-8 text-orange-600"></i>
+      <!-- Honest Status Banner -->
+      <div class="max-w-3xl mx-auto mb-12">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div class="flex items-start space-x-3">
+            <i data-lucide="info" class="h-5 w-5 text-blue-600 mt-0.5"></i>
+            <div class="text-left">
+              <h3 class="font-semibold text-blue-900 mb-2">🌱 Early Stage Platform</h3>
+              <p class="text-blue-800 text-sm leading-relaxed">
+                We're a startup on a mission to transform African trade. Our platform is in active development, 
+                and we're looking for pioneering businesses to join us in building something revolutionary. 
+                <strong>Your feedback will directly shape our features.</strong>
+              </p>
+            </div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">AI Trade Intelligence</h3>
-          <p class="text-gray-600">
-            Advanced analytics and insights powered by ethical AI to help you make smarter trading decisions.
-          </p>
-        </div>
-        
-        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-green-100 text-center">
-          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="smartphone" class="h-8 w-8 text-green-600"></i>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Mobile-First Dashboard</h3>
-          <p class="text-gray-600">
-            Access your trade data, insights, and opportunities from any device, anywhere in Africa.
-          </p>
-        </div>
-        
-        <div class="construction-card bg-white p-8 rounded-xl shadow-sm border border-blue-100 text-center">
-          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="users" class="h-8 w-8 text-blue-600"></i>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Community Network</h3>
-          <p class="text-gray-600">
-            Connect with traders across Africa, share insights, and grow together through Ubuntu.
-          </p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Early Access -->
-  <section class="py-16 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="bg-gradient-orange-green p-8 md:p-12 rounded-2xl text-white text-center">
-        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <i data-lucide="key" class="h-10 w-10 text-white"></i>
+      <!-- Onboarding Alert -->
+      <div id="onboarding-alert" class="hidden max-w-2xl mx-auto mb-8">
+        <div class="flex items-center p-4 rounded-lg bg-orange-50 border border-orange-200">
+          <i data-lucide="alert-circle" class="h-4 w-4 text-orange-600 mr-3"></i>
+          <p class="text-orange-800">Welcome back! Complete your business onboarding to unlock full platform features.</p>
         </div>
-        <h2 class="text-3xl font-bold mb-4">Get Early Access</h2>
-        <p class="text-xl opacity-90 mb-6">
-          Be among the first to experience the future of African trade intelligence
-        </p>
-        <p class="text-lg opacity-90 mb-8">
-          <strong>Note:</strong> Early access can be requested via email
-        </p>
-        <a href="mailto:info@afroubuntutrade.co.uk?subject=Early Access Request" 
-           class="inline-flex items-center space-x-2 bg-white bg-opacity-20 text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all">
-        <i data-lucide="mail" class="h-5 w-5"></i>
-        <span class="text-orange-600 text-shadow">Request Early Access</span>
-      </a>
       </div>
-    </div>
-  </section>
 
-  <!-- Timeline -->
-  <section class="py-16 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Development Timeline</h2>
-      
-      <div class="space-y-8">
-        <div class="flex items-center space-x-6">
-          <div class="w-12 h-12 bg-custom-orange rounded-full flex items-center justify-center flex-shrink-0">
-            <i data-lucide="check" class="h-6 w-6 text-orange-600"></i>
+      <!-- Auth CTA Section -->
+      <div class="mb-16">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+          <button onclick="handleGetStarted()" class="flex items-center space-x-2 text-lg px-10 py-6 btn-gradient text-white rounded-lg shadow-xl hover:shadow-2xl">
+            <i data-lucide="user-plus" class="h-5 w-5"></i>
+            <span>Create Free Account</span>
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </button>
+
+          <div class="flex items-center space-x-3">
+            <div class="h-px w-8 bg-gray-300"></div>
+            <span class="text-gray-500 text-sm">or</span>
+            <div class="h-px w-8 bg-gray-300"></div>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
-            <h3 class="font-bold text-gray-900 mb-2">Phase 1: Foundation (Completed)</h3>
-            <p class="text-gray-600">Core AI models and mobile infrastructure development</p>
+
+          <button onclick="handleSignIn()" class="flex items-center space-x-2 text-lg px-10 py-6 border-2 border-orange-200 hover:bg-orange-50 hover:border-orange-300 rounded-lg transition-all duration-200 bg-transparent">
+            <i data-lucide="log-in" class="h-5 w-5"></i>
+            <span>Sign In to Account</span>
+          </button>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="handleWhatsAppStart()" class="flex items-center space-x-2 text-lg px-8 py-4 bg-green-50 border border-green-200 hover:bg-green-100 hover:border-green-300 text-green-700 rounded-lg transition-colors">
+            <i data-lucide="smartphone" class="h-5 w-5"></i>
+            <span>Start With WhatsApp</span>
+          </button>
+
+          <div class="flex items-center text-sm text-gray-600">
+            <i data-lucide="heart" class="h-4 w-4 mr-1 text-red-500"></i>
+            Built with Ubuntu Philosophy
           </div>
         </div>
-        
-        <div class="flex items-center space-x-6">
-          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <i data-lucide="clock" class="h-6 w-6 text-green-600"></i>
-          </div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
-            <h3 class="font-bold text-gray-900 mb-2">Phase 2: Portal Launch (Q4 2025)</h3>
-            <p class="text-gray-600">Beta release of the trader portal with core features</p>
-          </div>
+      </div>
+
+      <!-- Honest Progress Indicators -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-yellow-600 mb-1">Q4 2025</div>
+          <div class="text-sm text-gray-600">Beta Launch</div>
         </div>
-        
-        <div class="flex items-center space-x-6">
-          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <i data-lucide="calendar" class="h-6 w-6 text-blue-600"></i>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-green-600 mb-1">5+</div>
+          <div class="text-sm text-gray-600">Target Countries</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600 mb-1">$1.2T</div>
+          <div class="text-sm text-gray-600">Market Opportunity</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-purple-600 mb-1">100%</div>
+          <div class="text-sm text-gray-600">Ubuntu Driven</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onboarding Progress Section -->
+    <div id="onboarding-progress" class="hidden mb-20">
+      <div class="max-w-5xl mx-auto shadow-xl border-0 bg-gradient-to-r from-orange-50 to-green-50 rounded-lg">
+        <div class="text-center pb-6 pt-8 px-8">
+          <h2 class="flex items-center justify-center text-2xl font-bold mb-2">
+            <i data-lucide="check-circle" class="h-6 w-6 mr-3 text-green-600"></i>
+            Complete Your Pioneer Setup
+          </h2>
+          <p class="text-gray-600">Help us build the platform by sharing your business needs</p>
+        </div>
+        <div class="px-8 pb-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="text-center group">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-gray-100 group-hover:bg-gray-200 transition-all duration-200">
+                <i data-lucide="building-2" class="h-8 w-8 text-gray-400"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Business Profile</h3>
+              <p class="text-sm text-gray-600 mb-3">Tell us about your business and trading needs</p>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Required</span>
+            </div>
+
+            <div class="text-center group">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-gray-100 group-hover:bg-gray-200 transition-all duration-200">
+                <i data-lucide="file-text" class="h-8 w-8 text-gray-400"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Business Verification</h3>
+              <p class="text-sm text-gray-600 mb-3">Help us understand your trading patterns</p>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Required</span>
+            </div>
+
+            <div class="text-center group">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-gray-100 group-hover:bg-gray-200 transition-all duration-200">
+                <i data-lucide="bar-chart-3" class="h-8 w-8 text-gray-400"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Product Samples</h3>
+              <p class="text-sm text-gray-600 mb-3">Optional: Help train our AI with your inventory</p>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-gray-300 text-gray-700">Optional</span>
+            </div>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
-            <h3 class="font-bold text-gray-900 mb-2">Phase 3: Full Platform (Q1-2 2026)</h3>
-            <p class="text-gray-600">Complete platform with AI insights and community features</p>
+
+          <div class="text-center">
+            <button onclick="continueSetup()" class="flex items-center space-x-2 mx-auto px-8 py-4 text-lg btn-gradient text-white rounded-lg shadow-lg">
+              <span>Join as Pioneer</span>
+              <i data-lucide="arrow-right" class="h-5 w-5"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
-  </section>
+
+    <!-- Vision & Features -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Vision for African Trade</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Built on Ubuntu philosophy - "I am because we are" - we're creating tools to unlock Africa's $1.2T informal trade economy
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- WhatsApp Integration -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="smartphone" class="h-6 w-6 text-green-600"></i>
+                </div>
+                WhatsApp-First Platform
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              Trade where you already communicate. Send photos, get AI insights, and discover opportunities through WhatsApp.
+            </p>
+            <div class="bg-green-50 p-3 rounded-lg">
+              <p class="text-sm text-green-800">
+                <strong>Coming Soon:</strong> Automated inventory analysis and trade matching
+              </p>
+            </div>
+          </div>
+          
+          <!-- AI-Powered Insights -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="brain" class="h-6 w-6 text-purple-600"></i>
+                </div>
+                Ethical AI Analytics
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              Our AI will help assess inventory quality, estimate prices, and identify market opportunities across Africa.
+            </p>
+            <div class="bg-purple-50 p-3 rounded-lg">
+              <p class="text-sm text-purple-800">
+                <strong>In Development:</strong> Computer vision for product analysis
+              </p>
+            </div>
+          </div>
+          
+          <!-- Ubuntu Community -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-custom-orange rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="heart" class="h-6 w-6 text-orange-600"></i>
+                </div>
+                Ubuntu Community
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              Join a community built on "I am because we are" - where every trader's success contributes to collective prosperity.
+            </p>
+            <div class="bg-orange-50 p-3 rounded-lg">
+              <p class="text-sm text-orange-800">
+                <strong>Vision:</strong> Collaborative trading network across Africa
+              </p>
+            </div>
+          </div>
+          
+          <!-- Trust & Verification -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="shield" class="h-6 w-6 text-blue-600"></i>
+                </div>
+                Trust Building
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              We're developing verification systems to help traders build trust and credibility across borders.
+            </p>
+            <div class="bg-blue-50 p-3 rounded-lg">
+              <p class="text-sm text-blue-800">
+                <strong>Planned:</strong> Business verification and rating systems
+              </p>
+            </div>
+          </div>
+          
+          <!-- Cross-Border Trade -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="globe" class="h-6 w-6 text-green-600"></i>
+                </div>
+                Pan-African Vision
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              Starting with key markets, we aim to connect traders across the entire African continent.
+            </p>
+            <div class="bg-green-50 p-3 rounded-lg">
+              <p class="text-sm text-green-800">
+                <strong>Roadmap:</strong> Zimbabwe → Zambia → Malawi → South Africa → Nigeria → Kenya → Ghana → Continent-wide
+              </p>
+            </div>
+          </div>
+          
+          <!-- Data & Analytics -->
+          <div class="feature-card card-hover bg-white rounded-lg shadow-lg border-0 p-6">
+            <div class="mb-4">
+              <h3 class="flex items-center text-xl font-bold mb-4">
+                <div class="feature-icon w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                  <i data-lucide="trending-up" class="h-6 w-6 text-red-600"></i>
+                </div>
+                Market Intelligence
+              </h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+              Transform informal trade data into actionable insights with Power BI integration and custom analytics.
+            </p>
+            <div class="bg-red-50 p-3 rounded-lg">
+              <p class="text-sm text-red-800">
+                <strong>Goal:</strong> Make the invisible trade economy visible
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Development Timeline -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Our Development Journey</h2>
+        
+        <div class="space-y-8">
+          <div class="flex items-center space-x-6">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="h-6 w-6 text-green-600"></i>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+              <h3 class="font-bold text-gray-900 mb-2">Phase 1: Foundation (Current)</h3>
+              <p class="text-gray-600">Building core infrastructure, AI models, and WhatsApp integration</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-6">
+            <div class="w-12 h-12 bg-custom-orange rounded-full flex items-center justify-center flex-shrink-0">
+              <i data-lucide="clock" class="h-6 w-6 text-orange-600"></i>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+              <h3 class="font-bold text-gray-900 mb-2">Phase 2: Beta Launch (Q2 2025 - Q1 2026)</h3>
+              <p class="text-gray-600">Limited beta with pioneer businesses in roadmap countries</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-6">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <i data-lucide="calendar" class="h-6 w-6 text-blue-600"></i>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1">
+              <h3 class="font-bold text-gray-900 mb-2">Phase 3: Expansion (Q1 2026)</h3>
+              <p class="text-gray-600">Scale across West and East Africa with full feature set</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Founder CTA Section -->
+    <div class="mb-20">
+      <div class="bg-gradient-to-r from-orange-600 via-red-500 to-green-600 rounded-lg shadow-2xl">
+        <div class="text-center py-16 px-8">
+          <h3 class="text-4xl md:text-5xl font-bold text-white mb-6">Join Our Pioneer Community</h3>
+          <p class="text-xl text-orange-100 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Be part of building the future of African trade. Your input will directly shape our platform and help unlock 
+            the continent's $1.2T informal trade economy.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <button onclick="handleGetStarted()" class="flex items-right space-x-3 text-xl px-12 py-6 bg-white text-orange-600 hover:bg-gray-100 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+              <i data-lucide="rocket" class="h-6 w-6"></i>
+              <span>Become a Pioneer</span>
+              <i data-lucide="chevron-right" class="h-6 w-6"></i>
+            </button>
+
+            <button onclick="handleWhatsAppStart()" class="flex items-center space-x-3 text-xl px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-orange-600 rounded-lg transition-all duration-200 bg-transparent">
+              <i data-lucide="message-square" class="h-6 w-6"></i>
+              <span>Chat with Founders</span>
+            </button>
+          </div>
+
+          <div class="mt-10 pt-8 border-t border-orange-400">
+            <p class="text-orange-100 text-lg">
+              <i data-lucide="heart" class="h-5 w-5 inline mr-2"></i>
+              Built with Ubuntu philosophy: "I am, because we are"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="bg-gray-900 text-white">
@@ -410,9 +737,207 @@
     </div>
   </div>
 
+ 
   <script>
     // Initialize Lucide icons
     lucide.createIcons();
+
+    // Global state
+    let onboardingStatus = null;
+    let user = null;
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        checkAuthAndOnboarding();
+      }, 1500);
+    });
+
+    // Check authentication and onboarding status
+    async function checkAuthAndOnboarding() {
+      try {
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+          return;
+        }
+
+        // Show dashboard button if logged in
+        document.getElementById('auth-buttons').style.display = 'none';
+        document.getElementById('dashboard-button').classList.remove('hidden');
+        document.getElementById('dashboard-button').style.display = 'flex';
+
+        // Check onboarding status
+        const response = await fetch('/api/business/onboard', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          onboardingStatus = data;
+
+          if (data.onboarding_completed && data.businesses.length > 0) {
+            window.location.href = '/dashboard';
+            return;
+          }
+
+          // Show onboarding progress
+          if (!data.onboarding_completed) {
+            document.getElementById('onboarding-alert').classList.remove('hidden');
+            document.getElementById('onboarding-progress').classList.remove('hidden');
+            updateOnboardingProgress(data.requirements);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+      }
+    }
+
+    // Update onboarding progress indicators
+    function updateOnboardingProgress(requirements) {
+      const steps = [
+        { key: 'businessProfile', icon: 'building-2' },
+        { key: 'contractOrSales', icon: 'file-text' },
+        { key: 'productInventory', icon: 'bar-chart-3' }
+      ];
+
+      steps.forEach((step, index) => {
+        const container = document.querySelectorAll('.group')[index];
+        const iconContainer = container.querySelector('.w-16');
+        const badge = container.querySelector('span');
+
+        if (requirements[step.key]) {
+          iconContainer.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100 group-hover:bg-green-200 transition-all duration-200';
+          iconContainer.querySelector('i').className = `h-8 w-8 text-green-600`;
+          badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
+          badge.textContent = 'Completed';
+        }
+      });
+    }
+
+    // Navigation functions
+    function handleGetStarted() {
+      window.location.href = 'register.html';
+    }
+
+    function handleSignIn() {
+      window.location.href = 'login.html';
+    }
+
+    function goToDashboard() {
+      window.location.href = '/dashboard';
+    }
+
+    function continueSetup() {
+      window.location.href = '/onboard';
+    }
+
+    function handleWhatsAppStart() {
+      window.open(
+        'https://wa.me/your-whatsapp-number?text=Hello%20AfroUbuntu%20Trade%20Founders%20-%20I%20want%20to%20learn%20more%20about%20becoming%20a%20pioneer%20member',
+        '_blank'
+      );
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add scroll effects
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 100) {
+        nav.classList.add('shadow-lg');
+      } else {
+        nav.classList.remove('shadow-lg');
+      }
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe feature cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.feature-card');
+      cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+      });
+    });
+
+    // Add keyboard navigation support
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const focused = document.activeElement;
+        if (focused.tagName === 'BUTTON') {
+          focused.click();
+        }
+      }
+    });
+
+    // Error handling for failed requests
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+      // Could show user-friendly error message here
+    });
+
+    // Add loading states to buttons
+    function addLoadingState(button) {
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<div class="loading-spinner mr-2"></div>Loading...';
+      button.disabled = true;
+      
+      return function removeLoadingState() {
+        button.innerHTML = originalContent;
+        button.disabled = false;
+        lucide.createIcons();
+      };
+    }
+
+    // Enhanced button click handlers with loading states
+    const originalHandleGetStarted = handleGetStarted;
+    handleGetStarted = function() {
+      const button = event.target.closest('button');
+      const removeLoading = addLoadingState(button);
+      setTimeout(() => {
+        removeLoading();
+        originalHandleGetStarted();
+      }, 500);
+    };
+
+    const originalHandleSignIn = handleSignIn;
+    handleSignIn = function() {
+      const button = event.target.closest('button');
+      const removeLoading = addLoadingState(button);
+      setTimeout(() => {
+        removeLoading();
+        originalHandleSignIn();
+      }, 500);
+    };
   </script>
 </body>
 </html>
