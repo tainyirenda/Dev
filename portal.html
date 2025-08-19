@@ -738,206 +738,202 @@
   </div>
 
  
-  <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
+  <script type="module">
+  // ========= CONFIG =========
+  // Your Vercel app & API live on the same subdomain:
+  const APP_BASE = "https://api.afroubuntutrade.co.uk";
+  const API_BASE = APP_BASE; // If you ever split UI/API, set API_BASE differently.
 
-    // Global state
-    let onboardingStatus = null;
-    let user = null;
+  // ========= UTIL =========
+  function getToken() {
+    // If your login/signup pages store a JWT, keep it in localStorage under "jwt"
+    // (Matches the earlier API examples I gave you)
+    return localStorage.getItem("jwt");
+  }
 
-    // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
-        checkAuthAndOnboarding();
-      }, 1500);
+  async function api(path, { method = "GET", body } = {}) {
+    const headers = { "Content-Type": "application/json" };
+    const token = getToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+      // mode: "cors" // not needed if CORS is already enabled server-side
     });
+    const text = await res.text();
+    let json; try { json = text ? JSON.parse(text) : null; } catch { json = { raw: text }; }
+    if (!res.ok) throw Object.assign(new Error(json?.error || res.statusText), { status: res.status, data: json });
+    return json;
+  }
 
-    // Check authentication and onboarding status
-    async function checkAuthAndOnboarding() {
-      try {
-        const token = localStorage.getItem('auth_token');
-        if (!token) {
-          return;
-        }
+  // ========= EXISTING UI INIT (unchanged) =========
+  lucide.createIcons();
 
-        // Show dashboard button if logged in
-        document.getElementById('auth-buttons').style.display = 'none';
-        document.getElementById('dashboard-button').classList.remove('hidden');
-        document.getElementById('dashboard-button').style.display = 'flex';
+  let onboardingStatus = null;
+  let user = null;
 
-        // Check onboarding status
-        const response = await fetch('/api/business/onboard', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'none';
+      checkAuthAndOnboarding();
+    }, 900);
+  });
 
-        if (response.ok) {
-          const data = await response.json();
-          onboardingStatus = data;
+  // ========= UPDATED AUTH / ONBOARDING CHECK =========
+  async function checkAuthAndOnboarding() {
+    try {
+      const token = getToken();
+      if (!token) return;
 
-          if (data.onboarding_completed && data.businesses.length > 0) {
-            window.location.href = '/dashboard';
-            return;
-          }
+      // If a token exists, try to fetch profile from your Vercel API
+      const me = await api("/api/auth/me").catch(() => null);
 
-          // Show onboarding progress
-          if (!data.onboarding_completed) {
-            document.getElementById('onboarding-alert').classList.remove('hidden');
-            document.getElementById('onboarding-progress').classList.remove('hidden');
-            updateOnboardingProgress(data.requirements);
-          }
-        }
-      } catch (error) {
-        console.error('Error checking onboarding status:', error);
+      if (me && me.user_id) {
+        // Hide "Sign In / Get Started", show "Dashboard"
+        const authBtns = document.getElementById('auth-buttons');
+        const dashBtn = document.getElementById('dashboard-button');
+        if (authBtns) authBtns.style.display = 'none';
+        if (dashBtn) { dashBtn.classList.remove('hidden'); dashBtn.style.display = 'flex'; }
+
+        // OPTIONAL: If you later add an onboarding endpoint, call it here.
+        // const ob = await api("/api/business/onboard").catch(() => null);
+        // if (ob?.onboarding_completed && ob?.businesses?.length) {
+        //   window.location.href = `${APP_BASE}/dashboard`;
+        //   return;
+        // }
+        // if (!ob?.onboarding_completed) {
+        //   document.getElementById('onboarding-alert')?.classList.remove('hidden');
+        //   document.getElementById('onboarding-progress')?.classList.remove('hidden');
+        //   updateOnboardingProgress(ob?.requirements || {});
+        // }
       }
+    } catch (err) {
+      console.error("Auth check failed:", err);
     }
+  }
 
-    // Update onboarding progress indicators
-    function updateOnboardingProgress(requirements) {
-      const steps = [
-        { key: 'businessProfile', icon: 'building-2' },
-        { key: 'contractOrSales', icon: 'file-text' },
-        { key: 'productInventory', icon: 'bar-chart-3' }
-      ];
+  // ========= KEEP YOUR EXISTING ONBOARDING UI HELPERS =========
+  function updateOnboardingProgress(requirements) {
+    const steps = [
+      { key: 'businessProfile', icon: 'building-2' },
+      { key: 'contractOrSales', icon: 'file-text' },
+      { key: 'productInventory', icon: 'bar-chart-3' }
+    ];
 
-      steps.forEach((step, index) => {
-        const container = document.querySelectorAll('.group')[index];
-        const iconContainer = container.querySelector('.w-16');
-        const badge = container.querySelector('span');
+    steps.forEach((step, index) => {
+      const container = document.querySelectorAll('.group')[index];
+      if (!container) return;
+      const iconContainer = container.querySelector('.w-16');
+      const badge = container.querySelector('span');
+      if (!iconContainer || !badge) return;
 
-        if (requirements[step.key]) {
-          iconContainer.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100 group-hover:bg-green-200 transition-all duration-200';
-          iconContainer.querySelector('i').className = `h-8 w-8 text-green-600`;
-          badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
-          badge.textContent = 'Completed';
-        }
-      });
-    }
-
-    // Navigation functions
-    function handleGetStarted() {
-      window.location.href = 'register.html';
-    }
-
-    function handleSignIn() {
-      window.location.href = 'login.html';
-    }
-
-    function goToDashboard() {
-      window.location.href = '/dashboard';
-    }
-
-    function continueSetup() {
-      window.location.href = '/onboard';
-    }
-
-    function handleWhatsAppStart() {
-      window.open(
-        'https://wa.me/your-whatsapp-number?text=Hello%20AfroUbuntu%20Trade%20Founders%20-%20I%20want%20to%20learn%20more%20about%20becoming%20a%20pioneer%20member',
-        '_blank'
-      );
-    }
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-
-    // Add scroll effects
-    window.addEventListener('scroll', function() {
-      const nav = document.querySelector('nav');
-      if (window.scrollY > 100) {
-        nav.classList.add('shadow-lg');
-      } else {
-        nav.classList.remove('shadow-lg');
+      if (requirements[step.key]) {
+        iconContainer.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100 group-hover:bg-green-200 transition-all duration-200';
+        const icon = iconContainer.querySelector('i');
+        if (icon) icon.className = 'h-8 w-8 text-green-600';
+        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
+        badge.textContent = 'Completed';
       }
     });
+  }
 
-    // Add intersection observer for animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
+  // ========= OPTION A (SIMPLE): SEND USERS TO VERCEL APP =========
+  window.handleGetStarted = function() {
+    // If you have specific routes in the Vercel app like /signup, change this to `${APP_BASE}/signup`
+    window.location.href = APP_BASE;
+  };
 
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
+  window.handleSignIn = function() {
+    // If you have a dedicated /login route in your Vercel app, use `${APP_BASE}/login`
+    window.location.href = APP_BASE;
+  };
 
-    // Observe feature cards
-    document.addEventListener('DOMContentLoaded', function() {
-      const cards = document.querySelectorAll('.feature-card');
-      cards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-      });
-    });
+  window.goToDashboard = function() {
+    window.location.href = `${APP_BASE}/dashboard`;
+  };
 
-    // Add keyboard navigation support
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        const focused = document.activeElement;
-        if (focused.tagName === 'BUTTON') {
-          focused.click();
-        }
+  window.continueSetup = function() {
+    // If your onboarding flow is part of the Vercel app:
+    window.location.href = `${APP_BASE}/onboard`;
+  };
+
+  // ========= KEEP YOUR EXISTING WHATSAPP CTA =========
+  window.handleWhatsAppStart = function() {
+    window.open(
+      'https://wa.me/your-whatsapp-number?text=Hello%20AfroUbuntu%20Trade%20Founders%20-%20I%20want%20to%20learn%20more%20about%20becoming%20a%20pioneer%20member',
+      '_blank',
+      'noopener'
+    );
+  };
+
+  // ========= MISC: smooth scroll + nav shadow (unchanged) =========
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
+  });
 
-    // Error handling for failed requests
-    window.addEventListener('unhandledrejection', function(event) {
-      console.error('Unhandled promise rejection:', event.reason);
-      // Could show user-friendly error message here
+  window.addEventListener('scroll', function() {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 100) nav.classList.add('shadow-lg'); else nav.classList.remove('shadow-lg');
+  });
+
+  const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } });
+  }, observerOptions);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.feature-card');
+    cards.forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
     });
+  });
 
-    // Add loading states to buttons
-    function addLoadingState(button) {
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<div class="loading-spinner mr-2"></div>Loading...';
-      button.disabled = true;
-      
-      return function removeLoadingState() {
-        button.innerHTML = originalContent;
-        button.disabled = false;
-        lucide.createIcons();
-      };
+  document.addEventListener('keydown', function(e) {
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.tagName === 'BUTTON') {
+      document.activeElement.click();
     }
+  });
 
-    // Enhanced button click handlers with loading states
-    const originalHandleGetStarted = handleGetStarted;
-    handleGetStarted = function() {
-      const button = event.target.closest('button');
-      const removeLoading = addLoadingState(button);
-      setTimeout(() => {
-        removeLoading();
-        originalHandleGetStarted();
-      }, 500);
-    };
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+  });
 
-    const originalHandleSignIn = handleSignIn;
-    handleSignIn = function() {
-      const button = event.target.closest('button');
-      const removeLoading = addLoadingState(button);
-      setTimeout(() => {
-        removeLoading();
-        originalHandleSignIn();
-      }, 500);
+  function addLoadingState(button) {
+    if (!button) return () => {};
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<div class="loading-spinner mr-2"></div>Loading...';
+    button.disabled = true;
+    return function removeLoadingState() {
+      button.innerHTML = originalContent;
+      button.disabled = false;
+      lucide.createIcons();
     };
-  </script>
+  }
+
+  const _origGetStarted = window.handleGetStarted;
+  window.handleGetStarted = function(event) {
+    const btn = event?.target?.closest('button');
+    const rm = addLoadingState(btn);
+    setTimeout(() => { rm(); _origGetStarted(); }, 400);
+  };
+
+  const _origSignIn = window.handleSignIn;
+  window.handleSignIn = function(event) {
+    const btn = event?.target?.closest('button');
+    const rm = addLoadingState(btn);
+    setTimeout(() => { rm(); _origSignIn(); }, 400);
+  };
+</script>
+
 </body>
 </html>
