@@ -70,6 +70,10 @@
       background: linear-gradient(135deg, var(--orange-50), #ffffff, var(--green-50));
     }
     
+    .bg-custom-orange {
+      background-color: var(--orange-600);
+    }
+    
     .text-gradient {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
       -webkit-background-clip: text;
@@ -86,7 +90,7 @@
     }
   </style>
 </head>
-<div id=google_translate_element></div>
+
 <body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
   <!-- Header -->
   <header class="bg-gradient-orange-green text-white">
@@ -96,311 +100,580 @@
       </div>
       <h1 class="text-4xl md:text-5xl font-bold mb-4">Ethical AI & Data Use Policy</h1>
       <p class="text-xl opacity-90">AI that empowers, respects, and builds trust</p>
-      <p class="text-lg opacity-75 mt-2">Version 1.0 — July 2025</p>
+      <p class="text-lg opacity-75 mt-2">August 2025 - Version 2.0</p>
     </div>
   </header>
 
   <!-- Main Content -->
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <!-- Purpose -->
+    
+    <!-- Purpose & Governance -->
     <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <div class="flex items-center space-x-3 mb-6">
         <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
           <i data-lucide="target" class="h-6 w-6 text-orange-600"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">Purpose of This Policy</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Purpose & AI Governance</h2>
       </div>
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
+      <p class="text-lg text-gray-700 leading-relaxed mb-6">
         Afro Ubuntu TradeNet is committed to building AI systems that empower informal retailers, respect user rights, 
-        and build trust across African trade ecosystems.
+        and build trust across African trade ecosystems through ethical, transparent, and accountable AI practices.
       </p>
-      <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-        <p class="text-orange-800">
-          This policy outlines how we apply ethical principles in the development and deployment of our AI-powered trade systems, 
-          including computer vision, NLP, mobile data analysis, and credit scoring.
-        </p>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+          <h4 class="font-semibold text-orange-800 mb-3">AI Governance Structure</h4>
+          <ul class="text-orange-700 text-sm space-y-2">
+            <li>• <strong>AI Ethics Committee:</strong> Independent oversight board</li>
+            <li>• <strong>Regular Reviews:</strong> Quarterly ethics assessments</li>
+            <li>• <strong>External Audits:</strong> Annual third-party AI audits</li>
+            <li>• <strong>Stakeholder Input:</strong> Community feedback integration</li>
+          </ul>
+        </div>
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h4 class="font-semibold text-green-800 mb-3">Policy Scope</h4>
+          <ul class="text-green-700 text-sm space-y-2">
+            <li>• Computer vision for inventory analysis</li>
+            <li>• Natural language processing for communications</li>
+            <li>• Predictive analytics for demand forecasting</li>
+            <li>• Ethical credit scoring algorithms</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- Core Principles -->
+    <!-- AI Ethics Principles -->
     <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <div class="flex items-center space-x-3 mb-6">
         <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
           <i data-lucide="heart" class="h-6 w-6 text-green-600"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">Core Principles</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Core AI Ethics Principles</h2>
       </div>
       
       <div class="space-y-6">
         <!-- Transparency -->
         <div class="border-l-4 border-orange-500 pl-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
+          <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
             <i data-lucide="eye" class="h-5 w-5 text-orange-600 mr-2"></i>
-            Transparency
+            Transparency & Explainability
           </h3>
-          <p class="text-gray-700">
-            We inform users when AI is used and explain decisions clearly. No black boxes - 
-            our AI recommendations come with explanations you can understand.
-          </p>
+          <div class="grid md:grid-cols-2 gap-4 mb-3">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">What We Do</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• Clear AI decision explanations</li>
+                <li>• Model performance metrics published</li>
+                <li>• Algorithm functionality documentation</li>
+                <li>• Regular public AI impact reports</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">KPIs We Track</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• 90% user satisfaction with AI explanations</li>
+                <li>• 100% of AI decisions explainable</li>
+                <li>• Monthly transparency report publication</li>
+                <li>• Zero unexplained automated decisions</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <!-- Consent & Data Sovereignty -->
+        <!-- Fairness -->
         <div class="border-l-4 border-green-500 pl-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
-            <i data-lucide="shield-check" class="h-5 w-5 text-green-600 mr-2"></i>
-            Consent & Data Sovereignty
+          <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+            <i data-lucide="users" class="h-5 w-5 text-green-600 mr-2"></i>
+            Fairness & Non-Discrimination
           </h3>
-          <p class="text-gray-700">
-            All data collection is opt-in. Retailers own their data and control how it's used. 
-            We believe in data sovereignty - your data, your choice.
-          </p>
+          <div class="grid md:grid-cols-2 gap-4 mb-3">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Bias Prevention</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• Diverse training datasets</li>
+                <li>• Regular bias testing across demographics</li>
+                <li>• Protected characteristics safeguarding</li>
+                <li>• Community input in model development</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Fairness Metrics</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• <5% performance variance by user</li>
+                <li>• Equal accuracy across regions</li>
+                <li>• 95% community acceptance rate</li>
+                <li>• Zero discriminatory outcomes</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <!-- Non-Discrimination -->
+        <!-- Privacy -->
         <div class="border-l-4 border-blue-500 pl-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
-            <i data-lucide="users" class="h-5 w-5 text-blue-600 mr-2"></i>
-            Non-Discrimination
+          <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+            <i data-lucide="shield-check" class="h-5 w-5 text-blue-600 mr-2"></i>
+            Privacy & Data Sovereignty
           </h3>
-          <p class="text-gray-700">
-            We audit our models to prevent bias based on language, literacy, image quality, or location. 
-            Every trader deserves fair treatment regardless of their circumstances.
-          </p>
+          <div class="grid md:grid-cols-2 gap-4 mb-3">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Privacy by Design</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• Differential privacy techniques</li>
+                <li>• Minimal data collection principles</li>
+                <li>• Federated learning where possible</li>
+                <li>• Strong user consent mechanisms</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Privacy KPIs</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• 100% explicit consent for AI processing</li>
+                <li>• <24 hours for consent withdrawal</li>
+                <li>• Zero unauthorised data sharing</li>
+                <li>• 100% GDPR compliance rate</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <!-- Purpose Limitation -->
+        <!-- Accountability -->
         <div class="border-l-4 border-purple-500 pl-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
-            <i data-lucide="lock" class="h-5 w-5 text-purple-600 mr-2"></i>
-            Purpose Limitation
+          <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+            <i data-lucide="user-check" class="h-5 w-5 text-purple-600 mr-2"></i>
+            Accountability & Human Oversight
           </h3>
-          <p class="text-gray-700">
-            Data is used only for stated purposes. Any sharing requires explicit consent. 
-            We don't repurpose your data without your knowledge and agreement.
-          </p>
-        </div>
-
-        <!-- Human Oversight -->
-        <div class="border-l-4 border-red-500 pl-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
-            <i data-lucide="user-check" class="h-5 w-5 text-red-600 mr-2"></i>
-            Human Oversight
-          </h3>
-          <p class="text-gray-700">
-            All AI decisions can be appealed. Critical decisions involve human review. 
-            Technology serves people, not the other way around.
-          </p>
+          <div class="grid md:grid-cols-2 gap-4 mb-3">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Human-in-the-Loop</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• Human review for high-impact decisions</li>
+                <li>• Appeal process for AI decisions</li>
+                <li>• Clear escalation pathways</li>
+                <li>• Regular human oversight training</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Accountability Metrics</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• 100% of appeals processed within 48 hours</li>
+                <li>• 95% user satisfaction with dispute resolution</li>
+                <li>• 100% traceability of AI decisions</li>
+                <li>• Monthly algorithmic accountability audits</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Data Collection -->
+    <!-- AI Impact Measurement -->
     <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <div class="flex items-center space-x-3 mb-6">
         <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-          <i data-lucide="database" class="h-6 w-6 text-blue-600"></i>
+          <i data-lucide="bar-chart" class="h-6 w-6 text-blue-600"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">Data We Collect</h2>
+        <h2 class="text-2xl font-bold text-gray-900">AI Impact Measurement & Reporting</h2>
       </div>
       
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
-          <div class="flex items-center space-x-2 mb-3">
-            <i data-lucide="user" class="h-5 w-5 text-orange-600"></i>
-            <h4 class="font-semibold text-orange-800">Profile Data</h4>
+      <div class="grid md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200 text-center">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="users" class="h-8 w-8 text-orange-600"></i>
           </div>
+          <h4 class="font-semibold text-orange-800 mb-2">Social Impact</h4>
           <ul class="text-orange-700 text-sm space-y-1">
-            <li>• Retailer name and location</li>
-            <li>• Business profile information</li>
-            <li>• Trading preferences</li>
+            <li>• Traders helped gain credit access</li>
+            <li>• Informal businesses digitised</li>
+            <li>• Community economic growth</li>
+            <li>• Gender equity in access</li>
           </ul>
         </div>
         
-        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
-          <div class="flex items-center space-x-2 mb-3">
-            <i data-lucide="camera" class="h-5 w-5 text-green-600"></i>
-            <h4 class="font-semibold text-green-800">Visual Data</h4>
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="trending-up" class="h-8 w-8 text-green-600"></i>
           </div>
+          <h4 class="font-semibold text-green-800 mb-2">Economic Impact</h4>
           <ul class="text-green-700 text-sm space-y-1">
-            <li>• Product images</li>
-            <li>• Inventory photos</li>
-            <li>• Store layout visuals</li>
+            <li>• Revenue growth for users</li>
+            <li>• Cost savings from efficiency</li>
+            <li>• New market opportunities created</li>
+            <li>• Financial inclusion metrics</li>
+          </ul>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="shield" class="h-8 w-8 text-blue-600"></i>
+          </div>
+          <h4 class="font-semibold text-blue-800 mb-2">Ethical Performance</h4>
+          <ul class="text-blue-700 text-sm space-y-1">
+            <li>• Bias detection and mitigation</li>
+            <li>• Privacy protection effectiveness</li>
+            <li>• User trust and satisfaction</li>
+            <li>• Complaint resolution rates</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Quarterly AI Ethics & Impact Reports</h4>
+        <p class="text-gray-700 mb-3">
+          We commit to publishing comprehensive quarterly reports covering:
+        </p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• AI system performance across demographic groups</li>
+            <li>• Bias detection and remediation efforts</li>
+            <li>• User complaints and resolution metrics</li>
+            <li>• Model accuracy and fairness statistics</li>
+          </ul>
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• Economic impact on informal traders</li>
+            <li>• Community benefit measurement</li>
+            <li>• Privacy protection effectiveness</li>
+            <li>• Stakeholder feedback integration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Collection & Processing -->
+    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+          <i data-lucide="database" class="h-6 w-6 text-purple-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Ethical Data Collection & AI Processing</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <!-- Data Minimization -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="filter" class="h-5 w-5 text-orange-600 mr-2"></i>
+            Data Minimization & Purpose Limitation
+          </h3>
+          <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <h5 class="font-semibold text-orange-800 mb-2">What We Collect</h5>
+                <ul class="text-orange-700 text-sm space-y-1">
+                  <li>• Only data necessary for stated AI functions</li>
+                  <li>• Explicit consent for each data type</li>
+                  <li>• Regular data audits for necessity</li>
+                  <li>• Automatic data expiration policies</li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-orange-800 mb-2">Processing Limitations</h5>
+                <ul class="text-orange-700 text-sm space-y-1">
+                  <li>• Data used only for consented purposes</li>
+                  <li>• No secondary use without new consent</li>
+                  <li>• Clear boundaries on AI model training</li>
+                  <li>• User control over processing scope</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Training Ethics -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="brain" class="h-5 w-5 text-green-600 mr-2"></i>
+            Ethical Model Training & Validation
+          </h3>
+          <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <h5 class="font-semibold text-green-800 mb-2">Training Practices</h5>
+                <ul class="text-green-700 text-sm space-y-1">
+                  <li>• Diverse, representative datasets</li>
+                  <li>• Continuous bias monitoring during training</li>
+                  <li>• Federated learning for privacy protection</li>
+                  <li>• Community validation of training data</li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-green-800 mb-2">Model Validation</h5>
+                <ul class="text-green-700 text-sm space-y-1">
+                  <li>• Multi-demographic testing protocols</li>
+                  <li>• External bias audits before deployment</li>
+                  <li>• Continuous monitoring in production</li>
+                  <li>• Community feedback integration loops</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Decision Rights -->
+    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+          <i data-lucide="gavel" class="h-6 w-6 text-indigo-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">AI Decision Rights & Appeal Process</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4">Your AI Rights</h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="info" class="h-5 w-5 text-indigo-600 mt-1"></i>
+              <div>
+                <h5 class="font-semibold text-gray-800">Right to Explanation</h5>
+                <p class="text-gray-600 text-sm">Understand how AI decisions affecting you are made</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i data-lucide="user-check" class="h-5 w-5 text-indigo-600 mt-1"></i>
+              <div>
+                <h5 class="font-semibold text-gray-800">Human Review</h5>
+                <p class="text-gray-600 text-sm">Request human review of any AI decision</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i data-lucide="x-circle" class="h-5 w-5 text-indigo-600 mt-1"></i>
+              <div>
+                <h5 class="font-semibold text-gray-800">Opt-Out Rights</h5>
+                <p class="text-gray-600 text-sm">Choose non-AI alternatives for critical services</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4">Appeal Process</h3>
+          <div class="space-y-3">
+            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                <span class="font-semibold text-indigo-800">Submit Appeal</span>
+              </div>
+              <p class="text-indigo-700 text-sm">Via platform or email with decision reference</p>
+            </div>
+            
+            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                <span class="font-semibold text-indigo-800">Human Review</span>
+              </div>
+              <p class="text-indigo-700 text-sm">Expert review within 48 hours</p>
+            </div>
+            
+            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                <span class="font-semibold text-indigo-800">Resolution</span>
+              </div>
+              <p class="text-indigo-700 text-sm">Decision explanation and any corrections made</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Algorithmic Auditing -->
+    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+          <i data-lucide="search" class="h-6 w-6 text-yellow-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Algorithmic Auditing & Continuous Monitoring</h2>
+      </div>
+      
+      <div class="space-y-6">
+        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+          <h3 class="font-semibold text-yellow-800 mb-4">Regular Auditing Schedule</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Internal Audits</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• <strong>Monthly:</strong> Bias detection across all models</li>
+                <li>• <strong>Quarterly:</strong> Comprehensive fairness assessment</li>
+                <li>• <strong>Annually:</strong> Full algorithmic impact review</li>
+                <li>• <strong>Continuous:</strong> Real-time performance monitoring</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">External Audits</h5>
+              <ul class="text-gray-700 text-sm space-y-1">
+                <li>• <strong>Annual:</strong> Third-party AI ethics audit</li>
+                <li>• <strong>Bi-annual:</strong> Community impact assessment</li>
+                <li>• <strong>Pre-deployment:</strong> Model fairness validation</li>
+                <li>• <strong>Post-incident:</strong> Independent investigation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h3 class="font-semibold text-green-800 mb-4">Continuous Monitoring KPIs</h3>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Performance Metrics</h5>
+              <ul class="text-gray-700 text-xs space-y-1">
+                <li>• Model accuracy: >95%</li>
+                <li>• Response time: <2 seconds</li>
+                <li>• Uptime: >99.9%</li>
+                <li>• Error rate: <0.1%</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Fairness Metrics</h5>
+              <ul class="text-gray-700 text-xs space-y-1">
+                <li>• Demographic parity: >90%</li>
+                <li>• Equal opportunity: >95%</li>
+                <li>• Calibration: <5% variance</li>
+                <li>• Individual fairness: >98%</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Trust Metrics</h5>
+              <ul class="text-gray-700 text-xs space-y-1">
+                <li>• User satisfaction: >90%</li>
+                <li>• Explanation clarity: >85%</li>
+                <li>• Appeal success: <5%</li>
+                <li>• Community trust: >80%</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Engagement -->
+    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+          <i data-lucide="users" class="h-6 w-6 text-green-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Community Engagement & Participatory AI</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+          <h3 class="font-semibold text-green-800 mb-4">Community Advisory Board</h3>
+          <ul class="text-green-700 text-sm space-y-2">
+            <li>• <strong>Representation:</strong> Traders from all 6 launch countries</li>
+            <li>• <strong>Meeting Frequency:</strong> Monthly virtual sessions</li>
+            <li>• <strong>Decision Power:</strong> Veto rights on AI model changes</li>
+            <li>• <strong>Compensation:</strong> Fair payment for time and expertise</li>
+            <li>• <strong>Training:</strong> AI literacy programs provided</li>
           </ul>
         </div>
         
         <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
-          <div class="flex items-center space-x-2 mb-3">
-            <i data-lucide="activity" class="h-5 w-5 text-blue-600"></i>
-            <h4 class="font-semibold text-blue-800">Behavioral Data</h4>
-          </div>
-          <ul class="text-blue-700 text-sm space-y-1">
-            <li>• Upload frequency patterns</li>
-            <li>• Stock level changes</li>
-            <li>• Platform interaction data</li>
+          <h3 class="font-semibold text-blue-800 mb-4">Feedback Integration</h3>
+          <ul class="text-blue-700 text-sm space-y-2">
+            <li>• <strong>User Feedback:</strong> In-app feedback on every AI recommendation</li>
+            <li>• <strong>Community Surveys:</strong> Quarterly comprehensive assessments</li>
+            <li>• <strong>Focus Groups:</strong> Deep dive sessions on AI impact</li>
+            <li>• <strong>Co-design Sessions:</strong> Community input on new features</li>
+            <li>• <strong>Response Time:</strong> 48-hour acknowledgment guarantee</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Participatory AI Development</h4>
+        <p class="text-gray-700 mb-3">
+          We believe AI should be developed <em>with</em> communities, not just <em>for</em> them. Our participatory approach includes:
+        </p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• Community data validation and labeling</li>
+            <li>• Local expertise integration in model design</li>
+            <li>• Cultural sensitivity reviews before deployment</li>
+            <li>• Economic impact assessments by users</li>
+          </ul>
+          <ul class="text-gray-700 text-sm space-y-1">
+            <li>• Transparent model performance reporting</li>
+            <li>• Regular community voting on AI priorities</li>
+            <li>• Local language AI training and testing</li>
+            <li>• Benefits sharing with contributing communities</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- AI Use Cases -->
-    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-          <i data-lucide="cpu" class="h-6 w-6 text-purple-600"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">AI Use Cases & Model Auditing</h2>
-      </div>
-      
-      <div class="mb-6">
-        <p class="text-gray-700 leading-relaxed mb-4">
-          All our AI models are tested for fairness and accuracy across different demographics, regions, and business types. 
-          We maintain a comprehensive model logbook tracking:
-        </p>
-        
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-3">Model Transparency</h4>
-            <ul class="space-y-2 text-gray-700">
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>Training dataset sources and composition</span>
-              </li>
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>Performance metrics by region and gender</span>
-              </li>
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>Regular bias testing and corrections</span>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-3">Continuous Improvement</h4>
-            <ul class="space-y-2 text-gray-700">
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>Model updates and version control</span>
-              </li>
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>User feedback integration</span>
-              </li>
-              <li class="flex items-center space-x-2">
-                <i data-lucide="check" class="h-4 w-4 text-green-600"></i>
-                <span>External audits and reviews</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      
-      <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
-        <h4 class="font-semibold text-purple-800 mb-2 flex items-center">
-          <i data-lucide="shield" class="h-4 w-4 mr-2"></i>
-          Ubuntu AI Commitment
-        </h4>
-        <p class="text-purple-700">
-          Our AI development follows Ubuntu principles - every model improvement benefits the entire community. 
-          We share learnings (while protecting privacy) to advance ethical AI across Africa.
-        </p>
-      </div>
-    </div>
-
-    <!-- AI Applications -->
-    <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-          <i data-lucide="zap" class="h-6 w-6 text-orange-600"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">How We Use AI</h2>
-      </div>
-      
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="space-y-4">
-          <div class="flex items-start space-x-3">
-            <i data-lucide="camera" class="h-5 w-5 text-orange-600 mt-1"></i>
-            <div>
-              <h4 class="font-semibold text-gray-900">Computer Vision</h4>
-              <p class="text-gray-600 text-sm">Analysing product images to track inventory and identify trends</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start space-x-3">
-            <i data-lucide="message-square" class="h-5 w-5 text-green-600 mt-1"></i>
-            <div>
-              <h4 class="font-semibold text-gray-900">Natural Language Processing</h4>
-              <p class="text-gray-600 text-sm">Understanding WhatsApp messages and local language communications</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="space-y-4">
-          <div class="flex items-start space-x-3">
-            <i data-lucide="trending-up" class="h-5 w-5 text-blue-600 mt-1"></i>
-            <div>
-              <h4 class="font-semibold text-gray-900">Predictive Analytics</h4>
-              <p class="text-gray-600 text-sm">Forecasting demand and optimising supply chains</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start space-x-3">
-            <i data-lucide="credit-card" class="h-5 w-5 text-purple-600 mt-1"></i>
-            <div>
-              <h4 class="font-semibold text-gray-900">Credit Scoring</h4>
-              <p class="text-gray-600 text-sm">Fair assessment based on trading patterns, not traditional metrics</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Violations & Reporting -->
+    <!-- Violation Response -->
     <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <div class="flex items-center space-x-3 mb-6">
         <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
           <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">Violations & Reporting</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Violations & Incident Response</h2>
       </div>
       
-      <div class="bg-red-50 p-6 rounded-lg border border-red-200 mb-6">
-        <h4 class="font-semibold text-red-800 mb-3 flex items-center">
-          <i data-lucide="shield-alert" class="h-4 w-4 mr-2"></i>
-          Report Concerns
-        </h4>
-        <p class="text-red-700 mb-4">
-          If you believe your data was misused or our AI made an unfair decision, we want to hear from you immediately.
-        </p>
-        <div class="flex items-center space-x-2">
-          <i data-lucide="mail" class="h-4 w-4 text-red-600"></i>
-          <a href="mailto:info@afroubuntutrade.co.uk?subject=AI Ethics Concern" 
-             class="text-red-800 hover:text-red-900 font-semibold">
-            info@afroubuntutrade.co.uk
-          </a>
-        </div>
-      </div>
-      
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h4 class="font-semibold text-gray-900 mb-3">Our Response Process</h4>
-          <ul class="space-y-2 text-gray-700 text-sm">
-            <li>• Acknowledge within 24 hours</li>
-            <li>• Investigate thoroughly and fairly</li>
-            <li>• Provide clear explanation of findings</li>
-            <li>• Take corrective action if needed</li>
-          </ul>
+      <div class="space-y-6">
+        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+          <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+            <i data-lucide="shield-alert" class="h-4 w-4 mr-2"></i>
+            Report AI Ethics Concerns
+          </h4>
+          <p class="text-red-700 mb-4">
+            If you believe our AI has made an unfair decision, violated ethical principles, or caused harm, 
+            we want to hear from you immediately. Every report is taken seriously.
+          </p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <h5 class="font-semibold text-red-800 mb-2">How to Report</h5>
+              <ul class="text-red-700 text-sm space-y-1">
+                <li>• <strong>Email:</strong> privacy@afroubuntutrade.co.uk</li>
+                <li>• <strong>In-App:</strong> Report button on every AI interaction</li>
+                <li>• <strong>Anonymous:</strong> Anonymous reporting option available</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-red-800 mb-2">What to Include</h5>
+              <ul class="text-red-700 text-sm space-y-1">
+                <li>• AI decision or recommendation details</li>
+                <li>• Why you believe it was unfair/biased</li>
+                <li>• Impact on you or your community</li>
+                <li>• Any supporting evidence or documentation</li>
+              </ul>
+            </div>
+          </div>
         </div>
         
-        <div>
-          <h4 class="font-semibold text-gray-900 mb-3">Your Rights</h4>
-          <ul class="space-y-2 text-gray-700 text-sm">
-            <li>• Request human review of AI decisions</li>
-            <li>• Appeal automated assessments</li>
-            <li>• Access explanation of AI reasoning</li>
-            <li>• Withdraw from AI processing</li>
-          </ul>
+        <div class="bg-orange-50 p-6 rounded-lg border border-orange-200">
+          <h4 class="font-semibold text-orange-800 mb-3">Our Response Process</h4>
+          <div class="grid md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span class="text-orange-800 font-bold">24h</span>
+              </div>
+              <h6 class="font-semibold text-orange-800 mb-1">Acknowledge</h6>
+              <p class="text-orange-700 text-xs">Immediate confirmation and case number</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span class="text-orange-800 font-bold">72h</span>
+              </div>
+              <h6 class="font-semibold text-orange-800 mb-1">Investigate</h6>
+              <p class="text-orange-700 text-xs">Technical analysis and impact assessment</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span class="text-orange-800 font-bold">7d</span>
+              </div>
+              <h6 class="font-semibold text-orange-800 mb-1">Respond</h6>
+              <p class="text-orange-700 text-xs">Detailed findings and action plan</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span class="text-orange-800 font-bold">30d</span>
+              </div>
+              <h6 class="font-semibold text-orange-800 mb-1">Resolve</h6>
+              <p class="text-orange-700 text-xs">Implementation and follow-up</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -415,44 +688,77 @@
       <p class="text-lg opacity-90 max-w-2xl mx-auto mb-8">
         Our AI doesn't just serve individual users - it strengthens the entire community. 
         Every algorithm is designed to lift up the collective, ensuring that as our AI gets smarter, 
-        everyone benefits together.
+        everyone benefits together through measurable community impact.
       </p>
       
       <div class="grid md:grid-cols-3 gap-6 text-left">
         <div>
           <h4 class="font-semibold mb-2">🤝 Collective Intelligence</h4>
-          <p class="opacity-90 text-sm">AI insights improve as more traders participate</p>
+          <p class="opacity-90 text-sm">AI insights improve as more traders participate - measured by network effects</p>
         </div>
         <div>
           <h4 class="font-semibold mb-2">🌍 Community First</h4>
-          <p class="opacity-90 text-sm">Decisions consider impact on the entire ecosystem</p>
+          <p class="opacity-90 text-sm">Decisions consider ecosystem impact - tracked through community benefit metrics</p>
         </div>
         <div>
-          <h4 class="font-semibold mb-2">⚖️ Fairness by Design</h4>
-          <p class="opacity-90 text-sm">Built-in bias prevention and fairness monitoring</p>
+          <h4 class="font-semibold mb-2">⚖️ Measurable Fairness</h4>
+          <p class="opacity-90 text-sm">Built-in bias prevention with quarterly fairness scorecards</p>
         </div>
       </div>
     </div>
 
-    <!-- Contact Section -->
+    <!-- Policy Updates & Contact -->
     <div class="section-card bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
       <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i data-lucide="mail" class="h-8 w-8 text-green-600"></i>
       </div>
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Questions About Our AI Ethics?</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Policy Updates & Contact</h2>
       <p class="text-gray-600 mb-6">
-        We're committed to transparency and accountability. Reach out with any questions or concerns.
+        We're committed to transparency and accountability. Reach out with any questions or concerns about our AI ethics.
       </p>
-      <div class="space-y-3">
-        <div class="flex items-center justify-center space-x-2">
-          <i data-lucide="mail" class="h-5 w-5 text-green-600"></i>
-          <a href="mailto:info@afroubuntutrade.co.uk" 
-             class="text-green-600 hover:text-green-700 transition-colors font-semibold">
+      
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-green-50 p-6 rounded-lg border border-green-200 text-left">
+          <h4 class="font-semibold text-green-800 mb-3">Contact AI Ethics Team</h4>
+          <div class="space-y-2">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="mail" class="h-4 w-4 text-green-600"></i>
+              <a href="mailto:aiethics@afroubuntutrade.co.uk" class="text-green-700 hover:text-green-800 text-sm">
+                dev@afroubuntutrade.co.uk
+              </a>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="mail" class="h-4 w-4 text-green-600"></i>
+              <span class="text-green-700 text-sm">info@afroubuntutrade.co.uk</span>
+            </div>
+            <p class="text-green-600 text-xs mt-2">
+              Response within 24 hours guaranteed
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 text-left">
+          <h4 class="font-semibold text-blue-800 mb-3">Policy Updates</h4>
+          <ul class="text-blue-700 text-sm space-y-1">
+            <li>• <strong>Major Changes:</strong> 60-day advance notice</li>
+            <li>• <strong>Community Input:</strong> 30-day public consultation</li>
+            <li>• <strong>Version Control:</strong> Full change history available</li>
+            <li>• <strong>Notification:</strong> Email and in-app alerts</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Annual AI Ethics & Impact Report</h4>
+        <p class="text-gray-700 text-sm mb-3">
+          Each year, we publish a comprehensive report detailing our AI ethics performance, 
+          community impact metrics, and improvements made based on your feedback.
+        </p>
+        <p class="text-gray-600 text-xs">
+          Next report: April 2027 | Previous reports available at: 
+          <a href="info@afroubuntutrade.co.uk" class="text-blue-600 hover:text-blue-800">
             info@afroubuntutrade.co.uk
           </a>
-        </div>
-        <p class="text-gray-500 text-sm">
-          We respond to all AI ethics inquiries within 24 hours
         </p>
       </div>
     </div>
