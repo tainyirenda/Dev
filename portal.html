@@ -252,6 +252,13 @@
         </div>
         
 
+        <!-- Simple nav links -->
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="#features" class="text-gray-700 hover:text-orange-600 transition-colors">Features</a>
+          <button onclick="openPricingModal()" class="text-gray-700 hover:text-orange-600 transition-colors">Pricing</button>
+          <a href="#journey" class="text-gray-700 hover:text-orange-600 transition-colors">Journey</a>
+        </div>
+        
         <div class="flex items-center space-x-3">
           <div id="auth-buttons" class="flex items-center space-x-2">
             <button onclick="handleSignIn()" class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors">
@@ -279,7 +286,7 @@
       <div class="mb-8">
         <span class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-green-100 text-blue-900 border border-orange-200 mb-6">
           <i data-lucide="rocket" class="h-3 w-3 mr-1"></i>
-          New Platform Launch This November- Join Our Community
+          New Platform Launching Soon - Join Our Community
         </span>
       </div>
       
@@ -357,7 +364,7 @@
       <!-- Honest Progress Indicators -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
         <div class="text-center">
-          <div class="text-3xl font-bold text-yellow-600 mb-1">Q4 2025</div>
+          <div class="text-3xl font-bold text-yellow-600 mb-1">Q1 2026</div>
           <div class="text-sm text-gray-600">Beta Launch</div>
         </div>
         <div class="text-center">
@@ -559,6 +566,22 @@
       </div>
     </section>
 
+    <!-- Pricing Section (Replaced by Modal Trigger) -->
+    <section class="py-4 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-6xl mx-auto text-center">
+        <div class="inline-flex items-center px-4 py-2 rounded-full bg-white border border-orange-200 shadow-sm mb-4">
+          <i data-lucide="tag" class="h-4 w-4 text-orange-600 mr-2"></i>
+          <span class="text-gray-700">Transparent partner pricing</span>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">See Plans & Pricing</h2>
+        <p class="text-gray-600 mb-6">View the right plan for FMCGs, NGOs and FinTechs.</p>
+        <button onclick="openPricingModal()" class="px-8 py-4 btn-gradient text-white rounded-lg shadow-lg inline-flex items-center space-x-2">
+          <i data-lucide="credit-card" class="w-5 h-5"></i>
+          <span>Open Pricing</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Development Timeline -->
     <section class="py-16 px-4 sm:px-6 lg:px-8">
       <div class="max-w-4xl mx-auto">
@@ -727,6 +750,157 @@
     </div>
   </footer>
 
+   <!-- Pricing Modal -->
+  <div id="pricingModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="pricingModalTitle">
+    <div class="modal-content" role="document">
+      <button class="close" aria-label="Close pricing modal" onclick="closePricingModal()">&times;</button>
+      <h2 id="pricingModalTitle" class="text-3xl font-bold text-gray-900 mb-2">Plans &amp; Pricing</h2>
+      <p class="text-gray-600 mb-6">All plans include WhatsApp onboarding, secure data handling, and access to our customer success team.</p>
+
+      <!-- FMCGs -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+            <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-green-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$1,500/month <span class="text-gray-500">(£1,200)</span></td>
+                <td class="px-6 py-4">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$3,500/month <span class="text-gray-500">(£2,800)</span></td>
+                <td class="px-6 py-4">Multi-region, advanced forecasting, competitor insights, API integration</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$75k–$150k/year <span class="text-gray-500">(£60k–£120k)</span></td>
+                <td class="px-6 py-4">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a href="https://wa.me/+15558221341?text=I'd%20like%20a%20demo%20of%20the%20FMCG%20plan" class="px-5 py-3 rounded-lg border border-green-200 hover:bg-green-50 text-green-700 flex items-center space-x-2">
+            <i data-lucide="message-circle" class="w-4 h-4"></i><span>Request WhatsApp Demo</span>
+          </a>
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=FMCG%20Pricing%20Enquiry" class="px-5 py-3 rounded-lg border border-orange-200 hover:bg-orange-50 text-orange-700 flex items-center space-x-2">
+            <i data-lucide="mail" class="w-4 h-4"></i><span>Email Sales</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- NGOs & Development Partners -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+            <i data-lucide="users" class="w-5 h-5 text-orange-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-orange-700">NGOs & Development Partners</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-orange-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$300/month <span class="text-gray-500">(£240)</span></td>
+                <td class="px-6 py-4">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$1,200/month <span class="text-gray-500">(£950)</span></td>
+                <td class="px-6 py-4">Multi-region, real-time dashboards, grant reporting, alerts</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$25k–$100k/year <span class="text-gray-500">(£20k–£80k)</span></td>
+                <td class="px-6 py-4">Custom program analytics, donor-facing reports, field integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a href="https://wa.me/+15558221341?text=I'd%20like%20a%20demo%20of%20the%20NGO%20plan" class="px-5 py-3 rounded-lg border border-green-200 hover:bg-green-50 text-green-700 flex items-center space-x-2">
+            <i data-lucide="message-circle" class="w-4 h-4"></i><span>Request WhatsApp Demo</span>
+          </a>
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=NGO%20Pricing%20Enquiry" class="px-5 py-3 rounded-lg border border-orange-200 hover:bg-orange-50 text-orange-700 flex items-center space-x-2">
+            <i data-lucide="mail" class="w-4 h-4"></i><span>Email Sales</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- FinTechs -->
+      <div class="mb-6">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <i data-lucide="banknote" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$750/month <span class="text-gray-500">(£600)</span></td>
+                <td class="px-6 py-4">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$2,500/month <span class="text-gray-500">(£2,000)</span></td>
+                <td class="px-6 py-4">Expanded API, repayment analysis, portfolio monitoring</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$50k–$200k/year <span class="text-gray-500">(£40k–£160k)</span> + rev share</td>
+                <td class="px-6 py-4">Full API, predictive risk engine, dedicated integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a href="https://wa.me/+15558221341?text=I'd%20like%20a%20demo%20of%20the%20FinTech%20plan" class="px-5 py-3 rounded-lg border border-green-200 hover:bg-green-50 text-green-700 flex items-center space-x-2">
+            <i data-lucide="message-circle" class="w-4 h-4"></i><span>Request WhatsApp Demo</span>
+          </a>
+          <a href="mailto:info@afroubuntutrade.co.uk?subject=FinTech%20Pricing%20Enquiry" class="px-5 py-3 rounded-lg border border-orange-200 hover:bg-orange-50 text-orange-700 flex items-center space-x-2">
+            <i data-lucide="mail" class="w-4 h-4"></i><span>Email Sales</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg p-4">
+        <p>All prices are indicative and may vary with scope, data volumes, and integration complexity. Enterprise plans include custom SLAs and security reviews. VAT may apply.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Privacy Policy Modal -->
   <div id="privacyModal" class="modal">
     <div class="modal-content">
@@ -757,14 +931,41 @@
  
   <script type="module">
   // ========= CONFIG =========
-  // Your Vercel app & API live on the same subdomain:
   const APP_BASE = "https://api.afroubuntutrade.co.uk";
-  const API_BASE = APP_BASE; // If you ever split UI/API, set API_BASE differently.
+  const API_BASE = APP_BASE;
+
+  
+  // Pricing modal controls
+  window.openPricingModal = function() {
+    const m = document.getElementById('pricingModal');
+    if (!m) return;
+    m.style.display = 'block';
+    m.setAttribute('aria-hidden', 'false');
+    // focus the title for accessibility
+    setTimeout(() => {
+      const t = document.getElementById('pricingModalTitle');
+      if (t) t.focus();
+    }, 10);
+  };
+  window.closePricingModal = function() {
+    const m = document.getElementById('pricingModal');
+    if (!m) return;
+    m.style.display = 'none';
+    m.setAttribute('aria-hidden', 'true');
+  };
+  // Close on overlay click
+  document.addEventListener('click', function(e) {
+    const m = document.getElementById('pricingModal');
+    if (!m) return;
+    if (e.target === m) { closePricingModal(); }
+  });
+  // Close on Esc
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closePricingModal(); }
+  });
 
   // ========= UTIL =========
   function getToken() {
-    // If your login/signup pages store a JWT, keep it in localStorage under "jwt"
-    // (Matches the earlier API examples I gave you)
     return localStorage.getItem("jwt");
   }
 
@@ -776,7 +977,6 @@
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
-      // mode: "cors" // not needed if CORS is already enabled server-side
     });
     const text = await res.text();
     let json; try { json = text ? JSON.parse(text) : null; } catch { json = { raw: text }; }
@@ -784,128 +984,20 @@
     return json;
   }
 
-  // ========= EXISTING UI INIT (unchanged) =========
+  // ========= UI INIT =========
   lucide.createIcons();
-
-  let onboardingStatus = null;
-  let user = null;
 
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
       document.getElementById('loading-screen').style.display = 'none';
       checkAuthAndOnboarding();
     }, 900);
-  });
 
-  // ========= UPDATED AUTH / ONBOARDING CHECK =========
-  async function checkAuthAndOnboarding() {
-    try {
-      const token = getToken();
-      if (!token) return;
-
-      // If a token exists, try to fetch profile from your Vercel API
-      const me = await api("/api/auth/me").catch(() => null);
-
-      if (me && me.user_id) {
-        // Hide "Sign In / Get Started", show "Dashboard"
-        const authBtns = document.getElementById('auth-buttons');
-        const dashBtn = document.getElementById('dashboard-button');
-        if (authBtns) authBtns.style.display = 'none';
-        if (dashBtn) { dashBtn.classList.remove('hidden'); dashBtn.style.display = 'flex'; }
-
-        // OPTIONAL: If you later add an onboarding endpoint, call it here.
-        // const ob = await api("/api/business/onboard").catch(() => null);
-        // if (ob?.onboarding_completed && ob?.businesses?.length) {
-        //   window.location.href = `${APP_BASE}/dashboard`;
-        //   return;
-        // }
-        // if (!ob?.onboarding_completed) {
-        //   document.getElementById('onboarding-alert')?.classList.remove('hidden');
-        //   document.getElementById('onboarding-progress')?.classList.remove('hidden');
-        //   updateOnboardingProgress(ob?.requirements || {});
-        // }
-      }
-    } catch (err) {
-      console.error("Auth check failed:", err);
-    }
-  }
-
-  // ========= KEEP YOUR EXISTING ONBOARDING UI HELPERS =========
-  function updateOnboardingProgress(requirements) {
-    const steps = [
-      { key: 'businessProfile', icon: 'building-2' },
-      { key: 'contractOrSales', icon: 'file-text' },
-      { key: 'productInventory', icon: 'bar-chart-3' }
-    ];
-
-    steps.forEach((step, index) => {
-      const container = document.querySelectorAll('.group')[index];
-      if (!container) return;
-      const iconContainer = container.querySelector('.w-16');
-      const badge = container.querySelector('span');
-      if (!iconContainer || !badge) return;
-
-      if (requirements[step.key]) {
-        iconContainer.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100 group-hover:bg-green-200 transition-all duration-200';
-        const icon = iconContainer.querySelector('i');
-        if (icon) icon.className = 'h-8 w-8 text-green-600';
-        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
-        badge.textContent = 'Completed';
-      }
-    });
-  }
-
-  // ========= OPTION A (SIMPLE): SEND USERS TO VERCEL APP =========
-  window.handleGetStarted = function() {
-    // If you have specific routes in the Vercel app like /signup, change this to `${APP_BASE}/signup`
-    window.location.href = APP_BASE;
-  };
-
-  window.handleSignIn = function() {
-    // If you have a dedicated /login route in your Vercel app, use `${APP_BASE}/login`
-    window.location.href = APP_BASE;
-  };
-
-  window.goToDashboard = function() {
-    window.location.href = `${APP_BASE}/dashboard`;
-  };
-
-  window.continueSetup = function() {
-    // If your onboarding flow is part of the Vercel app:
-    window.location.href = `${APP_BASE}/onboard`;
-  };
-
-  // ========= KEEP YOUR EXISTING WHATSAPP CTA =========
-  window.handleWhatsAppStart = function() {
-    window.open(
-      'https://wa.me/your-whatsapp-number?text=Hello%20AfroUbuntu%20Trade%20Founders%20-%20I%20want%20to%20learn%20more%20about%20becoming%20a%20pioneer%20member',
-      '_blank',
-      'noopener'
-    );
-  };
-
-  // ========= MISC: smooth scroll + nav shadow (unchanged) =========
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  window.addEventListener('scroll', function() {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 100) nav.classList.add('shadow-lg'); else nav.classList.remove('shadow-lg');
-  });
-
-  const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-  const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } });
-  }, observerOptions);
-
-  document.addEventListener('DOMContentLoaded', function() {
+    // animate feature cards
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } });
+    }, observerOptions);
     const cards = document.querySelectorAll('.feature-card');
     cards.forEach(card => {
       card.style.opacity = '0';
@@ -915,16 +1007,59 @@
     });
   });
 
+  async function checkAuthAndOnboarding() {
+    try {
+      const token = getToken();
+      if (!token) return;
+      const me = await api("/api/auth/me").catch(() => null);
+      if (me && me.user_id) {
+        const authBtns = document.getElementById('auth-buttons');
+        const dashBtn = document.getElementById('dashboard-button');
+        if (authBtns) authBtns.style.display = 'none';
+        if (dashBtn) { dashBtn.classList.remove('hidden'); dashBtn.style.display = 'flex'; }
+      }
+    } catch (err) {
+      console.error("Auth check failed:", err);
+    }
+  }
+
+  // ========= ROUTING =========
+  window.handleGetStarted = function() {
+    window.location.href = APP_BASE;
+  };
+  window.handleSignIn = function() {
+    window.location.href = APP_BASE;
+  };
+  window.goToDashboard = function() {
+    window.location.href = `${APP_BASE}/dashboard`;
+  };
+  window.continueSetup = function() {
+    window.location.href = `${APP_BASE}/onboard`;
+  };
+
+  // smooth hash links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // add subtle nav shadow on scroll
+  window.addEventListener('scroll', function() {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 100) nav.classList.add('shadow-lg'); else nav.classList.remove('shadow-lg');
+  });
+
+  // accessibility: trigger button on Enter/Space
   document.addEventListener('keydown', function(e) {
     if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.tagName === 'BUTTON') {
       document.activeElement.click();
     }
   });
 
-  window.addEventListener('unhandledrejection', function(event) {
-    console.error('Unhandled promise rejection:', event.reason);
-  });
-
+  // loading state helper for CTA buttons
   function addLoadingState(button) {
     if (!button) return () => {};
     const originalContent = button.innerHTML;
@@ -936,21 +1071,19 @@
       lucide.createIcons();
     };
   }
-
   const _origGetStarted = window.handleGetStarted;
   window.handleGetStarted = function(event) {
     const btn = event?.target?.closest('button');
     const rm = addLoadingState(btn);
     setTimeout(() => { rm(); _origGetStarted(); }, 400);
   };
-
   const _origSignIn = window.handleSignIn;
   window.handleSignIn = function(event) {
     const btn = event?.target?.closest('button');
     const rm = addLoadingState(btn);
     setTimeout(() => { rm(); _origSignIn(); }, 400);
   };
-</script>
+  </script>
 
 </body>
 </html>
