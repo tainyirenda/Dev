@@ -202,7 +202,21 @@
         </div>
         <div>
           <label class="block text-sm text-white/85 mb-1" for="su_email">Email</label>
-          <input id="su_email" type="email" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="you@example.com" required />
+          <input
+  id="su_email"
+  type="email"
+  autocomplete="email"
+  inputmode="email"
+  autocapitalize="none"
+  autocorrect="off"
+  spellcheck="false"
+  class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60"
+  placeholder="you@example.com"
+  required
+/>
+<p id="su_email_err" class="mt-1 text-xs text-red-300 hidden">
+  Please enter a valid email address.
+</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -543,13 +557,18 @@
       suForm.addEventListener('submit', async (e) => {
         e.preventDefault(); if(suAlert) suAlert.className='hidden p-3 rounded-xl border text-sm';
         const name = document.getElementById('su_name')?.value.trim();
-        const email = document.getElementById('su_email')?.value.trim();
+        const suEmailEl  = document.getElementById('su_email');
+const suEmailErr = document.getElementById('su_email_err');
+const email      = suEmailEl?.value.trim().toLowerCase();
+const emailValid = !!(suEmailEl && suEmailEl.checkValidity && suEmailEl.checkValidity());
+suEmailEl?.setAttribute('aria-invalid', String(!emailValid));
+suEmailErr?.classList.toggle('hidden', emailValid);
         const p1 = document.getElementById('su_password')?.value || '';
         const p2 = document.getElementById('su_password2')?.value || '';
         const agree = document.getElementById('su_agree')?.checked;
         const errors=[];
         if(!name || name.length<2) errors.push('Please enter your full name.');
-        if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email||'')) errors.push('Enter a valid email address.');
+        if (!emailValid) errors.push('Enter a valid email address.');
         if(p1.length<8) errors.push('Password must be at least 8 characters.');
         if(p1!==p2) errors.push('Passwords do not match.');
         if(!agree) errors.push('You must agree to the policies to continue.');
@@ -573,7 +592,14 @@
       const r = await fetch(`${API_BASE}/auth/request-reset`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email }) });
       await r.json().catch(()=>({}));
     }
-    function isEmail(x){ return /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(x||''); }
+    
+    function isEmail(x){
+  if(!x) return false;
+  x = String(x).trim();
+  const at = x.indexOf('@');
+  const dot = x.lastIndexOf('.');
+  return at > 0 && dot > at + 1 && dot < x.length - 1;
+}
     function getEmail(){ const el=document.getElementById('emailInput'); return (el && el.value && el.value.trim()) || ''; }
     if (link){ link.addEventListener('click', async (e)=>{ e.preventDefault(); let email = getEmail(); if(!isEmail(email)){ email = (prompt('Enter the email you used to sign up:') || '').trim(); } if(!isEmail(email)){ alert('Please enter a valid email address.'); return; } try{ await requestReset(email); alert(`If an account exists for ${email}, we’ve sent a password reset link.`);} catch{ alert('Could not request a reset. Please try again.'); } }); }
   });
