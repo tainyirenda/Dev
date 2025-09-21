@@ -443,5 +443,68 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+<script>
+(function () {
+  const API_BASE = 'https://api.afroubuntutrade.co.uk';
+
+  function getEmailFromPage() {
+    const sels = ['#emailInput', '#email', '#loginEmail', 'input[type="email"]', 'input[name="email"]'];
+    for (const s of sels) {
+      const el = document.querySelector(s);
+      const v = el && el.value && el.value.trim();
+      if (v) return v;
+    }
+    return '';
+  }
+
+  function isEmail(x) {
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x || '');
+  }
+
+  async function requestReset(email) {
+    const res = await fetch(`${API_BASE}/auth/request-reset`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    });
+    // Always returns {ok:true} even if the email doesn't exist (no leakage)
+    await res.json().catch(() => ({}));
+  }
+
+  function bindForgotLink() {
+    // Find the “Forgotten your password?” link/button by text
+    const cands = Array.from(document.querySelectorAll('a, button'))
+      .filter(el => /forgot/i.test(el.textContent || ''));
+
+    if (!cands.length) return;
+
+    cands.forEach(el => {
+      el.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        let email = getEmailFromPage();
+        if (!isEmail(email)) {
+          email = (prompt('Enter the email you used to sign up:') || '').trim();
+        }
+        if (!isEmail(email)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+
+        try {
+          await requestReset(email);
+          alert(`If an account exists for ${email}, we’ve sent a password reset link.`);
+        } catch (err) {
+          alert('Could not request a reset. Please try again in a moment.');
+        }
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', bindForgotLink);
+})();
+</script>
+
 </body>
 </html>
