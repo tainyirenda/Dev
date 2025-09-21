@@ -1,510 +1,580 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Log in • Afro Ubuntu TradeNet</title>
-  <!-- Tailwind (CDN) -->
+  <title>Afro Ubuntu TradeNet — Sign In</title>
+  <meta name="description" content="Sign in to Afro Ubuntu TradeNet" />
+  <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide icons (CDN) -->
+  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
-    /* Basic modal animation */
-    .modal-open { animation: modalIn .18s ease-out; }
-    .modal-close { animation: modalOut .14s ease-in; }
-    @keyframes modalIn { from { opacity:0; transform: translateY(6px) scale(.98);} to { opacity:1; transform: translateY(0) scale(1);} }
-    @keyframes modalOut { from { opacity:1; transform: translateY(0) scale(1);} to { opacity:0; transform: translateY(8px) scale(.98);} }
+    :root{
+      /* Match the example portal palette */
+      --orange-600:#ea580c;
+      --orange-700:#c2410c;
+      --green-600:#16a34a;
+      --green-700:#15803d;
+    }
+    html,body{height:100%}
+    body{
+      background:
+        radial-gradient(900px 600px at 10% 0%, rgba(234,88,12,0.12), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(22,163,74,0.18), transparent 60%),
+        linear-gradient(135deg, #0d1b14 0%, #0b1511 40%, #0d1b14 100%);
+      color:#fff;
+    }
+    .glass{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+    .focus-ring:focus{outline:none;box-shadow:0 0 0 3px rgba(234,88,12,0.35)}
+    .btn-gradient{background:linear-gradient(135deg,var(--orange-600),var(--green-600));}
+    .btn-gradient:hover{background:linear-gradient(135deg,var(--orange-700),var(--green-700));}
+    .tab{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.85)}
+    .tab-active{background:rgba(255,255,255,.15);color:#fff}
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50 flex items-center justify-center p-4 text-gray-900">
-  <main class="w-full max-w-md">
-    <!-- Brand Header -->
-    <div class="text-center mb-8">
-      <div class="relative mx-auto mb-6">
-        <div class="w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl mx-auto transform hover:scale-105 transition-transform" style="background: linear-gradient(135deg, #ea580c, #16a34a)">
-          <i data-lucide="globe" class="w-10 h-10 text-white"></i>
+<body class="min-h-full">
+  <!-- Top nav -->
+  <header class="mx-auto max-w-7xl px-6 pt-6">
+    <nav class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-[color:var(--orange-600)] to-[color:var(--green-600)] grid place-items-center shadow">
+          <i data-lucide="globe" class="w-5 h-5"></i>
         </div>
-        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
-          <div class="w-2 h-2 bg-white rounded-full"></div>
-        </div>
+        <span class="text-lg font-semibold">Afro Ubuntu TradeNet</span>
       </div>
-      <h1 class="text-2xl font-bold text-gray-900 mb-1">Afro Ubuntu TradeNet</h1>
-      <p class="text-sm text-gray-500">Portal Access</p>
-    </div>
+      <ul class="flex items-center gap-8 text-sm text-white/85">
+        <li><a class="hover:text-white" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
+        <li><a class="hover:text-white" href="#" data-modal-target="servicesModal">Services</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- Login Card -->
-    <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-      <!-- Header / Tabs -->
-      <div class="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-green-50">
-        <h2 class="text-xl font-bold text-gray-900 text-center mb-4">Log in</h2>
-        <div class="flex items-center justify-center space-x-1 bg-white rounded-xl p-1" role="tablist" aria-label="Login method">
-          <button id="tabEmail" role="tab" aria-selected="true" aria-controls="emailFields" class="flex-1 text-sm font-medium py-2 px-4 rounded-lg transition-all bg-gradient-to-r from-orange-600 to-green-600 text-white shadow-md">Email or username</button>
-          <button id="tabPhone" role="tab" aria-selected="false" aria-controls="phoneFields" class="flex-1 text-sm font-medium py-2 px-4 rounded-lg transition-all text-gray-600 hover:text-gray-800">Phone</button>
-        </div>
-      </div>
-
-      <!-- Form -->
-      <form id="loginForm" class="px-6 py-6" novalidate>
-        <!-- Error alert -->
-        <div id="alertBox" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start space-x-3" role="alert">
-          <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"></i>
-          <div>
-            <p class="text-sm font-medium text-red-800">Login Failed</p>
-            <p id="alertText" class="text-sm text-red-600"></p>
-          </div>
-        </div>
-
-        <!-- EMAIL FIELDS -->
-        <div id="emailFields" class="space-y-5" role="tabpanel" aria-labelledby="tabEmail">
-          <div>
-            <label for="emailInput" class="sr-only">Email or username</label>
-            <input id="emailInput" type="email" placeholder="Email or username" autocomplete="username" class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-500" />
-          </div>
+  <!-- Main card -->
+  <main class="mx-auto max-w-7xl px-6 py-10">
+    <section class="glass rounded-3xl border border-white/10 bg-white/5 shadow-2xl overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Left / Welcome -->
+        <div class="relative p-10 md:p-14">
+          <div class="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-br from-[color:var(--orange-600)] via-[color:var(--green-600)] to-[color:var(--green-600)]"></div>
           <div class="relative">
-            <label for="passwordInput" class="sr-only">Password</label>
-            <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all pr-12 text-gray-900 placeholder-gray-500" />
-            <button type="button" id="togglePassword" aria-label="Show password" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
-              <span id="pwdIcon"></span>
+            <div class="flex items-center gap-3">
+              <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[color:var(--orange-600)] to-[color:var(--green-600)] grid place-items-center shadow-lg">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+              </div>
+              <h2 class="text-2xl font-bold">Welcome!</h2>
+            </div>
+            <p class="mt-5 max-w-md text-white/85 text-[15px] leading-relaxed">
+              Welcome <span id="welcomeName">Member</span> - access analytics, automate decisions, and connect with partners across the Afro Ubuntu TradeNet ecosystem.
+            </p>
+            <p class="mt-4 text-[15px] text-white/75 leading-relaxed max-w-lg">
+              Sign in on the right. If you don’t have an account yet, you can create one in seconds.
+            </p>
+            <div class="mt-8 flex items-center gap-4 text-white/80">
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <i data-lucide="linkedin" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+              <a href="https://x.com/afroubuntutrade" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+                <i data-lucide="twitter" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+              <a href="mailto:info@afroubuntutrade.co.uk" aria-label="Email">
+                <i data-lucide="mail" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+            </div>
+            <footer class="mt-10 text-sm text-white/70">© <span id="year"></span> Afro Ubuntu TradeNet</footer>
+          </div>
+        </div>
+        
+        <!-- Right / Sign in -->
+        <div class="p-10 md:p-14 bg-gradient-to-bl from-white/5 to-white/0">
+          <h3 class="text-2xl font-bold text-center">Sign In</h3>
+
+          <!-- Tabs -->
+          <div class="mt-6 grid grid-cols-2 bg-white/10 rounded-xl p-1">
+            <button id="tabEmail" class="tab tab-active">Email</button>
+            <button id="tabPhone" class="tab">Phone</button>
+          </div>
+
+          <!-- Alert -->
+          <div id="alertBox" class="hidden mt-6 rounded-xl border border-red-300/40 bg-red-500/10 text-red-200 px-4 py-3 text-sm">
+            <span id="alertText">Error</span>
+          </div>
+
+          <!-- Email/Password form -->
+          <form id="loginForm" class="mt-6 space-y-5" novalidate>
+            <div>
+              <label for="emailInput" class="block text-sm text-white/85 mb-1">Email</label>
+              <div class="relative">
+                <input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+            </div>
+
+            <div>
+              <label for="passwordInput" class="block text-sm text-white/85 mb-1">Password</label>
+              <div class="relative">
+                <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="••••••••" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                <button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
+                  <span id="pwdIcon"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm text-white/85">
+              <label class="inline-flex items-center gap-2 select-none">
+                <input type="checkbox" class="rounded border-white/20 bg-transparent" />
+                Remember me
+              </label>
+              <a href="#" id="forgotLink" class="hover:underline text-white">Forgot password?</a>
+            </div>
+
+            <button id="loginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring">
+              Sign In
             </button>
+          </form>
+
+          <!-- Phone/Code form -->
+          <form id="otpForm" class="mt-6 space-y-5 hidden" novalidate>
+            <div>
+              <label for="phoneInput" class="block text-sm text-white/85 mb-1">Phone number</label>
+              <div class="relative">
+                <input id="phoneInput" type="tel" autocomplete="tel" placeholder="e.g. +44 7123 456789" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+            </div>
+
+            <div>
+              <label for="codeInput" class="block text-sm text-white/85 mb-1">Verification code</label>
+              <div class="relative">
+                <input id="codeInput" type="text" inputmode="numeric" pattern="[0-9]{4,8}" placeholder="Enter code" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+              <button id="sendCodeBtn" type="button" class="mt-2 rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 focus-ring">Send code</button>
+            </div>
+
+            <button id="otpLoginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring">Sign In</button>
+
+            
+            <a
+  id="whatsappLink"
+  href="https://wa.me/+15558221341?text=Hi, I want to join Afro Ubuntu TradeNet"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-white hover:bg-white/10 focus-ring"
+>
+  <i data-lucide="smartphone" class="h-5 w-5 shrink-0 align-middle group-hover:scale-110 transition-transform"></i>
+  <span class="leading-none">Continue with WhatsApp</span>
+</a>
+
+
+          </form>
+
+          <p class="mt-4 text-center text-sm text-white/85">Don't have an account?
+            <a href="#" data-modal-target="signUpModal" class="font-semibold text-white hover:underline">Sign up</a>
+          </p>
+
+          <div class="mt-6 text-xs text-white/70 flex flex-wrap items-center gap-3 justify-center">
+            <a class="hover:underline" href="privacy-policy.html">Privacy Policy</a>
+            <span class="opacity-40">•</span>
+            <a class="hover:underline" href="terms-of-service.html">Terms of Service</a>
+            <span class="opacity-40">•</span>
+            <a class="hover:underline" href="ethical-ai-policy.html">Ethical Data & AI Use</a>
           </div>
-          <div class="text-right">
-            <a href="#" class="text-sm text-gray-600 hover:text-orange-600 transition-colors font-medium">Forgotten your password?</a>
-          </div>
-          <button id="loginBtn" type="submit" class="w-full py-4 bg-gradient-to-r from-orange-600 to-green-600 text-white rounded-xl font-bold hover:from-orange-700 hover:to-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200">Log in</button>
         </div>
-
-        <!-- PHONE FIELDS -->
-        <div id="phoneFields" class="hidden space-y-5" role="tabpanel" aria-labelledby="tabPhone">
-          <div>
-            <label for="phoneInput" class="sr-only">Phone number</label>
-            <input id="phoneInput" type="tel" placeholder="Phone number" class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-500" />
-          </div>
-          <button type="button" class="w-full py-4 bg-gradient-to-r from-orange-600 to-green-600 text-white rounded-xl font-bold hover:from-orange-700 hover:to-green-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200">Send verification code</button>
-        </div>
-
-        <!-- Divider -->
-        <div class="flex items-center my-6">
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-          <span class="px-4 text-sm text-gray-500 bg-white font-medium">OR</span>
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-        </div>
-
-        <!-- Alternative Login Methods -->
-        <div class="hover:from-white-700 hover:to-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200">
-           <a href="https://wa.me/+15558221341?text=Hi, I want to join Afro Ubuntu TradeNet" target="_blank" rel="noopener" class="w-full flex items-center justify-center space-x-3 py-4 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-green-300 transition-all group">
-            <i data-lucide="smartphone" class="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform"></i>
-            <span class="text-gray-700 font-semibold">Continue with WhatsApp</span>
-           </a>
-        </div>
-      </form>
-    </div>
-
-    <div class="text-center mt-8 space-y-4">
-      <p class=text-gray-700 >By continuing, you agree to Afro Ubuntu Trade Net’s 
-        <a href="terms-of-service.html" data-modal-target="termsModal" class="text-gray-700 underline decoration-gray-400 hover:text-orange-600">Terms of Service</a> and confirm that you have read Afro Ubuntu Trade Net’s 
-        <a href="privacy-policy.html" data-modal-target="privacyModal" class="text-gray-700 underline decoration-gray-400 hover:text-orange-600">Privacy Policy</a> and 
-        <a href="ethical-ai-policy.html" data-modal-target="ethicsModal" class="text-gray-700 underline decoration-gray-400 hover:text-orange-600">Ethical Data &amp; AI Use Policy</a>.
-      </p>
-    </div>
-
-    <!-- Bottom Links -->
-    <div class="text-center space-y-3 mt-4">
-      <p class="text-gray-500">Don't have an account?
-        <a href="#" data-modal-target="signUpModal" class="text-orange-600 hover:text-orange-500 font-semibold transition-colors"> Sign up for free</a>
-      </p>
-      <div class="flex items-center justify-center space-x-6 text-xs text-gray-500">
-        <a href="privacy-policy.html" data-modal-target="privacyModal" class="hover:text-gray-700 transition-colors">Privacy Policy</a>
-        <span>•</span>
-        <a href="terms-of-service.html" data-modal-target="termsModal" class="hover:text-gray-700 transition-colors">Terms of Service</a>
-        <span>•</span>
-        <a href="ethical-ai-policy.html" data-modal-target="ethicsModal" class="hover:text-gray-700 transition-colors">Ethical Data &amp; AI Use Policy</a>
-        <span>•</span>
-        <a href="mailto:info@afroubuntutrade.co.uk" class="hover:text-gray-700 transition-colors">Help Center</a>
       </div>
-    </div>
+    </section>
   </main>
 
-  <!-- ===================== Modals ===================== -->
-  <!-- Generic modal template: overlay + dialog -->
-
   <!-- Sign Up Modal -->
-  <div id="signUpModal" class="hidden fixed inset-0 z-50" aria-hidden="true">
-    <div class="absolute inset-0 bg-black/50" data-modal-overlay></div>
-    <div role="dialog" aria-modal="true" aria-labelledby="signUpTitle" class="modal-open relative mx-auto mt-16 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-gray-100 p-6">
-      <div class="flex items-start justify-between mb-4">
-        <h3 id="signUpTitle" class="text-xl font-bold text-gray-900">Create your account</h3>
-        <button type="button" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close" data-modal-close>
+  <div id="signUpModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
+    <div role="dialog" aria-modal="true" class="glass w-full max-w-lg rounded-2xl border border-white/10 bg-white/10 p-6 text-white">
+      <div class="flex items-center justify-between">
+        <h4 class="text-xl font-semibold">Create your account</h4>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <form id="signUpForm" class="space-y-4" novalidate>
+
+      <div id="su_alert" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
+
+      <form id="signUpForm" class="mt-4 space-y-4">
         <div>
-          <label for="su_name" class="block text-sm font-medium text-gray-700">Full name</label>
-          <input id="su_name" name="name" type="text" required class="mt-1 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Jane Doe" />
+          <label class="block text-sm text-white/85 mb-1" for="su_name">Full name</label>
+          <input id="su_name" type="text" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="Jane Doe" required />
         </div>
         <div>
-          <label for="su_email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input id="su_email" name="email" type="email" required class="mt-1 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="you@example.com" />
+          <label class="block text-sm text-white/85 mb-1" for="su_email">Email</label>
+          <input id="su_email" type="email" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="you@example.com" required />
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label for="su_password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input id="su_password" name="password" type="password" minlength="8" required class="mt-1 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="At least 8 characters" />
+            <label class="block text-sm text-white/85 mb-1" for="su_password">Password</label>
+            <input id="su_password" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="At least 8 characters" required />
           </div>
           <div>
-            <label for="su_password2" class="block text-sm font-medium text-gray-700">Confirm password</label>
-            <input id="su_password2" name="password2" type="password" minlength="8" required class="mt-1 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Re-enter password" />
+            <label class="block text-sm text-white/85 mb-1" for="su_password2">Confirm</label>
+            <input id="su_password2" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="Repeat password" required />
           </div>
         </div>
-        <div class="flex items-start space-x-3 text-sm">
-          <input id="su_agree" type="checkbox" class="mt-1 h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500" required />
-          <label for="su_agree" class="text-gray-700">I agree to the
-            <a href="terms-of-service.html" data-modal-target="termsModal" class="underline decoration-gray-400 hover:text-orange-600">Terms of Service</a>,
-            <a href="privacy-policy.html" data-modal-target="privacyModal" class="underline decoration-gray-400 hover:text-orange-600">Privacy Policy</a>, and
-            <a href="ethical-ai-policy.html" data-modal-target="ethicsModal" class="underline decoration-gray-400 hover:text-orange-600">Ethical Data &amp; AI Use Policy</a>.
-          </label>
+        <label class="mt-2 flex items-start gap-3 text-sm text-white/85">
+          <input id="su_agree" type="checkbox" class="mt-1 rounded border-white/20 bg-transparent" />
+          <span>I agree to the Terms, Privacy Policy, and the use of my data to set up my account.</span>
+        </label>
+        <div class="flex items-center gap-3 pt-2">
+          <button id="su_submit" type="submit" class="rounded-xl btn-gradient px-4 py-2 font-medium text-white hover:opacity-95 focus-ring">Create account</button>
+          <button type="button" data-modal-close class="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10 focus-ring">Cancel</button>
         </div>
-
-        <div id="su_alert" class="hidden p-3 rounded-xl border text-sm"></div>
-
-        <button id="su_submit" type="submit" class="w-full py-3 bg-gradient-to-r from-orange-600 to-green-600 text-white rounded-xl font-bold hover:from-orange-700 hover:to-green-700 transition-all shadow-lg hover:shadow-xl">Create account</button>
-        <p class="text-xs text-gray-500 text-center">By creating an account you consent to being contacted about product updates. You can opt out anytime.</p>
       </form>
     </div>
   </div>
 
-  <!-- Privacy Policy Modal -->
-  <div id="privacyModal" class="hidden fixed inset-0 z-50" aria-hidden="true">
-    <div class="absolute inset-0 bg-black/50" data-modal-overlay></div>
-    <div role="dialog" aria-modal="true" aria-labelledby="privacyTitle" class="modal-open relative mx-auto mt-10 w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-gray-100 p-4">
-      <div class="flex items-center justify-between p-2">
-        <h3 id="privacyTitle" class="text-lg font-bold text-gray-900">Privacy Policy</h3>
-        <button type="button" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close" data-modal-close><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- Services / Pricing Modal (matches example tiers) -->
+  <div id="servicesModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
+    <div role="dialog" aria-modal="true" class="glass w-full max-w-5xl rounded-2xl border border-white/10 bg-white p-6 text-gray-900 overflow-y-auto max-h-[85vh]">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-xl font-semibold">Services & Pricing</h4>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <iframe src="privacy-policy.html" title="Privacy Policy" class="w-full h-[70vh] rounded-xl border"></iframe>
-    </div>
-  </div>
+      <p class="text-gray-600 text-sm mb-6">All plans include WhatsApp onboarding, secure data handling, and access to our customer success team.</p>
 
-  <!-- Terms of Service Modal -->
-  <div id="termsModal" class="hidden fixed inset-0 z-50" aria-hidden="true">
-    <div class="absolute inset-0 bg-black/50" data-modal-overlay></div>
-    <div role="dialog" aria-modal="true" aria-labelledby="termsTitle" class="modal-open relative mx-auto mt-10 w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-gray-100 p-4">
-      <div class="flex items-center justify-between p-2">
-        <h3 id="termsTitle" class="text-lg font-bold text-gray-900">Terms of Service</h3>
-        <button type="button" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close" data-modal-close><i data-lucide="x" class="w-5 h-5"></i></button>
+      <!-- FMCGs -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+            <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-green-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$1,500/month <span class="text-gray-500">(£1,200)</span></td>
+                <td class="px-6 py-4">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$3,500/month <span class="text-gray-500">(£2,800)</span></td>
+                <td class="px-6 py-4">Multi-region, advanced forecasting, competitor insights, API integration</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$75k–$150k/year <span class="text-gray-500">(£60k–£120k)</span></td>
+                <td class="px-6 py-4">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <iframe src="terms-of-service.html" title="Terms of Service" class="w-full h-[70vh] rounded-xl border"></iframe>
-    </div>
-  </div>
 
-  <!-- Ethical Data & AI Use Modal -->
-  <div id="ethicsModal" class="hidden fixed inset-0 z-50" aria-hidden="true">
-    <div class="absolute inset-0 bg-black/50" data-modal-overlay></div>
-    <div role="dialog" aria-modal="true" aria-labelledby="ethicsTitle" class="modal-open relative mx-auto mt-10 w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-gray-100 p-4">
-      <div class="flex items-center justify-between p-2">
-        <h3 id="ethicsTitle" class="text-lg font-bold text-gray-900">Ethical Data &amp; AI Use Policy</h3>
-        <button type="button" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close" data-modal-close><i data-lucide="x" class="w-5 h-5"></i></button>
+      <!-- NGOs & Development Partners -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+            <i data-lucide="users" class="w-5 h-5 text-[color:var(--orange-600)]"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-[color:var(--orange-700)]">NGOs & Development Partners</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-orange-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$300/month <span class="text-gray-500">(£240)</span></td>
+                <td class="px-6 py-4">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$1,200/month <span class="text-gray-500">(£950)</span></td>
+                <td class="px-6 py-4">Multi-region, real-time dashboards, grant reporting, alerts</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$25k–$100k/year <span class="text-gray-500">(£20k–£80k)</span></td>
+                <td class="px-6 py-4">Custom program analytics, donor-facing reports, field integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <iframe src="ethical-ai-policy.html" title="Ethical Data &amp; AI Use Policy" class="w-full h-[70vh] rounded-xl border"></iframe>
+
+      <!-- FinTechs -->
+      <div class="mb-2">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <i data-lucide="banknote" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$750/month <span class="text-gray-500">(£600)</span></td>
+                <td class="px-6 py-4">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$2,500/month <span class="text-gray-500">(£2,000)</span></td>
+                <td class="px-6 py-4">Expanded API, repayment analysis, portfolio monitoring</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$50k–$200k/year <span class="text-gray-500">(£40k–£160k)</span> + rev share</td>
+                <td class="px-6 py-4">Full API, predictive risk engine, dedicated integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-600 bg-white border border-gray-200 rounded-lg p-3 mt-4">
+        Prices are indicative and may vary with scope, data volumes, and integration complexity. Enterprise plans include custom SLAs and security reviews. VAT may apply.
+      </div>
     </div>
   </div>
 
   <script>
-/* ====== Config ====== */
-const API_BASE = 'https://api.afroubuntutrade.co.uk';
-const params = new URLSearchParams(location.search);
-const CONTINUE_URL = params.get('continue') || `${API_BASE}/`;
-
-/* ====== Utils ====== */
-function setBusy(btn, label) {
-  if (!btn) return;
-  btn.disabled = true;
-  btn.dataset.__orig = btn.dataset.__orig || btn.textContent;
-  btn.textContent = label;
-}
-function clearBusy(btn) {
-  if (!btn) return;
-  btn.disabled = false;
-  if (btn.dataset.__orig) btn.textContent = btn.dataset.__orig;
-}
-async function api(path, body, method = 'POST') {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: method === 'GET' ? null : JSON.stringify(body || {})
-  });
-  let data = null;
-  try { data = await res.json(); } catch {}
-  if (!res.ok) {
-    const msg = (data && (data.error || data.message)) || `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-  return data;
-}
-
-/* ====== Icons ====== */
-document.addEventListener('DOMContentLoaded', () => {
-  window.lucide && window.lucide.createIcons();
-});
-
-/* ====== Tabs & Password toggle ====== */
-function renderPwdIcon(name) {
-  const el = document.getElementById('pwdIcon');
-  if (!el || !window.lucide || !window.lucide.icons || !window.lucide.icons[name]) return;
-  el.innerHTML = window.lucide.icons[name].toSvg({ class: 'w-5 h-5' });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderPwdIcon('eye');
-
-  const tabEmail = document.getElementById('tabEmail');
-  const tabPhone = document.getElementById('tabPhone');
-  const emailFields = document.getElementById('emailFields');
-  const phoneFields = document.getElementById('phoneFields');
-
-  if (tabEmail && tabPhone && emailFields && phoneFields) {
-    tabEmail.addEventListener('click', () => {
-      tabEmail.setAttribute('aria-selected', 'true');
-      tabPhone.setAttribute('aria-selected', 'false');
-      tabEmail.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-      tabPhone.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-      emailFields.classList.remove('hidden');
-      phoneFields.classList.add('hidden');
-    });
-
-    tabPhone.addEventListener('click', () => {
-      tabPhone.setAttribute('aria-selected', 'true');
-      tabEmail.setAttribute('aria-selected', 'false');
-      tabPhone.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-      tabEmail.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-      emailFields.classList.add('hidden');
-      phoneFields.classList.remove('hidden');
-      // Optional: show a note that phone login isn't enabled yet
-      // alert('Phone login coming soon. Use email + password for now.');
-    });
-  }
-
-  const pwdInput = document.getElementById('passwordInput');
-  const togglePwd = document.getElementById('togglePassword');
-  if (togglePwd && pwdInput) {
-    togglePwd.addEventListener('click', () => {
-      const showing = pwdInput.getAttribute('type') === 'text';
-      pwdInput.setAttribute('type', showing ? 'password' : 'text');
-      togglePwd.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
-      renderPwdIcon(showing ? 'eye' : 'eye-off');
-    });
-  }
-
-  /* ====== LOGIN (email/password) ====== */
-  const form = document.getElementById('loginForm');
-  const alertBox = document.getElementById('alertBox');
-  const alertText = document.getElementById('alertText');
-  const loginBtn = document.getElementById('loginBtn');
-  const emailInput = document.getElementById('emailInput');
-
-  function showLoginError(msg) {
-    if (alertText) alertText.textContent = msg || 'Login failed';
-    if (alertBox) alertBox.classList.remove('hidden');
-  }
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      alertBox && alertBox.classList.add('hidden');
-      try {
-        const email = (emailInput?.value || '').trim();
-        const password = (pwdInput?.value || '');
-        if (!email || !password) {
-          showLoginError('Please enter your email and password.');
-          return;
-        }
-        setBusy(loginBtn, 'Logging in…');
-        await api('/auth/login', { email, password });
-        // success → go to portal
-        location.href = CONTINUE_URL;
-      } catch (err) {
-        showLoginError(err.message || 'Invalid email or password.');
-      } finally {
-        clearBusy(loginBtn);
-      }
-    });
-  }
-
-  /* ====== Modal System (unchanged, but kept minimal) ====== */
-  const openStack = [];
-  function lockScroll(lock) {
-    document.documentElement.classList.toggle('overflow-hidden', lock);
-    document.body.classList.toggle('overflow-hidden', lock);
-  }
-  function getFocusable(container) {
-    return container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-  }
-  function focusFirst(container) {
-    const f = getFocusable(container);
-    if (f.length) f[0].focus();
-  }
-  function openModal(id) {
-    const modal = document.getElementById(id);
-    if (!modal) return;
-    modal.classList.remove('hidden');
-    modal.setAttribute('aria-hidden', 'false');
-    const dialog = modal.querySelector('[role="dialog"]');
-    dialog && dialog.classList.add('modal-open');
-    openStack.push(id);
-    lockScroll(true);
-    focusFirst(dialog || modal);
-  }
-  function closeModal(id) {
-    const modal = document.getElementById(id);
-    if (!modal) return;
-    const dialog = modal.querySelector('[role="dialog"]');
-    dialog && dialog.classList.add('modal-close');
-    setTimeout(() => {
-      dialog && dialog.classList.remove('modal-close');
-      modal.classList.add('hidden');
-      modal.setAttribute('aria-hidden', 'true');
-    }, 120);
-    const idx = openStack.lastIndexOf(id);
-    if (idx >= 0) openStack.splice(idx, 1);
-    if (!openStack.length) lockScroll(false);
-  }
-  document.addEventListener('click', (e) => {
-    const opener = e.target.closest('[data-modal-target]');
-    if (opener) {
-      const id = opener.getAttribute('data-modal-target');
-      if (id) { e.preventDefault(); openModal(id); }
-    }
-    const overlay = e.target.closest('[data-modal-overlay]');
-    if (overlay) {
-      const modal = overlay.closest('[id]');
-      if (modal) closeModal(modal.id);
-    }
-    const closer = e.target.closest('[data-modal-close]');
-    if (closer) {
-      const modal = closer.closest('[id]');
-      if (modal) closeModal(modal.id);
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && openStack.length) closeModal(openStack[openStack.length - 1]);
-  });
-
-  /* ====== SIGN UP (modal) ====== */
-  const suForm = document.getElementById('signUpForm');
-  const suAlert = document.getElementById('su_alert');
-  const suSubmit = document.getElementById('su_submit');
-
-  function showSuError(msg, ok = false) {
-    if (!suAlert) return;
-    suAlert.textContent = msg;
-    suAlert.className = ok
-      ? 'p-3 rounded-xl border text-sm bg-green-50 border-green-200 text-green-700'
-      : 'p-3 rounded-xl border text-sm bg-red-50 border-red-200 text-red-700';
-  }
-
-  if (suForm) {
-    suForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (suAlert) suAlert.className = 'hidden p-3 rounded-xl border text-sm';
-
-      const name = document.getElementById('su_name')?.value.trim();
-      const email = document.getElementById('su_email')?.value.trim();
-      const p1 = document.getElementById('su_password')?.value || '';
-      const p2 = document.getElementById('su_password2')?.value || '';
-      const agree = document.getElementById('su_agree')?.checked;
-
-      const errors = [];
-      if (!name || name.length < 2) errors.push('Please enter your full name.');
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email || '')) errors.push('Enter a valid email address.');
-      if (p1.length < 8) errors.push('Password must be at least 8 characters.');
-      if (p1 !== p2) errors.push('Passwords do not match.');
-      if (!agree) errors.push('You must agree to the policies to continue.');
-
-      if (errors.length) return showSuError(errors.join(' '), false);
-
-      try {
-        setBusy(suSubmit, 'Creating account…');
-        await api('/auth/signup', { name, email, password: p1 });
-        // auto login after successful signup
-        await api('/auth/login', { email, password: p1 });
-        showSuError('Account created! Redirecting…', true);
-        // close the modal and go to portal
-        setTimeout(() => { location.href = CONTINUE_URL; }, 600);
-      } catch (err) {
-        showSuError(err.message || 'Could not create account.', false);
-      } finally {
-        clearBusy(suSubmit);
-      }
-    });
-  }
-});
-</script>
-<script>
-(function () {
+  // ===== Brand & routes =====
   const API_BASE = 'https://api.afroubuntutrade.co.uk';
+  const params = new URLSearchParams(location.search);
+  const CONTINUE_URL = params.get('continue') || `${API_BASE}/portal`;
+  // OTP endpoints (adjust to match your API if different)
+  const OTP_REQUEST_PATH = '/auth/request-otp';
+  const OTP_VERIFY_PATH  = '/auth/verify-otp';
+  // WhatsApp deep link (add a business number if you have one)
+  const WHATSAPP_NUMBER = ''; // e.g. '447700900123' (no +)
+  const WHATSAPP_TEXT = 'Hello, I need help signing in to Afro Ubuntu TradeNet.';
 
-  function getEmailFromPage() {
-    const sels = ['#emailInput', '#email', '#loginEmail', 'input[type="email"]', 'input[name="email"]'];
-    for (const s of sels) {
-      const el = document.querySelector(s);
-      const v = el && el.value && el.value.trim();
-      if (v) return v;
-    }
-    return '';
+  // ===== Helpers =====
+  function setBusy(btn, label) {
+    if (!btn) return;
+    btn.disabled = true;
+    btn.dataset.__orig = btn.dataset.__orig || btn.textContent;
+    if (label) btn.textContent = label;
   }
-
-  function isEmail(x) {
-    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x || '');
+  function clearBusy(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    if (btn.dataset.__orig) btn.textContent = btn.dataset.__orig;
   }
-
-  async function requestReset(email) {
-    const res = await fetch(`${API_BASE}/auth/request-reset`, {
-      method: 'POST',
+  async function api(path, body, method = 'POST') {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ email })
+      body: method === 'GET' ? null : JSON.stringify(body || {})
     });
-    // Always returns {ok:true} even if the email doesn't exist (no leakage)
-    await res.json().catch(() => ({}));
+    let data = null; try { data = await res.json(); } catch(e) {}
+    if (!res.ok) throw new Error((data && (data.error || data.message)) || `Request failed (${res.status})`);
+    return data;
   }
 
-  function bindForgotLink() {
-    // Find the “Forgotten your password?” link/button by text
-    const cands = Array.from(document.querySelectorAll('a, button'))
-      .filter(el => /forgot/i.test(el.textContent || ''));
+  function isPhone(x){ return /^[+0-9()\-\s]{7,}$/.test((x||'').trim()); }
 
-    if (!cands.length) return;
+  function buildWaLink(){
+    const msg = encodeURIComponent(WHATSAPP_TEXT);
+    if (WHATSAPP_NUMBER && /^(\d{6,15})$/.test(WHATSAPP_NUMBER)) {
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    }
+    return `https://wa.me/?text=${msg}`;
+  }
 
-    cands.forEach(el => {
-      el.addEventListener('click', async (e) => {
-        e.preventDefault();
+  // ===== Icons & year =====
+  document.addEventListener('DOMContentLoaded', () => {
+    try { window.lucide && window.lucide.createIcons(); } catch {}
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+    const wa = document.getElementById('whatsappLink'); if (wa) wa.href = buildWaLink();
+  });
 
-        let email = getEmailFromPage();
-        if (!isEmail(email)) {
-          email = (prompt('Enter the email you used to sign up:') || '').trim();
-        }
-        if (!isEmail(email)) {
-          alert('Please enter a valid email address.');
-          return;
-        }
-
-        try {
-          await requestReset(email);
-          alert(`If an account exists for ${email}, we’ve sent a password reset link.`);
-        } catch (err) {
-          alert('Could not request a reset. Please try again in a moment.');
-        }
+  // ===== Password toggle (email tab) =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const pwdInput = document.getElementById('passwordInput');
+    const togglePwd = document.getElementById('togglePassword');
+    const pwdIcon = document.getElementById('pwdIcon');
+    function icon(name){ try { pwdIcon.innerHTML = window.lucide.icons[name].toSvg({class:'w-5 h-5 text-white/70'}); } catch {} }
+    icon('eye');
+    if (togglePwd && pwdInput) {
+      togglePwd.addEventListener('click', () => {
+        const showing = pwdInput.getAttribute('type') === 'text';
+        pwdInput.setAttribute('type', showing ? 'password' : 'text');
+        togglePwd.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        icon(showing ? 'eye' : 'eye-off');
       });
+    }
+  });
+
+  // ===== Tabs =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const tEmail = document.getElementById('tabEmail');
+    const tPhone = document.getElementById('tabPhone');
+    const fEmail = document.getElementById('loginForm');
+    const fPhone = document.getElementById('otpForm');
+
+    function setTab(which){
+      const emailActive = which === 'email';
+      tEmail.classList.toggle('tab-active', emailActive);
+      tPhone.classList.toggle('tab-active', !emailActive);
+      fEmail.classList.toggle('hidden', !emailActive);
+      fPhone.classList.toggle('hidden', emailActive);
+    }
+
+    tEmail?.addEventListener('click', () => setTab('email'));
+    tPhone?.addEventListener('click', () => setTab('phone'));
+  });
+
+  // ===== Email login =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('loginForm');
+    const alertBox = document.getElementById('alertBox');
+    const alertText = document.getElementById('alertText');
+    const loginBtn = document.getElementById('loginBtn');
+    const emailInput = document.getElementById('emailInput');
+    const pwdInput = document.getElementById('passwordInput');
+
+    function showLoginError(msg){ if(alertText) alertText.textContent = msg || 'Login failed'; if(alertBox) alertBox.classList.remove('hidden'); }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox && alertBox.classList.add('hidden');
+        try {
+          const email = (emailInput?.value || '').trim();
+          const password = (pwdInput?.value || '');
+          if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
+          setBusy(loginBtn, 'Signing in…');
+          await api('/auth/login', { email, password });
+          location.href = CONTINUE_URL;
+        } catch (err) {
+          showLoginError(err.message || 'Invalid email or password.');
+        } finally { clearBusy(loginBtn); }
+      });
+    }
+  });
+
+  // ===== Phone + OTP login =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const alertBox = document.getElementById('alertBox');
+    const alertText = document.getElementById('alertText');
+    const form = document.getElementById('otpForm');
+    const phoneInput = document.getElementById('phoneInput');
+    const codeInput = document.getElementById('codeInput');
+    const sendBtn = document.getElementById('sendCodeBtn');
+    const loginBtn = document.getElementById('otpLoginBtn');
+
+    function showError(msg){ if(alertText) alertText.textContent = msg || 'Something went wrong'; if(alertBox) alertBox.classList.remove('hidden'); }
+
+    sendBtn?.addEventListener('click', async () => {
+      const phone = (phoneInput?.value || '').trim();
+      if (!isPhone(phone)) { showError('Enter a valid phone number including country code.'); return; }
+      try{
+        setBusy(sendBtn, 'Sending…');
+        await api(OTP_REQUEST_PATH, { phone });
+        alertBox?.classList.add('hidden');
+        codeInput?.focus();
+      }catch(err){ showError(err.message || 'Could not send code.'); }
+      finally{ clearBusy(sendBtn); }
     });
-  }
 
-  document.addEventListener('DOMContentLoaded', bindForgotLink);
-})();
-</script>
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = (phoneInput?.value || '').trim();
+      const code = (codeInput?.value || '').trim();
+      if (!isPhone(phone)) { showError('Enter a valid phone number including country code.'); return; }
+      if (!code) { showError('Enter the verification code.'); return; }
+      try{
+        setBusy(loginBtn, 'Verifying…');
+        await api(OTP_VERIFY_PATH, { phone, code });
+        location.href = CONTINUE_URL;
+      }catch(err){ showError(err.message || 'Invalid code.'); }
+      finally{ clearBusy(loginBtn); }
+    });
+  });
 
+  // ===== Modal system =====
+  (function(){
+    const openStack = [];
+    function lockScroll(lock){ document.documentElement.classList.toggle('overflow-hidden', lock); document.body.classList.toggle('overflow-hidden', lock); }
+    function getFocusable(c){ return c.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'); }
+    function focusFirst(c){ const f = getFocusable(c); if (f.length) f[0].focus(); }
+    function openModal(id){ const m = document.getElementById(id); if(!m) return; m.classList.remove('hidden'); m.setAttribute('aria-hidden','false'); const d=m.querySelector('[role="dialog"]'); d && d.classList.add('modal-open'); openStack.push(id); lockScroll(true); focusFirst(d||m); try{window.lucide && window.lucide.createIcons();}catch{} }
+    function closeModal(id){ const m = document.getElementById(id); if(!m) return; const d=m.querySelector('[role="dialog"]'); d && d.classList.add('modal-close'); setTimeout(()=>{ d && d.classList.remove('modal-close'); m.classList.add('hidden'); m.setAttribute('aria-hidden','true'); }, 120); const i=openStack.lastIndexOf(id); if(i>=0) openStack.splice(i,1); if(!openStack.length) lockScroll(false); }
+    document.addEventListener('click', (e)=>{ const opener=e.target.closest('[data-modal-target]'); if(opener){ e.preventDefault(); const id=opener.getAttribute('data-modal-target'); if(id) openModal(id);} const closer=e.target.closest('[data-modal-close]'); if(closer){ e.preventDefault(); const m=closer.closest('[id]'); if(m) closeModal(m.id); } if(e.target.matches('[data-modal-overlay]')){ const m=e.target.closest('[id]'); if(m) closeModal(m.id); } });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && openStack.length){ const id = openStack[openStack.length-1]; closeModal(id);} });
+  })();
+
+  // ===== Sign Up =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const suForm = document.getElementById('signUpForm');
+    const suAlert = document.getElementById('su_alert');
+    const suSubmit = document.getElementById('su_submit');
+
+    function showSuMsg(msg, ok=false){ if(!suAlert) return; suAlert.textContent = msg; suAlert.className = ok ? 'mt-4 p-3 rounded-xl border text-sm bg-green-500/10 border-green-300/40 text-green-700' : 'mt-4 p-3 rounded-xl border text-sm bg-red-500/10 border-red-300/40 text-red-700'; }
+
+    if (suForm) {
+      suForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); if(suAlert) suAlert.className='hidden p-3 rounded-xl border text-sm';
+        const name = document.getElementById('su_name')?.value.trim();
+        const email = document.getElementById('su_email')?.value.trim();
+        const p1 = document.getElementById('su_password')?.value || '';
+        const p2 = document.getElementById('su_password2')?.value || '';
+        const agree = document.getElementById('su_agree')?.checked;
+        const errors=[];
+        if(!name || name.length<2) errors.push('Please enter your full name.');
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email||'')) errors.push('Enter a valid email address.');
+        if(p1.length<8) errors.push('Password must be at least 8 characters.');
+        if(p1!==p2) errors.push('Passwords do not match.');
+        if(!agree) errors.push('You must agree to the policies to continue.');
+        if(errors.length) return showSuMsg(errors.join(' '), false);
+        try{
+          setBusy(suSubmit, 'Creating…');
+          await api('/auth/signup', { name, email, password: p1 });
+          await api('/auth/login', { email, password: p1 });
+          showSuMsg('Account created! Redirecting…', true);
+          setTimeout(()=>{ location.href = CONTINUE_URL; }, 700);
+        }catch(err){ showSuMsg(err.message || 'Could not create account.', false); }
+        finally{ clearBusy(suSubmit); }
+      });
+    }
+  });
+
+  // ===== Forgot password =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const link = document.getElementById('forgotLink');
+    async function requestReset(email){
+      const r = await fetch(`${API_BASE}/auth/request-reset`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email }) });
+      await r.json().catch(()=>({}));
+    }
+    function isEmail(x){ return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x||''); }
+    function getEmail(){ const el=document.getElementById('emailInput'); return (el && el.value && el.value.trim()) || ''; }
+    if (link){ link.addEventListener('click', async (e)=>{ e.preventDefault(); let email = getEmail(); if(!isEmail(email)){ email = (prompt('Enter the email you used to sign up:') || '').trim(); } if(!isEmail(email)){ alert('Please enter a valid email address.'); return; } try{ await requestReset(email); alert(`If an account exists for ${email}, we’ve sent a password reset link.`);} catch{ alert('Could not request a reset. Please try again.'); } }); }
+  });
+  </script>
 </body>
 </html>
