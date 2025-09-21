@@ -213,194 +213,235 @@
   </div>
 
   <script>
-    // ============== Icons ==============
-    document.addEventListener('DOMContentLoaded', () => {
-      window.lucide && window.lucide.createIcons();
+/* ====== Config ====== */
+const API_BASE = 'https://api.afroubuntutrade.co.uk';
+const params = new URLSearchParams(location.search);
+const CONTINUE_URL = params.get('continue') || `${API_BASE}/`;
+
+/* ====== Utils ====== */
+function setBusy(btn, label) {
+  if (!btn) return;
+  btn.disabled = true;
+  btn.dataset.__orig = btn.dataset.__orig || btn.textContent;
+  btn.textContent = label;
+}
+function clearBusy(btn) {
+  if (!btn) return;
+  btn.disabled = false;
+  if (btn.dataset.__orig) btn.textContent = btn.dataset.__orig;
+}
+async function api(path, body, method = 'POST') {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: method === 'GET' ? null : JSON.stringify(body || {})
+  });
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (!res.ok) {
+    const msg = (data && (data.error || data.message)) || `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data;
+}
+
+/* ====== Icons ====== */
+document.addEventListener('DOMContentLoaded', () => {
+  window.lucide && window.lucide.createIcons();
+});
+
+/* ====== Tabs & Password toggle ====== */
+function renderPwdIcon(name) {
+  const el = document.getElementById('pwdIcon');
+  if (!el || !window.lucide || !window.lucide.icons || !window.lucide.icons[name]) return;
+  el.innerHTML = window.lucide.icons[name].toSvg({ class: 'w-5 h-5' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderPwdIcon('eye');
+
+  const tabEmail = document.getElementById('tabEmail');
+  const tabPhone = document.getElementById('tabPhone');
+  const emailFields = document.getElementById('emailFields');
+  const phoneFields = document.getElementById('phoneFields');
+
+  if (tabEmail && tabPhone && emailFields && phoneFields) {
+    tabEmail.addEventListener('click', () => {
+      tabEmail.setAttribute('aria-selected', 'true');
+      tabPhone.setAttribute('aria-selected', 'false');
+      tabEmail.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
+      tabPhone.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
+      emailFields.classList.remove('hidden');
+      phoneFields.classList.add('hidden');
     });
 
-    // ============== Tabs & Login (existing) ==============
-    function renderPwdIcon(name) {
-      const el = document.getElementById('pwdIcon');
-      if (!window.lucide || !window.lucide.icons || !window.lucide.icons[name]) return;
-      el.innerHTML = window.lucide.icons[name].toSvg({ class: 'w-5 h-5' });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      renderPwdIcon('eye');
-
-      const tabEmail = document.getElementById('tabEmail');
-      const tabPhone = document.getElementById('tabPhone');
-      const emailFields = document.getElementById('emailFields');
-      const phoneFields = document.getElementById('phoneFields');
-
-      tabEmail.addEventListener('click', () => {
-        tabEmail.setAttribute('aria-selected', 'true');
-        tabPhone.setAttribute('aria-selected', 'false');
-        tabEmail.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-        tabPhone.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-        emailFields.classList.remove('hidden');
-        phoneFields.classList.add('hidden');
-      });
-
-      tabPhone.addEventListener('click', () => {
-        tabPhone.setAttribute('aria-selected', 'true');
-        tabEmail.setAttribute('aria-selected', 'false');
-        tabPhone.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-        tabEmail.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
-        emailFields.classList.add('hidden');
-        phoneFields.classList.remove('hidden');
-      });
-
-      const pwdInput = document.getElementById('passwordInput');
-      const togglePwd = document.getElementById('togglePassword');
-      togglePwd.addEventListener('click', () => {
-        const showing = pwdInput.getAttribute('type') === 'text';
-        pwdInput.setAttribute('type', showing ? 'password' : 'text');
-        togglePwd.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
-        renderPwdIcon(showing ? 'eye' : 'eye-off');
-      });
-
-      const form = document.getElementById('loginForm');
-      const alertBox = document.getElementById('alertBox');
-      const alertText = document.getElementById('alertText');
-      const loginBtn = document.getElementById('loginBtn');
-      const emailInput = document.getElementById('emailInput');
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alertBox.classList.add('hidden');
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Logging in...</span></div>';
-        const password = pwdInput.value;
-        const email = emailInput.value;
-
-        setTimeout(() => {
-          if (email === 'demo@afroubuntu.com' && password === 'demo123') {
-            loginBtn.innerHTML = 'Logged in ✓';
-          } else {
-            alertText.textContent = 'Invalid credentials. Please enter your details and try again';
-            alertBox.classList.remove('hidden');
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Log in';
-          }
-        }, 1200);
-      });
+    tabPhone.addEventListener('click', () => {
+      tabPhone.setAttribute('aria-selected', 'true');
+      tabEmail.setAttribute('aria-selected', 'false');
+      tabPhone.classList.add('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
+      tabEmail.classList.remove('bg-gradient-to-r','from-orange-600','to-green-600','text-white','shadow-md');
+      emailFields.classList.add('hidden');
+      phoneFields.classList.remove('hidden');
+      // Optional: show a note that phone login isn't enabled yet
+      // alert('Phone login coming soon. Use email + password for now.');
     });
+  }
 
-    // ============== Modal System ==============
-    const openStack = []; // why: manage nested modals & ESC close order
-
-    function lockScroll(lock) {
-      document.documentElement.classList.toggle('overflow-hidden', lock);
-      document.body.classList.toggle('overflow-hidden', lock);
-    }
-
-    function getFocusable(container) {
-      return container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-    }
-
-    function focusFirst(container) {
-      const f = getFocusable(container);
-      if (f.length) f[0].focus();
-    }
-
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.remove('hidden');
-      modal.setAttribute('aria-hidden', 'false');
-      const dialog = modal.querySelector('[role="dialog"]');
-      dialog && dialog.classList.add('modal-open');
-      openStack.push(id);
-      lockScroll(true);
-      setTimeout(() => focusFirst(dialog || modal), 0);
-      window.lucide && window.lucide.createIcons();
-    }
-
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      const dialog = modal.querySelector('[role="dialog"]');
-      dialog && dialog.classList.add('modal-close');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.setAttribute('aria-hidden', 'true');
-        dialog && dialog.classList.remove('modal-close');
-      }, 120);
-      const idx = openStack.lastIndexOf(id);
-      if (idx > -1) openStack.splice(idx, 1);
-      if (openStack.length === 0) lockScroll(false);
-    }
-
-    // Delegated open
-    document.addEventListener('click', (e) => {
-      const opener = e.target.closest('[data-modal-target]');
-      if (opener) {
-        const id = opener.getAttribute('data-modal-target');
-        if (id) { e.preventDefault(); openModal(id); }
-      }
-      // Overlay click
-      const overlay = e.target.closest('[data-modal-overlay]');
-      if (overlay) {
-        const modal = overlay.closest('[id]');
-        if (modal) closeModal(modal.id);
-      }
-      // Close buttons
-      const closer = e.target.closest('[data-modal-close]');
-      if (closer) {
-        const modal = closer.closest('[id]');
-        if (modal) closeModal(modal.id);
-      }
+  const pwdInput = document.getElementById('passwordInput');
+  const togglePwd = document.getElementById('togglePassword');
+  if (togglePwd && pwdInput) {
+    togglePwd.addEventListener('click', () => {
+      const showing = pwdInput.getAttribute('type') === 'text';
+      pwdInput.setAttribute('type', showing ? 'password' : 'text');
+      togglePwd.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      renderPwdIcon(showing ? 'eye' : 'eye-off');
     });
+  }
 
-    // ESC to close topmost
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && openStack.length) {
-        const top = openStack[openStack.length - 1];
-        closeModal(top);
-      }
-    });
+  /* ====== LOGIN (email/password) ====== */
+  const form = document.getElementById('loginForm');
+  const alertBox = document.getElementById('alertBox');
+  const alertText = document.getElementById('alertText');
+  const loginBtn = document.getElementById('loginBtn');
+  const emailInput = document.getElementById('emailInput');
 
-    // ============== Sign Up Form (demo) ==============
-    document.addEventListener('DOMContentLoaded', () => {
-      const suForm = document.getElementById('signUpForm');
-      const suAlert = document.getElementById('su_alert');
-      const suSubmit = document.getElementById('su_submit');
+  function showLoginError(msg) {
+    if (alertText) alertText.textContent = msg || 'Login failed';
+    if (alertBox) alertBox.classList.remove('hidden');
+  }
 
-      suForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        suAlert.className = 'hidden p-3 rounded-xl border text-sm';
-        const name = document.getElementById('su_name').value.trim();
-        const email = document.getElementById('su_email').value.trim();
-        const p1 = document.getElementById('su_password').value;
-        const p2 = document.getElementById('su_password2').value;
-        const agree = document.getElementById('su_agree').checked;
-
-        const errors = [];
-        if (name.length < 2) errors.push('Please enter your full name.');
-        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) errors.push('Enter a valid email address.');
-        if (p1.length < 8) errors.push('Password must be at least 8 characters.');
-        if (p1 !== p2) errors.push('Passwords do not match.');
-        if (!agree) errors.push('You must agree to the policies to continue.');
-
-        if (errors.length) {
-          suAlert.textContent = errors.join(' ');
-          suAlert.className = 'p-3 rounded-xl border text-sm bg-red-50 border-red-200 text-red-700';
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox && alertBox.classList.add('hidden');
+      try {
+        const email = (emailInput?.value || '').trim();
+        const password = (pwdInput?.value || '');
+        if (!email || !password) {
+          showLoginError('Please enter your email and password.');
           return;
         }
-
-        suSubmit.disabled = true;
-        suSubmit.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Creating account...</span></div>';
-
-        // Simulate success; replace with real API call
-        setTimeout(() => {
-          suAlert.textContent = 'Account created! Please check your email to verify your account.';
-          suAlert.className = 'p-3 rounded-xl border text-sm bg-green-50 border-green-200 text-green-700';
-          suSubmit.disabled = false;
-          suSubmit.textContent = 'Create account';
-        }, 1200);
-      });
+        setBusy(loginBtn, 'Logging in…');
+        await api('/auth/login', { email, password });
+        // success → go to portal
+        location.href = CONTINUE_URL;
+      } catch (err) {
+        showLoginError(err.message || 'Invalid email or password.');
+      } finally {
+        clearBusy(loginBtn);
+      }
     });
-  </script>
+  }
+
+  /* ====== Modal System (unchanged, but kept minimal) ====== */
+  const openStack = [];
+  function lockScroll(lock) {
+    document.documentElement.classList.toggle('overflow-hidden', lock);
+    document.body.classList.toggle('overflow-hidden', lock);
+  }
+  function getFocusable(container) {
+    return container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+  }
+  function focusFirst(container) {
+    const f = getFocusable(container);
+    if (f.length) f[0].focus();
+  }
+  function openModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    const dialog = modal.querySelector('[role="dialog"]');
+    dialog && dialog.classList.add('modal-open');
+    openStack.push(id);
+    lockScroll(true);
+    focusFirst(dialog || modal);
+  }
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    const dialog = modal.querySelector('[role="dialog"]');
+    dialog && dialog.classList.add('modal-close');
+    setTimeout(() => {
+      dialog && dialog.classList.remove('modal-close');
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }, 120);
+    const idx = openStack.lastIndexOf(id);
+    if (idx >= 0) openStack.splice(idx, 1);
+    if (!openStack.length) lockScroll(false);
+  }
+  document.addEventListener('click', (e) => {
+    const opener = e.target.closest('[data-modal-target]');
+    if (opener) {
+      const id = opener.getAttribute('data-modal-target');
+      if (id) { e.preventDefault(); openModal(id); }
+    }
+    const overlay = e.target.closest('[data-modal-overlay]');
+    if (overlay) {
+      const modal = overlay.closest('[id]');
+      if (modal) closeModal(modal.id);
+    }
+    const closer = e.target.closest('[data-modal-close]');
+    if (closer) {
+      const modal = closer.closest('[id]');
+      if (modal) closeModal(modal.id);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && openStack.length) closeModal(openStack[openStack.length - 1]);
+  });
+
+  /* ====== SIGN UP (modal) ====== */
+  const suForm = document.getElementById('signUpForm');
+  const suAlert = document.getElementById('su_alert');
+  const suSubmit = document.getElementById('su_submit');
+
+  function showSuError(msg, ok = false) {
+    if (!suAlert) return;
+    suAlert.textContent = msg;
+    suAlert.className = ok
+      ? 'p-3 rounded-xl border text-sm bg-green-50 border-green-200 text-green-700'
+      : 'p-3 rounded-xl border text-sm bg-red-50 border-red-200 text-red-700';
+  }
+
+  if (suForm) {
+    suForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (suAlert) suAlert.className = 'hidden p-3 rounded-xl border text-sm';
+
+      const name = document.getElementById('su_name')?.value.trim();
+      const email = document.getElementById('su_email')?.value.trim();
+      const p1 = document.getElementById('su_password')?.value || '';
+      const p2 = document.getElementById('su_password2')?.value || '';
+      const agree = document.getElementById('su_agree')?.checked;
+
+      const errors = [];
+      if (!name || name.length < 2) errors.push('Please enter your full name.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email || '')) errors.push('Enter a valid email address.');
+      if (p1.length < 8) errors.push('Password must be at least 8 characters.');
+      if (p1 !== p2) errors.push('Passwords do not match.');
+      if (!agree) errors.push('You must agree to the policies to continue.');
+
+      if (errors.length) return showSuError(errors.join(' '), false);
+
+      try {
+        setBusy(suSubmit, 'Creating account…');
+        await api('/auth/signup', { name, email, password: p1 });
+        // auto login after successful signup
+        await api('/auth/login', { email, password: p1 });
+        showSuError('Account created! Redirecting…', true);
+        // close the modal and go to portal
+        setTimeout(() => { location.href = CONTINUE_URL; }, 600);
+      } catch (err) {
+        showSuError(err.message || 'Could not create account.', false);
+      } finally {
+        clearBusy(suSubmit);
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>
