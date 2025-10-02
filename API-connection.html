@@ -385,9 +385,9 @@
 
   <script>
   // ===== Brand & routes =====
-  const API_BASE = 'https://api.afroubuntutrade.co.uk';
+  const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
   const params = new URLSearchParams(location.search);
-  const CONTINUE_URL = params.get('continue') || `${API_BASE}/portal`;
+  const CONTINUE_URL = params.get('continue') || `https://www.afroubuntutrade.co.uk/API-connection.html`;
   // OTP endpoints (adjust to match your API if different)
   const OTP_REQUEST_PATH = '/auth/request-otp';
   const OTP_VERIFY_PATH  = '/auth/verify-otp';
@@ -485,7 +485,7 @@
           const password = (pwdInput?.value || '');
           if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
           setBusy(loginBtn, 'Signing in…');
-          await api('/auth/login', { email, password });
+          await api('/api/login', { email, password });
           location.href = CONTINUE_URL;
         } catch (err) {
           showLoginError(err.message || 'Invalid email or password.');
@@ -575,8 +575,8 @@ suEmailErr?.classList.toggle('hidden', emailValid);
         if(errors.length) return showSuMsg(errors.join(' '), false);
         try{
           setBusy(suSubmit, 'Creating…');
-          await api('/auth/signup', { name, email, password: p1 });
-          await api('/auth/login', { email, password: p1 });
+          await api('/api/signup', { name, email, password: p1 });
+          await api('/api/login', { email, password: p1 });
           showSuMsg('Account created! Redirecting…', true);
           setTimeout(()=>{ location.href = CONTINUE_URL; }, 700);
         }catch(err){ showSuMsg(err.message || 'Could not create account.', false); }
@@ -604,5 +604,73 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     if (link){ link.addEventListener('click', async (e)=>{ e.preventDefault(); let email = getEmail(); if(!isEmail(email)){ email = (prompt('Enter the email you used to sign up:') || '').trim(); } if(!isEmail(email)){ alert('Please enter a valid email address.'); return; } try{ await requestReset(email); alert(`If an account exists for ${email}, we’ve sent a password reset link.`);} catch{ alert('Could not request a reset. Please try again.'); } }); }
   });
   </script>
+
+<script>
+// ===== Runtime helpers injected by deploy script (non-destructive) =====
+(function() {
+  const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+
+  // Monkeypatch fetch: add Authorization to our API calls automatically
+  const _fetch = window.fetch.bind(window);
+  window.fetch = async function(resource, init={}) {
+    try {
+      const url = (typeof resource === 'string') ? resource : resource.url;
+      if (url && url.startsWith(API_BASE)) {
+        init.headers = init.headers || {};
+        const h = new Headers(init.headers);
+        const t = localStorage.getItem('token');
+        if (t && !h.has('Authorization')) h.set('Authorization', `Bearer ${t}`);
+        if (!h.has('Content-Type')) h.set('Content-Type','application/json');
+        init.headers = h;
+        init.credentials = init.credentials || 'include';
+      }
+    } catch (e) {}
+    const res = await _fetch(resource, init);
+
+    // If this was a login/signup response from our API and contains a token, store it
+    try {
+      const url = (typeof resource === 'string') ? resource : resource.url;
+      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup)/.test(url)) {
+        const clone = res.clone();
+        const data = await clone.json().catch(() => null);
+        if (data && data.token) localStorage.setItem('token', data.token);
+      }
+    } catch (e) {}
+
+    return res;
+  };
+
+  // Personalize welcome if token exists
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const r = await fetch(`${API_BASE}/api/me`, { method:'GET' });
+      const me = await r.json();
+      const el = document.getElementById('welcomeName');
+      if (el && me && me.user && me.user.email) {
+        el.textContent = me.user.email.split('@')[0];
+      }
+    } catch (e) {}
+  });
+
+  // Soft-disable OTP flows if your backend doesn't have endpoints yet
+  document.addEventListener('click', (ev) => {
+    const target = ev.target;
+    if (!target) return;
+    const text = (target.textContent || '').toLowerCase();
+    // Intercept obvious OTP actions
+    if (text.includes('send code') || text.includes('verify code')) {
+      ev.preventDefault();
+      const alertBox = document.getElementById('alertBox');
+      const alertText = document.getElementById('alertText');
+      const msg = 'Phone/OTP login is not available yet. Please use email & password.';
+      if (alertText) alertText.textContent = msg;
+      if (alertBox) alertBox.classList.remove('hidden');
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
