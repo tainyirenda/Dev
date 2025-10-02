@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Afro Ubuntu — Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+    async function call(path, method='GET', body=null) {
+      const headers = { 'Content-Type': 'application/json' };
+      const t = localStorage.getItem('token');
+      if (t) headers['Authorization'] = 'Bearer ' + t;
+      const res = await fetch(API_BASE + path, { method, headers, credentials:'include', body: body ? JSON.stringify(body) : null });
+      const data = await res.json().catch(()=>null);
+      if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
+      return data;
+    }
+    async function init() {
+      const status = document.getElementById('status');
+      const userEl = document.getElementById('user');
+      try {
+        status.textContent = 'Loading…';
+        const me = await call('/api/me');
+        status.textContent = 'Signed in';
+        userEl.textContent = me && me.user && me.user.email ? me.user.email : 'Unknown';
+      } catch (e) {
+        status.textContent = 'Not signed in';
+      }
+    }
+    function logout() { localStorage.removeItem('token'); location.reload(); }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:#0b1511; color:#fff; }
+    .wrap { max-width: 760px; margin: 40px auto; padding: 20px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:16px; }
+    .row { display:flex; justify-content:space-between; align-items:center; }
+    button { background:linear-gradient(135deg,#ea580c,#16a34a); color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; }
+    button:hover { opacity:.9 }
+    a { color:#9ae6b4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <h2 style="margin:0">Your account</h2>
+      <div>
+        <span id="status" style="opacity:.8;margin-right:12px;">…</span>
+        <button onclick="logout()">Log out</button>
+      </div>
+    </div>
+    <p>Signed in as <strong id="user">—</strong></p>
+    <p><a href="https://www.afroubuntutrade.co.uk/API-connection.html">Back to sign-in</a></p>
+  </div>
+</body>
+</html>
