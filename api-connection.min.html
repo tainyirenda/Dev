@@ -1,55 +1,245 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Afro Ubuntu — Account</title>
+  <meta charset="utf-8" />
+  <title>Afro Ubuntu • Account Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --au-charcoal:#1f2937;  /* slate-800 */
+      --au-ink:#111827;       /* gray-900 */
+      --au-stone:#6b7280;     /* gray-500 */
+      --au-line:#e5e7eb;      /* gray-200 */
+      --au-surface:#f8fafc;   /* slate-50 */
+      --au-white:#ffffff;
+      --au-accent:#ea580c;    /* orange-600 */
+      --au-accent-soft: rgba(234,88,12,.08);
+      --au-gold:#f5b400;      /* warm gold for tiny flourishes */
+    }
+    html,body{height:100%}
+    body{
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background:var(--au-surface); color:var(--au-ink);
+    }
+    .card { background: var(--au-white); border:1px solid var(--au-line); border-radius:14px; box-shadow:0 1px 2px rgba(17,24,39,.06); }
+    .pill { background: var(--au-accent-soft); color: var(--au-accent); border-radius:999px; padding:.2rem .55rem; font-size:.75rem; }
+    .iconwrap { width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:#f3f4f6; color:var(--au-ink); }
+    a.link { color: var(--au-ink); text-decoration: underline; text-decoration-color: var(--au-line); text-underline-offset: 3px; }
+    a.link:hover { text-decoration-color: var(--au-accent); color: var(--au-accent); }
+    .btn { background: var(--au-ink); color: var(--au-white); border-radius:10px; padding:10px 14px; font-weight:600; }
+    .btn:hover { opacity:.95 }
+    .btn-outline { border:1px solid var(--au-line); border-radius:10px; padding:10px 14px; color: var(--au-ink); background: var(--au-white); }
+    .btn-outline:hover { background:#f9fafb }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="bg-white border-b border-[color:var(--au-line)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
+        <div>
+          <p class="text-sm font-semibold text-[color:var(--au-ink)] leading-tight">Afro Ubuntu TradeNet</p>
+          <p class="text-xs text-[color:var(--au-stone)] -mt-0.5">Rooted in Africa, connected to the world</p>
+        </div>
+      </div>
+      <nav class="flex items-center gap-2">
+        <a href="/" class="btn-outline hidden sm:inline-block">Home</a>
+        <button id="logoutBtn" class="btn-outline">Log out</button>
+      </nav>
+    </div>
+    <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] via-[color:var(--au-gold)] to-[color:var(--au-ink)]"></div>
+  </header>
+
+  <!-- Subtle background accents -->
+  <div class="fixed inset-0 -z-10 pointer-events-none">
+    <div class="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full" style="background: radial-gradient(closest-side, rgba(234,88,12,.06), transparent 70%);"></div>
+    <div class="absolute -bottom-28 -left-28 w-[520px] h-[520px] rounded-full" style="background: radial-gradient(closest-side, rgba(17,24,39,.06), transparent 70%);"></div>
+  </div>
+
+  <!-- Main -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Greeting + status -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[color:var(--au-ink)]">Your account</h1>
+        <p class="text-[15px] text-[color:var(--au-stone)]">
+          Welcome back, <span id="welcomeName" class="font-semibold text-[color:var(--au-ink)]">—</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="pill" id="status">Checking…</span>
+        <a class="btn" id="toSignIn" href="#" style="display:none">Sign in</a>
+      </div>
+    </div>
+
+    <!-- Identity -->
+    <div class="mt-4 card p-4 sm:p-5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="iconwrap"><i data-lucide="user" class="w-5 h-5"></i></div>
+        <div class="min-w-0">
+          <p class="text-sm text-[color:var(--au-stone)]">Signed in as</p>
+          <p class="text-base font-semibold truncate" id="email">—</p>
+        </div>
+      </div>
+      <button class="btn-outline" id="copyBtn" title="Copy email">Copy</button>
+    </div>
+
+    <!-- Cards -->
+    <section class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <a href="/portal/dashboard" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Dashboard</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Usage, APIs and performance KPIs.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/portal/insights" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="line-chart" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Insights</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Predictive analysis, alerts & recommendations.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/portal/connect" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="messages-square" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Connect Hub</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Discover partners & AI-assisted matching.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/portal/verification" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="badge-check" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Business Verification</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Confirm your business details.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/portal/track" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="receipt-text" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Track Application</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">See submission and review status.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/portal/billing" class="card p-5 hover:shadow transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="iconwrap"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
+          <div>
+            <h3 class="text-lg font-semibold">Billing & Plans</h3>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Manage plan, invoices and add-ons.</p>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <!-- Help -->
+    <div class="mt-8 card p-5">
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-[color:var(--au-accent)] mt-0.5"></i>
+        <p class="text-sm text-[color:var(--au-stone)]">
+          Need help? Visit <a class="link" href="/portal/docs">Developer Docs</a> or email
+          <a class="link" href="mailto:info@afroubuntutrade.co.uk">info@afroubuntutrade.co.uk</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-[color:var(--au-line)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd • Rooted in Ubuntu Philosophy</p>
+      <div class="flex items-center gap-4">
+        <a class="link" href="privacy-policy.html">Privacy</a>
+        <a class="link" href="terms-of-service.html">Terms</a>
+        <a class="link" href="ethical-ai-policy.html">Ethical Data & AI Use</a>
+      </div>
+    </div>
+  </footer>
+
   <script>
+    lucide.createIcons();
+
+    // ---- Config: API + sign-in target (with continue back here)
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+    const ACCOUNT_URL = location.origin + '/api-connection.min.html';
+    const SIGNIN_PAGE = '/API-connection.html'; // adjust if your live sign-in file differs
+    const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(ACCOUNT_URL)}`;
+
+    // ---- API helper (Bearer token from localStorage)
     async function call(path, method='GET', body=null) {
       const headers = { 'Content-Type': 'application/json' };
       const t = localStorage.getItem('token');
       if (t) headers['Authorization'] = 'Bearer ' + t;
-      const res = await fetch(API_BASE + path, { method, headers, credentials:'include', body: body ? JSON.stringify(body) : null });
+      const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : null });
       const data = await res.json().catch(()=>null);
       if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
       return data;
     }
-    async function init() {
+
+    // ---- Page boot
+    async function init(){
       const status = document.getElementById('status');
-      const userEl = document.getElementById('user');
+      const welcome = document.getElementById('welcomeName');
+      const emailEl = document.getElementById('email');
+      const toSignIn = document.getElementById('toSignIn');
+      toSignIn.href = SIGNIN_WITH_CONTINUE;
+
       try {
         status.textContent = 'Loading…';
         const me = await call('/api/me');
         status.textContent = 'Signed in';
-        userEl.textContent = me && me.user && me.user.email ? me.user.email : 'Unknown';
+        const name = me?.user?.name || '';
+        const email = me?.user?.email || 'Unknown';
+        welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
+        emailEl.textContent = email;
       } catch (e) {
         status.textContent = 'Not signed in';
+        toSignIn.style.display = 'inline-flex';
       }
     }
-    function logout() { localStorage.removeItem('token'); location.reload(); }
+
+    // Copy email
+    document.getElementById('copyBtn')?.addEventListener('click', async () => {
+      const email = document.getElementById('email')?.textContent?.trim();
+      if (!email || email === '—') return;
+      try {
+        await navigator.clipboard.writeText(email);
+        const btn = document.getElementById('copyBtn');
+        const old = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(()=> btn.textContent = old, 1200);
+      } catch {}
+    });
+
+    // Logout -> clear token + go to sign-in (with continue back here if you like)
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = SIGNIN_WITH_CONTINUE;
+    });
+
+    // Year
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+
     document.addEventListener('DOMContentLoaded', init);
   </script>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:#0b1511; color:#fff; }
-    .wrap { max-width: 760px; margin: 40px auto; padding: 20px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:16px; }
-    .row { display:flex; justify-content:space-between; align-items:center; }
-    button { background:linear-gradient(135deg,#ea580c,#16a34a); color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; }
-    button:hover { opacity:.9 }
-    a { color:#9ae6b4; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="row">
-      <h2 style="margin:0">Your account</h2>
-      <div>
-        <span id="status" style="opacity:.8;margin-right:12px;">…</span>
-        <button onclick="logout()">Log out</button>
-      </div>
-    </div>
-    <p>Signed in as <strong id="user">—</strong></p>
-    <p><a href="https://www.afroubuntutrade.co.uk/API-connection.html">Back to sign-in</a></p>
-  </div>
 </body>
 </html>
