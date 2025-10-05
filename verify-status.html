@@ -27,7 +27,7 @@
       <p id="note" class="msg"></p>
     </div>
 
-    <p><a href="API-connection%20(1).html">Back to sign-in</a></p>
+    <p><a href="API-connection.html">Back to sign-in</a></p>
   </div>
 
 <script>
@@ -50,6 +50,8 @@ if (status === 'expired') {
   resend.style.display = '';
 } else if (status === 'already') {
   statusEl.textContent = 'Your email is already verified — you can sign in now.';
+} else if (status === 'success') {
+  statusEl.textContent = 'Email verified ✅ — you can sign in now.';
 } else {
   statusEl.textContent = 'Verification status unknown.';
   resend.style.display = '';
