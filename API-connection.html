@@ -584,23 +584,45 @@ suEmailErr?.classList.toggle('hidden', emailValid);
   });
 
   // ===== Forgot password =====
+  // ===== Forgot password link: redirect + prefill email in query =====
   document.addEventListener('DOMContentLoaded', () => {
     const link = document.getElementById('forgotLink');
-    async function requestReset(email){
-      const r = await fetch(`${API_BASE}/auth/request-reset`, { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email }) });
-      await r.json().catch(()=>({}));
-    }
-    
-    function isEmail(x){
-  if(!x) return false;
-  x = String(x).trim();
-  const at = x.indexOf('@');
-  const dot = x.lastIndexOf('.');
-  return at > 0 && dot > at + 1 && dot < x.length - 1;
-}
-    function getEmail(){ const el=document.getElementById('emailInput'); return (el && el.value && el.value.trim()) || ''; }
-    if (link){ link.addEventListener('click', async (e)=>{ e.preventDefault(); let email = getEmail(); if(!isEmail(email)){ email = (prompt('Enter the email you used to sign up:') || '').trim(); } if(!isEmail(email)){ alert('Please enter a valid email address.'); return; } try{ await requestReset(email); alert(`If an account exists for ${email}, we’ve sent a password reset link.`);} catch{ alert('Could not request a reset. Please try again.'); } }); }
+    if (!link) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('emailInput')?.value || '').trim().toLowerCase();
+      const url = 'forgot-password.html' + (email ? ('?email=' + encodeURIComponent(email)) : '');
+      location.href = url;
+    });
   });
+
+    
+  // Temporarily hide phone/OTP until it's live
+  document.addEventListener('DOMContentLoaded', () => {
+    const tPhone = document.getElementById('tabPhone');
+    const otpForm = document.getElementById('otpForm');
+    if (tPhone) tPhone.style.display = 'none';
+    if (otpForm) otpForm.classList.add('hidden');
+    // Make sure the Email tab is selected
+    document.getElementById('tabEmail')?.classList.add('tab-active');
+    document.getElementById('loginForm')?.classList.remove('hidden');
+  });
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('reset') === 'ok') {
+      const box = document.getElementById('alertBox');
+      const text = document.getElementById('alertText');
+      if (box && text) {
+        text.textContent = 'Password updated. You can now sign in.';
+        box.classList.remove('hidden');
+        box.classList.remove('bg-red-500/10','border-red-300/40','text-red-200');
+        box.classList.add('bg-green-500/10','border-green-300/40','text-green-200');
+      }
+    }
+  });
+    
   </script>
 
 <script>
