@@ -596,17 +596,6 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     });
   });
 
-    
-  // Temporarily hide phone/OTP until it's live
-  document.addEventListener('DOMContentLoaded', () => {
-    const tPhone = document.getElementById('tabPhone');
-    const otpForm = document.getElementById('otpForm');
-    if (tPhone) tPhone.style.display = 'none';
-    if (otpForm) otpForm.classList.add('hidden');
-    // Make sure the Email tab is selected
-    document.getElementById('tabEmail')?.classList.add('tab-active');
-    document.getElementById('loginForm')?.classList.remove('hidden');
-  });
 
 
   document.addEventListener('DOMContentLoaded', () => {
