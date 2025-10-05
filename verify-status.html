@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Email verification — Afro Ubuntu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:#0b1511; color:#fff; }
+    .wrap { max-width: 640px; margin: 40px auto; padding: 20px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:16px; }
+    button { background:linear-gradient(135deg,#ea580c,#16a34a); color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; }
+    input { padding:10px; border-radius:10px; border:1px solid #335; width:100%; background:#0f1c17; color:#fff; }
+    .row { display:flex; gap:8px; }
+    .msg { margin:12px 0; opacity:.9 }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Email verification</h2>
+    <p id="status" class="msg"></p>
+
+    <div id="resend" style="display:none">
+      <p>Didn’t get the email? Enter your address and we’ll resend a new link.</p>
+      <div class="row">
+        <input id="email" type="email" placeholder="you@example.com" />
+        <button id="send">Resend email</button>
+      </div>
+      <p id="note" class="msg"></p>
+    </div>
+
+    <p><a href="API-connection%20(1).html">Back to sign-in</a></p>
+  </div>
+
+<script>
+const API_BASE = 'https://api.afroubuntutrade.co.uk'; // your custom API domain
+const qs = new URLSearchParams(location.search);
+const statusEl = document.getElementById('status');
+const resend = document.getElementById('resend');
+const emailInput = document.getElementById('email');
+const note = document.getElementById('note');
+
+const status = qs.get('status'); // invalid | expired | already
+const prefill = qs.get('email'); // may be provided by API on expired
+if (prefill) emailInput.value = prefill;
+
+if (status === 'expired') {
+  statusEl.textContent = 'Your verification link has expired. You can request a new one below.';
+  resend.style.display = '';
+} else if (status === 'invalid') {
+  statusEl.textContent = 'That verification link is invalid or already used.';
+  resend.style.display = '';
+} else if (status === 'already') {
+  statusEl.textContent = 'Your email is already verified — you can sign in now.';
+} else {
+  statusEl.textContent = 'Verification status unknown.';
+  resend.style.display = '';
+}
+
+document.getElementById('send').addEventListener('click', async () => {
+  const email = emailInput.value.trim().toLowerCase();
+  if (!email) { note.textContent = 'Enter your email address.'; return; }
+  note.textContent = 'Sending…';
+  try {
+    const res = await fetch(API_BASE + '/api/resend-verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json().catch(()=>null);
+    if (!res.ok) throw new Error((data && (data.error || data.message)) || ('HTTP ' + res.status));
+    note.textContent = data.message || 'Verification email sent.';
+  } catch (e) {
+    note.textContent = e.message;
+  }
+});
+</script>
+</body>
+</html>
