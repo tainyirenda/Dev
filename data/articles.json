@@ -100,19 +100,19 @@
 
   {
     "title": "Field Notes From Nigeria (Founder’s Trip)",
-    "url": "https://www.linkedin.com/pulse/field-notes-from-nigeria-founders-trip-afro-ubuntu-tradenet-vw6te",
-    "date": "2025-10-29",
-    "excerpt": "Wuse Market, Abuja: Building With Traders, Not Just For Them",
-    "image": "",
-    "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI"],
-
-    "video": {
+  "url": "https://www.linkedin.com/pulse/field-notes-from-nigeria-founders-trip-afro-ubuntu-tradenet-vw6te",
+  "date": "2025-10-29",
+  "excerpt": "Wuse Market, Abuja: Building With Traders, Not Just For Them",
+  "image": "",
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI"],
+  "video": {
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.MOV",
-    "type": "video/mp4",
+    "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.jpg"}
   }
   
 ]
+
 
 
 
