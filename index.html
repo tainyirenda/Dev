@@ -821,7 +821,7 @@
 
   <script>
   (function(){
-    const DATA_URL = "/data/articles.json"; // put the file at /data/articles.json
+    const DATA_URL = "/data/articles.json";
 
     const grid = document.getElementById('insights-grid');
     const empty = document.getElementById('insights-empty');
@@ -830,6 +830,24 @@
     const sortBy = document.getElementById('insights-sort');
 
     let ARTICLES = [];
+
+    load();
+
+  async function load(){
+    try {
+      const r = await fetch(DATA_URL, { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      ARTICLES = data;
+      buildTagFilter();
+      render();
+      injectItemListSchema(ARTICLES);
+      if (window.lucide) lucide.createIcons();
+    } catch (e) {
+      console.error("Failed to load articles:", e);
+      grid.innerHTML = '<p class="text-red-600">Could not load articles.json</p>';
+    }
+  }
 
     fetch(DATA_URL)
       .then(r => r.json())
@@ -964,6 +982,7 @@
 </body>
 
 </html>
+
 
 
 
