@@ -104,15 +104,16 @@
     "date": "2025-10-29",
     "excerpt": "Wuse Market, Abuja: Building With Traders, Not Just For Them",
     "image": "",
-    "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI"]
+    "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI"],
 
     "video": {
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.MOV",
     "type": "video/mp4",
-    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.jpg"
+    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.jpg"}
   }
   
 ]
+
 
 
 
