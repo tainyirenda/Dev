@@ -109,9 +109,23 @@
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.MOV",
     "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/nigeria-trip.jpg"}
+  },
+
+  {
+    "title": "Tune-In Tuesdays - Episode 1",
+  "url": "https://www.linkedin.com/pulse/tune-in-tuesdays-episode-1-afro-ubuntu-tradenet-ptame",
+  "date": "2025-11-04",
+  "excerpt": "Wuse Market, Abuja: Abundance Enterprise",
+  "image": "",
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech"],
+  "video": {
+    "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series1.MOV",
+    "type": "video/quicktime",
+    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series1.jpg"}
   }
   
 ]
+
 
 
 
