@@ -117,14 +117,28 @@
   "date": "2025-11-04",
   "excerpt": "Wuse Market, Abuja: Abundance Enterprise",
   "image": "",
-  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech"],
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech", "NGO"],
   "video": {
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series1.mov",
     "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series1.jpg"}
+  },
+
+  {
+    "title": "Tune-In Tuesdays - Episode 2",
+  "url": "https://www.linkedin.com/pulse/tune-in-tuesdays-episode-2-afro-ubuntu-tradenet-6k8de",
+  "date": "2025-11-11",
+  "excerpt": "Wuse Market, Abuja: Santa Maria Computers",
+  "image": "",
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech", "NGO"],
+  "video": {
+    "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series2.mov",
+    "type": "video/quicktime",
+    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series2.jpg"}
   }
   
 ]
+
 
 
 
