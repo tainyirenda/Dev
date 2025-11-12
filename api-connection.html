@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Afro Ubuntu TradeNet — Sign In</title>
+  <meta name="description" content="Sign in to Afro Ubuntu TradeNet" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{
+      /* Brand palette */
+      --orange-600:#ea580c;
+      --orange-700:#c2410c;
+      --green-600:#16a34a;
+      --green-700:#15803d;
+    }
+    html,body{height:100%}
+    body{
+      background:
+        radial-gradient(900px 600px at 10% 0%, rgba(234,88,12,0.12), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(22,163,74,0.18), transparent 60%),
+        linear-gradient(135deg, #0d1b14 0%, #0b1511 40%, #0d1b14 100%);
+      color:#fff;
+    }
+    .glass{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+    .focus-ring:focus{outline:none;box-shadow:0 0 0 3px rgba(234,88,12,0.35)}
+    .btn-gradient{background:linear-gradient(135deg,var(--orange-600),var(--green-600));}
+    .btn-gradient:hover{background:linear-gradient(135deg,var(--orange-700),var(--green-700));}
+    .tab{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.85)}
+    .tab-active{background:rgba(255,255,255,.15);color:#fff}
+  </style>
+</head>
+<body class="min-h-full">
+  <!-- Top nav -->
+  <header class="mx-auto max-w-7xl px-6 pt-6">
+    <nav class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-[color:var(--orange-600)] to-[color:var(--green-600)] grid place-items-center shadow">
+          <i data-lucide="globe" class="w-5 h-5"></i>
+        </div>
+        <span class="text-lg font-semibold">Afro Ubuntu TradeNet</span>
+      </div>
+      <ul class="flex items-center gap-8 text-sm text-white/85">
+        <li><a class="hover:text-white" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
+        <li><a class="hover:text-white" href="#" data-modal-target="servicesModal">Services</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main card -->
+  <main class="mx-auto max-w-7xl px-6 py-10">
+    <section class="glass rounded-3xl border border-white/10 bg-white/5 shadow-2xl overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Left / Welcome -->
+        <div class="relative p-10 md:p-14">
+          <div class="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-br from-[color:var(--orange-600)] via-[color:var(--green-600)] to-[color:var(--green-600)]"></div>
+          <div class="relative">
+            <div class="flex items-center gap-3">
+              <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[color:var(--orange-600)] to-[color:var(--green-600)] grid place-items-center shadow-lg">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+              </div>
+              <h2 class="text-2xl font-bold">Welcome!</h2>
+            </div>
+            <p class="mt-5 max-w-md text-white/85 text-[15px] leading-relaxed">
+              Welcome <span id="welcomeName">Member</span> - access analytics, automate decisions, and connect with partners across the Afro Ubuntu TradeNet ecosystem.
+            </p>
+            <p class="mt-4 text-[15px] text-white/75 leading-relaxed max-w-lg">
+              Sign in on the right. If you don’t have an account yet, you can create one in seconds.
+            </p>
+            <div class="mt-8 flex items-center gap-4 text-white/80">
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <i data-lucide="linkedin" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+              <a href="https://x.com/afroubuntutrade" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+                <i data-lucide="twitter" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+              <a href="mailto:info@afroubuntutrade.co.uk" aria-label="Email">
+                <i data-lucide="mail" class="w-5 h-5 hover:opacity-90"></i>
+              </a>
+            </div>
+            <footer class="mt-10 text-sm text-white/70">© <span id="year"></span> Afro Ubuntu TradeNet</footer>
+          </div>
+        </div>
+        
+        <!-- Right / Sign in -->
+        <div class="p-10 md:p-14 bg-gradient-to-bl from-white/5 to-white/0">
+          <h3 class="text-2xl font-bold text-center">Sign In</h3>
+
+          <!-- Tabs -->
+          <div class="mt-6 grid grid-cols-2 bg-white/10 rounded-xl p-1">
+            <button id="tabEmail" type="button" class="tab tab-active">Email</button>
+            <button id="tabPhone" type="button" class="tab">Phone</button>
+          </div>
+
+          <!-- Alert -->
+          <div id="alertBox" class="hidden mt-6 rounded-xl border border-red-300/40 bg-red-500/10 text-red-200 px-4 py-3 text-sm">
+            <span id="alertText">Error</span>
+          </div>
+
+          <!-- Email/Password form -->
+          <form id="loginForm" class="mt-6 space-y-5" novalidate>
+            <div>
+              <label for="emailInput" class="block text-sm text-white/85 mb-1">Email</label>
+              <div class="relative">
+                <input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+            </div>
+
+            <div>
+              <label for="passwordInput" class="block text-sm text-white/85 mb-1">Password</label>
+              <div class="relative">
+                <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="••••••••" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                <button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
+                  <span id="pwdIcon"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm text-white/85">
+              <label class="inline-flex items-center gap-2 select-none">
+                <input type="checkbox" class="rounded border-white/20 bg-transparent" />
+                Remember me
+              </label>
+              <a href="forgot-password.html" id="forgotLink" class="hover:underline text-white">Forgot password?</a>
+            </div>
+
+            <button id="loginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring">
+              Sign In
+            </button>
+          </form>
+
+          <!-- Phone/Code form -->
+          <form id="otpForm" class="mt-6 space-y-5 hidden" novalidate>
+            <div>
+              <label for="phoneInput" class="block text-sm text-white/85 mb-1">Phone number</label>
+              <div class="relative">
+                <input id="phoneInput" type="tel" autocomplete="tel" placeholder="e.g. +44 7123 456789" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+            </div>
+
+            <div>
+              <label for="codeInput" class="block text-sm text-white/85 mb-1">Verification code</label>
+              <div class="relative">
+                <input id="codeInput" type="text" inputmode="numeric" pattern="[0-9]{4,8}" placeholder="Enter code" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                <i data-lucide="hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              </div>
+              <button id="sendCodeBtn" type="button" class="mt-2 rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 focus-ring">Send code</button>
+            </div>
+
+            <button id="otpLoginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring">Sign In</button>
+
+            <a
+              id="whatsappLink"
+              href="https://wa.me/+15558221341?text=Hi, I want to join Afro Ubuntu TradeNet"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-white hover:bg-white/10 focus-ring"
+            >
+              <i data-lucide="smartphone" class="h-5 w-5 shrink-0 align-middle group-hover:scale-110 transition-transform"></i>
+              <span class="leading-none">Continue with WhatsApp</span>
+            </a>
+          </form>
+
+          <p class="mt-4 text-center text-sm text-white/85">Don't have an account?
+            <a href="#" data-modal-target="signUpModal" class="font-semibold text-white hover:underline">Sign up</a>
+          </p>
+
+          <div class="mt-6 text-xs text-white/70 flex flex-wrap items-center gap-3 justify-center">
+            <a class="hover:underline" href="privacy-policy.html">Privacy Policy</a>
+            <span class="opacity-40">•</span>
+            <a class="hover:underline" href="terms-of-service.html">Terms of Service</a>
+            <span class="opacity-40">•</span>
+            <a class="hover:underline" href="ethical-ai-policy.html">Ethical Data & AI Use</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sign Up Modal -->
+  <div id="signUpModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
+    <div role="dialog" aria-modal="true" class="glass w-full max-w-lg rounded-2xl border border-white/10 bg-white/10 p-6 text-white">
+      <div class="flex items-center justify-between">
+        <h4 class="text-xl font-semibold">Create your account</h4>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="su_alert" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
+
+      <form id="signUpForm" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-sm text-white/85 mb-1" for="su_name">Full name</label>
+          <input id="su_name" type="text" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="Jane Doe" required />
+        </div>
+        <div>
+          <label class="block text-sm text-white/85 mb-1" for="su_email">Email</label>
+          <input
+  id="su_email"
+  type="email"
+  autocomplete="email"
+  inputmode="email"
+  autocapitalize="none"
+  autocorrect="off"
+  spellcheck="false"
+  class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60"
+  placeholder="you@example.com"
+  required
+/>
+<p id="su_email_err" class="mt-1 text-xs text-red-300 hidden">
+  Please enter a valid email address.
+</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm text-white/85 mb-1" for="su_password">Password</label>
+            <div class="relative">
+              <input id="su_password" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-2 text-white placeholder-white/60" placeholder="At least 8 characters" required />
+              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              <button id="toggleSuPassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
+                <span id="suPwdIcon"></span>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-white/85 mb-1" for="su_password2">Confirm</label>
+            <div class="relative">
+              <input id="su_password2" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-2 text-white placeholder-white/60" placeholder="Repeat password" required />
+              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+              <button id="toggleSuPassword2" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
+                <span id="suPwdIcon2"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <label class="mt-2 flex items-start gap-3 text-sm text-white/85">
+          <input id="su_agree" type="checkbox" class="mt-1 rounded border-white/20 bg-transparent" />
+          <span>I agree to the Terms, Privacy Policy, and the use of my data to set up my account.</span>
+        </label>
+        <div class="flex items-center gap-3 pt-2">
+          <button id="su_submit" type="submit" class="rounded-xl btn-gradient px-4 py-2 font-medium text-white hover:opacity-95 focus-ring">Create account</button>
+          <button type="button" data-modal-close class="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10 focus-ring">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Services / Pricing Modal -->
+  <div id="servicesModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
+    <div role="dialog" aria-modal="true" class="glass w-full max-w-5xl rounded-2xl border border-white/10 bg-white p-6 text-gray-900 overflow-y-auto max-h-[85vh]">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-xl font-semibold">Services & Pricing</h4>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <p class="text-gray-600 text-sm mb-6">All plans include WhatsApp onboarding, secure data handling, and access to our customer success team.</p>
+      <!-- (pricing tables unchanged from your last version) -->
+      <!-- FMCGs -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+            <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-green-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$1,500/month <span class="text-gray-500">(£1,200)</span></td>
+                <td class="px-6 py-4">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$3,500/month <span class="text-gray-500">(£2,800)</span></td>
+                <td class="px-6 py-4">Multi-region, advanced forecasting, competitor insights, API integration</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$75k–$150k/year <span class="text-gray-500">(£60k–£120k)</span></td>
+                <td class="px-6 py-4">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NGOs & Development Partners -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+            <i data-lucide="users" class="w-5 h-5 text-[color:var(--orange-600)]"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-[color:var(--orange-700)]">NGOs & Development Partners</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-orange-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$300/month <span class="text-gray-500">(£240)</span></td>
+                <td class="px-6 py-4">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$1,200/month <span class="text-gray-500">(£950)</span></td>
+                <td class="px-6 py-4">Multi-region, real-time dashboards, grant reporting, alerts</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$25k–$100k/year <span class="text-gray-500">(£20k–£80k)</span></td>
+                <td class="px-6 py-4">Custom program analytics, donor-facing reports, field integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FinTechs -->
+      <div class="mb-2">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <i data-lucide="banknote" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$750/month <span class="text-gray-500">(£600)</span></td>
+                <td class="px-6 py-4">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$2,500/month <span class="text-gray-500">(£2,000)</span></td>
+                <td class="px-6 py-4">Expanded API, repayment analysis, portfolio monitoring</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$50k–$200k/year <span class="text-gray-500">(£40k–£160k)</span> + rev share</td>
+                <td class="px-6 py-4">Full API, predictive risk engine, dedicated integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-600 bg-white border border-gray-200 rounded-lg p-3 mt-4">
+        Prices are indicative and may vary with scope, data volumes, and integration complexity. Enterprise plans include custom SLAs and security reviews. VAT may apply.
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ===== Brand & routes =====
+  const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+  const params = new URLSearchParams(location.search);
+  const CONTINUE_URL = params.get('continue') || 'https://www.afroubuntutrade.co.uk/api-connection.min.html';
+  // OTP endpoints (adjust to match your API if different)
+  const OTP_REQUEST_PATH = '/auth/request-otp';
+  const OTP_VERIFY_PATH  = '/auth/verify-otp';
+
+  // ===== Helpers =====
+  function setBusy(btn, label) {
+    if (!btn) return;
+    btn.disabled = true;
+    btn.dataset.__orig = btn.dataset.__orig || btn.textContent;
+    if (label) btn.textContent = label;
+  }
+  function clearBusy(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    if (btn.dataset.__orig) btn.textContent = btn.dataset.__orig;
+  }
+  async function api(path, body, method = 'POST') {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: method === 'GET' ? null : JSON.stringify(body || {})
+    });
+    let data = null; try { data = await res.json(); } catch(e) {}
+    if (!res.ok) throw new Error((data && (data.error || data.message)) || `Request failed (${res.status})`);
+    return data;
+  }
+  function isPhone(x){ return /^[+0-9()\\-\\s]{7,}$/.test((x||'').trim()); }
+
+  // ===== Icons & year =====
+  document.addEventListener('DOMContentLoaded', () => {
+    try { window.lucide && window.lucide.createIcons(); } catch {}
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  });
+
+  // ===== Password toggle helper (accessible) =====
+  function attachPwdToggle(inputId, btnId, iconId){
+    const input = document.getElementById(inputId);
+    const btn   = document.getElementById(btnId);
+    const iconC = document.getElementById(iconId);
+    function setIcon(name){ try { iconC.innerHTML = window.lucide.icons[name].toSvg({class:'w-5 h-5 text-white/70'}); } catch {} }
+    if (!input || !btn || !iconC) return;
+    setIcon('eye');
+    btn.addEventListener('click', () => {
+      const showing = input.getAttribute('type') === 'text';
+      input.setAttribute('type', showing ? 'password' : 'text');
+      btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      setIcon(showing ? 'eye' : 'eye-off');
+    });
+  }
+
+  // ===== Init toggles =====
+  document.addEventListener('DOMContentLoaded', () => {
+    attachPwdToggle('passwordInput','togglePassword','pwdIcon');     // Sign-in
+    attachPwdToggle('su_password','toggleSuPassword','suPwdIcon');   // Sign-up (password)
+    attachPwdToggle('su_password2','toggleSuPassword2','suPwdIcon2'); // Sign-up (confirm)
+  });
+
+  // ===== Tabs =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const tEmail = document.getElementById('tabEmail');
+    const tPhone = document.getElementById('tabPhone');
+    const fEmail = document.getElementById('loginForm');
+    const fPhone = document.getElementById('otpForm');
+
+    function setTab(which){
+      const emailActive = which === 'email';
+      tEmail.classList.toggle('tab-active', emailActive);
+      tPhone.classList.toggle('tab-active', !emailActive);
+      fEmail.classList.toggle('hidden', !emailActive);
+      fPhone.classList.toggle('hidden', emailActive);
+    }
+
+    tEmail?.addEventListener('click', () => setTab('email'));
+    tPhone?.addEventListener('click', () => setTab('phone'));
+  });
+
+  // ===== Email login =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('loginForm');
+    const alertBox = document.getElementById('alertBox');
+    const alertText = document.getElementById('alertText');
+    const loginBtn = document.getElementById('loginBtn');
+    const emailInput = document.getElementById('emailInput');
+    const pwdInput = document.getElementById('passwordInput');
+
+    function showLoginError(msg){ if(alertText) alertText.textContent = msg || 'Login failed'; if(alertBox) alertBox.classList.remove('hidden'); }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox && alertBox.classList.add('hidden');
+        try {
+          const email = (emailInput?.value || '').trim();
+          const password = (pwdInput?.value || '');
+          if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
+          setBusy(loginBtn, 'Signing in…');
+          await api('/api/login', { email, password });
+          location.href = CONTINUE_URL;
+        } catch (err) {
+          showLoginError(err.message || 'Invalid email or password.');
+        } finally { clearBusy(loginBtn); }
+      });
+    }
+  });
+
+  // ===== Phone + OTP login =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const alertBox = document.getElementById('alertBox');
+    const alertText = document.getElementById('alertText');
+    const form = document.getElementById('otpForm');
+    const phoneInput = document.getElementById('phoneInput');
+    const codeInput = document.getElementById('codeInput');
+    const sendBtn = document.getElementById('sendCodeBtn');
+    const loginBtn = document.getElementById('otpLoginBtn');
+
+    function showError(msg){ if(alertText) alertText.textContent = msg || 'Something went wrong'; if(alertBox) alertBox.classList.remove('hidden'); }
+
+    sendBtn?.addEventListener('click', async () => {
+      const phone = (phoneInput?.value || '').trim();
+      if (!isPhone(phone)) { showError('Enter a valid phone number including country code.'); return; }
+      try{
+        setBusy(sendBtn, 'Sending…');
+        await api(OTP_REQUEST_PATH, { phone });
+        alertBox?.classList.add('hidden');
+        codeInput?.focus();
+      }catch(err){ showError(err.message || 'Could not send code.'); }
+      finally{ clearBusy(sendBtn); }
+    });
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = (phoneInput?.value || '').trim();
+      const code = (codeInput?.value || '').trim();
+      if (!isPhone(phone)) { showError('Enter a valid phone number including country code.'); return; }
+      if (!code) { showError('Enter the verification code.'); return; }
+      try{
+        setBusy(loginBtn, 'Verifying…');
+        await api(OTP_VERIFY_PATH, { phone, code });
+        location.href = CONTINUE_URL;
+      }catch(err){ showError(err.message || 'Invalid code.'); }
+      finally{ clearBusy(loginBtn); }
+    });
+  });
+
+  // ===== Modal system =====
+  (function(){
+    const openStack = [];
+    function lockScroll(lock){ document.documentElement.classList.toggle('overflow-hidden', lock); document.body.classList.toggle('overflow-hidden', lock); }
+    function getFocusable(c){ return c.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'); }
+    function focusFirst(c){ const f = getFocusable(c); if (f.length) f[0].focus(); }
+    function openModal(id){ const m = document.getElementById(id); if(!m) return; m.classList.remove('hidden'); m.setAttribute('aria-hidden','false'); const d=m.querySelector('[role="dialog"]'); d && d.classList.add('modal-open'); openStack.push(id); lockScroll(true); focusFirst(d||m); try{window.lucide && window.lucide.createIcons();}catch{} }
+    function closeModal(id){ const m = document.getElementById(id); if(!m) return; const d=m.querySelector('[role="dialog"]'); d && d.classList.add('modal-close'); setTimeout(()=>{ d && d.classList.remove('modal-close'); m.classList.add('hidden'); m.setAttribute('aria-hidden','true'); }, 120); const i=openStack.lastIndexOf(id); if(i>=0) openStack.splice(i,1); if(!openStack.length) lockScroll(false); }
+    document.addEventListener('click', (e)=>{ const opener=e.target.closest('[data-modal-target]'); if(opener){ e.preventDefault(); const id=opener.getAttribute('data-modal-target'); if(id) openModal(id);} const closer=e.target.closest('[data-modal-close]'); if(closer){ e.preventDefault(); const m=closer.closest('[id]'); if(m) closeModal(m.id); } if(e.target.matches('[data-modal-overlay]')){ const m=e.target.closest('[id]'); if(m) closeModal(m.id); } });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && openStack.length){ const id = openStack[openStack.length-1]; closeModal(id);} });
+  })();
+
+  // ===== Sign Up =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const suForm = document.getElementById('signUpForm');
+    const suAlert = document.getElementById('su_alert');
+    const suSubmit = document.getElementById('su_submit');
+
+    function showSuMsg(msg, ok=false){ if(!suAlert) return; suAlert.textContent = msg; suAlert.className = ok ? 'mt-4 p-3 rounded-xl border text-sm bg-green-500/10 border-green-300/40 text-green-200' : 'mt-4 p-3 rounded-xl border text-sm bg-red-500/10 border-red-300/40 text-red-200'; }
+
+    if (suForm) {
+      suForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); if(suAlert) suAlert.className='hidden p-3 rounded-xl border text-sm';
+        const name = document.getElementById('su_name')?.value.trim();
+        const suEmailEl  = document.getElementById('su_email');
+const suEmailErr = document.getElementById('su_email_err');
+const email      = suEmailEl?.value.trim().toLowerCase();
+const emailValid = !!(suEmailEl && suEmailEl.checkValidity && suEmailEl.checkValidity());
+suEmailEl?.setAttribute('aria-invalid', String(!emailValid));
+suEmailErr?.classList.toggle('hidden', emailValid);
+        const p1 = document.getElementById('su_password')?.value || '';
+        const p2 = document.getElementById('su_password2')?.value || '';
+        const agree = document.getElementById('su_agree')?.checked;
+        const errors=[];
+        if(!name || name.length<2) errors.push('Please enter your full name.');
+        if (!emailValid) errors.push('Enter a valid email address.');
+        if(p1.length<8) errors.push('Password must be at least 8 characters.');
+        if(p1!==p2) errors.push('Passwords do not match.');
+        if(!agree) errors.push('You must agree to the policies to continue.');
+        if(errors.length) return showSuMsg(errors.join(' '), false);
+        try{
+          setBusy(suSubmit, 'Creating…');
+          await api('/api/signup', { name, email, password: p1 });
+          showSuMsg('Account created. Please check your email to verify your address.', true);
+        }catch(err){ showSuMsg(err.message || 'Could not create account.', false); }
+        finally{ clearBusy(suSubmit); }
+      });
+    }
+  });
+
+  // ===== Forgot password =====
+  // ===== Forgot password link: redirect + prefill email in query =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const link = document.getElementById('forgotLink');
+    if (!link) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('emailInput')?.value || '').trim().toLowerCase();
+      const url = 'forgot-password.html' + (email ? ('?email=' + encodeURIComponent(email)) : '');
+      location.href = url;
+    });
+  });
+
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('reset') === 'ok') {
+      const box = document.getElementById('alertBox');
+      const text = document.getElementById('alertText');
+      if (box && text) {
+        text.textContent = 'Password updated. You can now sign in.';
+        box.classList.remove('hidden');
+        box.classList.remove('bg-red-500/10','border-red-300/40','text-red-200');
+        box.classList.add('bg-green-500/10','border-green-300/40','text-green-200');
+      }
+    }
+  });
+    
+  </script>
+
+<script>
+// ===== Runtime helpers injected by deploy script (non-destructive) =====
+(function() {
+  const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+
+  // Monkeypatch fetch: add Authorization to our API calls automatically
+  const _fetch = window.fetch.bind(window);
+  window.fetch = async function(resource, init={}) {
+    try {
+      const url = (typeof resource === 'string') ? resource : resource.url;
+      if (url && url.startsWith(API_BASE)) {
+        init.headers = init.headers || {};
+        const h = new Headers(init.headers);
+        const t = localStorage.getItem('token');
+        if (t && !h.has('Authorization')) h.set('Authorization', `Bearer ${t}`);
+        if (!h.has('Content-Type')) h.set('Content-Type','application/json');
+        init.headers = h;
+        init.credentials = init.credentials || 'include';
+      }
+    } catch (e) {}
+    const res = await _fetch(resource, init);
+
+    // If this was a login/signup response from our API and contains a token, store it
+    try {
+      const url = (typeof resource === 'string') ? resource : resource.url;
+      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup)/.test(url)) {
+        const clone = res.clone();
+        const data = await clone.json().catch(() => null);
+        if (data && data.token) localStorage.setItem('token', data.token);
+      }
+    } catch (e) {}
+
+    return res;
+  };
+
+  // Personalize welcome if token exists
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const r = await fetch(`${API_BASE}/api/me`, { method:'GET' });
+      const me = await r.json();
+      const el = document.getElementById('welcomeName');
+      if (el && me && me.user && me.user.email) {
+        el.textContent = me.user.email.split('@')[0];
+      }
+    } catch (e) {}
+  });
+
+  // Soft-disable OTP flows if your backend doesn't have endpoints yet
+  document.addEventListener('click', (ev) => {
+    const target = ev.target;
+    if (!target) return;
+    const text = (target.textContent || '').toLowerCase();
+    // Intercept obvious OTP actions
+    if (text.includes('send code') || text.includes('verify code')) {
+      ev.preventDefault();
+      const alertBox = document.getElementById('alertBox');
+      const alertText = document.getElementById('alertText');
+      const msg = 'Phone/OTP login is not available yet. Please use email & password.';
+      if (alertText) alertText.textContent = msg;
+      if (alertBox) alertBox.classList.remove('hidden');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
