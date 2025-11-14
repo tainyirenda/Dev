@@ -190,10 +190,16 @@
 
     /* Sticky navigation */
     .nav-sticky {
-      backdrop-filter: blur(10px);
-      background-color: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
+  background-color: #ffffff; /* fully opaque */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* optional: avoid weird blur behaviour on mobile */
+@media (max-width: 1024px) {
+  .nav-sticky {
+    backdrop-filter: none;
+  }
+}
     
   </style>
 </head>
@@ -773,26 +779,18 @@
     }
 
     function openMobileMenu() {
-      mobileMenu.classList.add('open');
-      mobileMenuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-      mobileMenuOverlay.classList.add('opacity-100');
-      document.body.style.overflow = 'hidden';
-      
-      // Change hamburger to X
-      mobileMenuButton.innerHTML = '<i data-lucide="x" class="h-6 w-6 text-gray-700"></i>';
-      lucide.createIcons();
-    }
+  mobileMenu.classList.add('open');
+  mobileMenuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+  mobileMenuOverlay.classList.add('opacity-100');
+  document.body.style.overflow = 'hidden';
+}
 
-    function closeMobileMenu() {
-      mobileMenu.classList.remove('open');
-      mobileMenuOverlay.classList.add('opacity-0', 'pointer-events-none');
-      mobileMenuOverlay.classList.remove('opacity-100');
-      document.body.style.overflow = '';
-      
-      // Change X back to hamburger
-      mobileMenuButton.innerHTML = '<i data-lucide="menu" class="h-6 w-6 text-gray-700"></i>';
-      lucide.createIcons();
-    }
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+  mobileMenuOverlay.classList.add('opacity-0', 'pointer-events-none');
+  mobileMenuOverlay.classList.remove('opacity-100');
+  document.body.style.overflow = '';
+}
 
     // Event listeners
     mobileMenuButton.addEventListener('click', toggleMobileMenu);
@@ -982,6 +980,7 @@
 </body>
 
 </html>
+
 
 
 
