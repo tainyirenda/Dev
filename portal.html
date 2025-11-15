@@ -42,7 +42,7 @@
       });
     }
   </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
   <script>
@@ -966,7 +966,38 @@ Afro Ubuntu<br class="block sm:hidden" />
     </div>
   </div>
 
- 
+<script>
+  // Robust helper that can be called from anywhere
+  function setLanguage(lang) {
+    function applyLang() {
+      const combo = document.querySelector('.goog-te-combo');
+      if (!combo) return false;
+
+      combo.value = lang;
+      combo.dispatchEvent(new Event('change'));
+      try {
+        localStorage.setItem('selectedLang', lang);
+      } catch (e) {}
+      return true;
+    }
+
+    // Try immediately
+    if (applyLang()) return;
+
+    // If combo isn't ready yet, wait for it using a MutationObserver
+    const observer = new MutationObserver(() => {
+      if (applyLang()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+</script>
+  
   <script type="module">
   // ========= CONFIG =========
   const APP_BASE = "https://api.afroubuntutrade.co.uk";
@@ -1143,14 +1174,7 @@ Afro Ubuntu<br class="block sm:hidden" />
   menu.querySelectorAll("button[data-lang]").forEach(item => {
     item.addEventListener("click", () => {
       const lang = item.getAttribute("data-lang");
-
-      const combo = document.querySelector(".goog-te-combo");
-      if (combo) {
-        combo.value = lang;
-        combo.dispatchEvent(new Event("change"));
-        localStorage.setItem("selectedLang", lang);
-      }
-
+      setLanguage(lang);
       menu.classList.add("hidden");
     });
   });
