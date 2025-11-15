@@ -806,30 +806,7 @@
     menu.classList.toggle("hidden");
   });
 
-  // Clicking outside closes the menu
-  document.addEventListener("click", (e) => {
-    if (!document.getElementById("lang-menu-wrapper").contains(e.target)) {
-      menu.classList.add("hidden");
-    }
-  });
-
-  // Hook language buttons into Google Translate
-  menu.querySelectorAll("button[data-lang]").forEach(item => {
-    item.addEventListener("click", () => {
-      const lang = item.getAttribute("data-lang");
-
-      const combo = document.querySelector(".goog-te-combo");
-      if (combo) {
-        combo.value = lang;
-        combo.dispatchEvent(new Event("change"));
-        localStorage.setItem("selectedLang", lang);
-      }
-
-      menu.classList.add("hidden");
-    });
-  });
-
-});
+  
 
     // Mobile menu toggle
     function toggleMobileMenu() {
@@ -880,6 +857,44 @@ function closeMobileMenu() {
       }
     });
   </script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  
+  const btn = document.getElementById("lang-btn");
+  const menu = document.getElementById("lang-menu");
+
+  // Toggle the dropdown
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!document.getElementById("lang-menu-wrapper").contains(e.target)) {
+      menu.classList.add("hidden");
+    }
+  });
+
+  // Connect custom buttons to Google Translate
+  menu.querySelectorAll("button[data-lang]").forEach(item => {
+    item.addEventListener("click", () => {
+      const lang = item.getAttribute("data-lang");
+
+      const combo = document.querySelector(".goog-te-combo");
+      if (combo) {
+        combo.value = lang;
+        combo.dispatchEvent(new Event("change"));
+        localStorage.setItem("selectedLang", lang);
+      }
+
+      menu.classList.add("hidden");
+    });
+  });
+
+});
+</script>
+
 
   <script>
   (function(){
@@ -1044,6 +1059,7 @@ function closeMobileMenu() {
 </body>
 
 </html>
+
 
 
 
