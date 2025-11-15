@@ -215,6 +215,8 @@
 
 
 <body class="font-sans text-gray-900">
+    <div id="google_translate_element" class="hidden"></div>
+  
   <!-- Dynamic Navigation -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-orange-100 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -385,30 +387,30 @@
 
   <!-- Add padding to account for fixed navbar -->
   <div class="pt-20">
-      
-
     <!-- Hero Section -->
     <section id="home" class="relative bg-gradient-orange-green-light py-20">
+      
       <!-- Google Translate -->
-        <div class="relative inline-block text-left" id="lang-menu-wrapper">
-  <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border">
-    <i data-lucide="globe" class="h-4 w-4"></i>
-    <span>Language</span>
-  </button>
+        <div id="lang-menu-wrapper"
+       class="absolute left-4 top-4 z-20 inline-block text-left">
+    <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border">
+      <i data-lucide="globe" class="h-4 w-4"></i>
+      <span>Language</span>
+    </button>
 
-  <div id="lang-menu" 
-       class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
-    <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100">English</button>
-    <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Swahili</button>
-    <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Shona</button>
-    <button data-lang="ny" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Nyanja</button>
-    <button data-lang="yo" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Yoruba</button>
-    <button data-lang="af" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Afrikaans</button>
-    <button data-lang="xh" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Xhosa</button>
-    <button data-lang="zu" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Zulu</button>
-    <button data-lang="fr" class="block w-full text-left px-4 py-2 hover:bg-gray-100">French</button>
+    <div id="lang-menu"
+         class="absolute mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
+      <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100">English</button>
+      <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Swahili</button>
+      <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Shona</button>
+      <button data-lang="ny" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Nyanja</button>
+      <button data-lang="yo" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Yoruba</button>
+      <button data-lang="af" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Afrikaans</button>
+      <button data-lang="xh" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Xhosa</button>
+      <button data-lang="zu" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Zulu</button>
+      <button data-lang="fr" class="block w-full text-left px-4 py-2 hover:bg-gray-100">French</button>
+    </div>
   </div>
-</div>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <!-- Logo -->
@@ -1040,6 +1042,7 @@ function closeMobileMenu() {
 </body>
 
 </html>
+
 
 
 
