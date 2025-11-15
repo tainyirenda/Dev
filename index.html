@@ -391,14 +391,15 @@
     <section id="home" class="relative bg-gradient-orange-green-light py-20">
       
       <!-- Google Translate -->
-        <div class="relative inline-block text-left" id="lang-menu-wrapper">
+      <div id="lang-menu-wrapper"
+       class="absolute right-4 top-4 z-20 inline-block text-left">
     <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border">
       <i data-lucide="globe" class="h-4 w-4"></i>
       <span>Language</span>
     </button>
 
-    <div id="lang-menu" 
-         class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
+    <div id="lang-menu"
+         class="absolute mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
       <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100">English</button>
       <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Swahili</button>
       <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Shona</button>
@@ -1041,6 +1042,7 @@ function closeMobileMenu() {
 </body>
 
 </html>
+
 
 
 
