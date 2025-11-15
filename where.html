@@ -702,189 +702,189 @@
   </div>
 
 
-  <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
+ <script>
+  // Initialize Lucide icons
+  lucide.createIcons();
 
-// Interactive Map Functionality
-const countryData = {
-  nigeria: {
-    name: "Nigeria",
-    flag: "🇳🇬",
-    cities: "Lagos, Kano, Abuja",
-    population: "220M+",
-    economy: "Largest African economy",
-    features: ["Tech innovation leader", "Massive informal markets", "High mobile penetration"],
-    color: "orange"
-  },
-  kenya: {
-    name: "Kenya",
-    flag: "🇰🇪", 
-    cities: "Nairobi, Mombasa",
-    population: "54M+",
-    economy: "M-Pesa pioneer",
-    features: ["Duka shop ecosystem", "Mobile money leader", "Agricultural trade hub"],
-    color: "green"
-  },
-  "south-africa": {
-    name: "South Africa",
-    flag: "🇿🇦",
-    cities: "Johannesburg, Cape Town",
-    population: "60M+",
-    economy: "Advanced infrastructure",
-    features: ["Spaza shop networks", "Financial services hub", "Diverse economy"],
-    color: "blue"
-  },
-  zimbabwe: {
-    name: "Zimbabwe",
-    flag: "🇿🇼",
-    cities: "Harare, Bulawayo", 
-    population: "15M+",
-    economy: "Strong informal sector",
-    features: ["Resilient traders", "Cross-border commerce", "Mobile adoption"],
-    color: "purple"
-  },
-  zambia: {
-    name: "Zambia",
-    flag: "🇿🇲",
-    cities: "Lusaka, Kitwe",
-    population: "19M+", 
-    economy: "Cross-border trade hub",
-    features: ["Mining economy", "Regional connector", "Growing digital adoption"],
-    color: "yellow"
-  },
-  malawi: {
-    name: "Malawi",
-    flag: "🇲🇼",
-    cities: "Lilongwe, Blantyre",
-    population: "20M+",
-    economy: "Agricultural focus", 
-    features: ["Smallholder farmers", "Market towns", "Community-based trade"],
-    color: "red"
-  }
-};
+  // Language dropdown behaviour (run once on load)
+  document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("lang-btn");
+    const menu = document.getElementById("lang-menu");
+    const wrapper = document.getElementById("lang-menu-wrapper");
 
-const colorClasses = {
-  orange: "border-orange-500 bg-orange-50",
-  green: "border-green-500 bg-green-50", 
-  blue: "border-blue-500 bg-blue-50",
-  purple: "border-purple-500 bg-purple-50",
-  yellow: "border-yellow-500 bg-yellow-50",
-  red: "border-red-500 bg-red-50"
-};
+    if (!btn || !menu || !wrapper) return;
 
-// Add click handlers to country markers
-document.querySelectorAll('.country-marker').forEach(marker => {
-  marker.addEventListener('click', function() {
-    const countryKey = this.dataset.country;
-    const country = countryData[countryKey];
-    const infoCard = document.getElementById('country-info');
-    const content = document.getElementById('country-content');
-    
-    if (country) {
-      content.innerHTML = `
-        <div class="text-center mb-4">
-          <div class="text-4xl mb-2">${country.flag}</div>
-          <h3 class="text-xl font-bold text-gray-900">${country.name}</h3>
-        </div>
-        
-        <div class="space-y-3">
-          <div class="flex items-center space-x-2">
-            <i data-lucide="map-pin" class="h-4 w-4 text-${country.color}-600"></i>
-            <span class="text-sm"><strong>Cities:</strong> ${country.cities}</span>
-          </div>
-          
-          <div class="flex items-center space-x-2">
-            <i data-lucide="users" class="h-4 w-4 text-${country.color}-600"></i>
-            <span class="text-sm"><strong>Population:</strong> ${country.population}</span>
-          </div>
-          
-          <div class="flex items-center space-x-2">
-            <i data-lucide="trending-up" class="h-4 w-4 text-${country.color}-600"></i>
-            <span class="text-sm"><strong>Economy:</strong> ${country.economy}</span>
-          </div>
-          
-          <div class="mt-4">
-            <h4 class="font-semibold text-gray-900 mb-2">Key Features:</h4>
-            <ul class="space-y-1">
-              ${country.features.map(feature => `
-                <li class="flex items-center space-x-2">
-                  <i data-lucide="check" class="h-3 w-3 text-${country.color}-600"></i>
-                  <span class="text-xs text-gray-600">${feature}</span>
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-          
-          <div class="mt-4 pt-4 border-t border-gray-200">
-            <div class="text-center">
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colorClasses[country.color]}">
-                Phase 1 Launch Market
-              </span>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Show the info card
-      infoCard.classList.remove('opacity-0', 'translate-x-4');
-      infoCard.classList.add('opacity-100', 'translate-x-0');
-      
-      // Re-initialize Lucide icons for the new content
-      lucide.createIcons();
+    // Toggle dropdown
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
 
-      // Language dropdown behaviour
-    document.addEventListener("DOMContentLoaded", function () {
-      const btn = document.getElementById("lang-btn");
-      const menu = document.getElementById("lang-menu");
-      const wrapper = document.getElementById("lang-menu-wrapper");
+    // Clicking outside closes the menu
+    document.addEventListener("click", (e) => {
+      if (!wrapper.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
 
-      if (!btn || !menu || !wrapper) return;
-
-      // Toggle dropdown
-      btn.addEventListener("click", () => {
-        menu.classList.toggle("hidden");
-      });
-
-      // Clicking outside closes the menu
-      document.addEventListener("click", (e) => {
-        if (!wrapper.contains(e.target)) {
-          menu.classList.add("hidden");
+    // Hook language buttons into global setLanguage
+    menu.querySelectorAll("button[data-lang]").forEach(item => {
+      item.addEventListener("click", () => {
+        const lang = item.getAttribute("data-lang");
+        if (window.setLanguage) {
+          window.setLanguage(lang);
         }
-      });
-
-      // Hook language buttons into global setLanguage
-      menu.querySelectorAll("button[data-lang]").forEach(item => {
-        item.addEventListener("click", () => {
-          const lang = item.getAttribute("data-lang");
-          if (window.setLanguage) {
-            window.setLanguage(lang);
-          }
-          menu.classList.add("hidden");
-        });
+        menu.classList.add("hidden");
       });
     });
+  });
+
+  // ========= Interactive Map Functionality =========
+  const countryData = {
+    nigeria: {
+      name: "Nigeria",
+      flag: "🇳🇬",
+      cities: "Lagos, Kano, Abuja",
+      population: "220M+",
+      economy: "Largest African economy",
+      features: ["Tech innovation leader", "Massive informal markets", "High mobile penetration"],
+      color: "orange"
+    },
+    kenya: {
+      name: "Kenya",
+      flag: "🇰🇪", 
+      cities: "Nairobi, Mombasa",
+      population: "54M+",
+      economy: "M-Pesa pioneer",
+      features: ["Duka shop ecosystem", "Mobile money leader", "Agricultural trade hub"],
+      color: "green"
+    },
+    "south-africa": {
+      name: "South Africa",
+      flag: "🇿🇦",
+      cities: "Johannesburg, Cape Town",
+      population: "60M+",
+      economy: "Advanced infrastructure",
+      features: ["Spaza shop networks", "Financial services hub", "Diverse economy"],
+      color: "blue"
+    },
+    zimbabwe: {
+      name: "Zimbabwe",
+      flag: "🇿🇼",
+      cities: "Harare, Bulawayo", 
+      population: "15M+",
+      economy: "Strong informal sector",
+      features: ["Resilient traders", "Cross-border commerce", "Mobile adoption"],
+      color: "purple"
+    },
+    zambia: {
+      name: "Zambia",
+      flag: "🇿🇲",
+      cities: "Lusaka, Kitwe",
+      population: "19M+", 
+      economy: "Cross-border trade hub",
+      features: ["Mining economy", "Regional connector", "Growing digital adoption"],
+      color: "yellow"
+    },
+    malawi: {
+      name: "Malawi",
+      flag: "🇲🇼",
+      cities: "Lilongwe, Blantyre",
+      population: "20M+",
+      economy: "Agricultural focus", 
+      features: ["Smallholder farmers", "Market towns", "Community-based trade"],
+      color: "red"
+    }
+  };
+
+  const colorClasses = {
+    orange: "border-orange-500 bg-orange-50",
+    green: "border-green-500 bg-green-50", 
+    blue: "border-blue-500 bg-blue-50",
+    purple: "border-purple-500 bg-purple-50",
+    yellow: "border-yellow-500 bg-yellow-50",
+    red: "border-red-500 bg-red-50"
+  };
+
+  // Add click handlers to country markers
+  document.querySelectorAll('.country-marker').forEach(marker => {
+    marker.addEventListener('click', function() {
+      const countryKey = this.dataset.country;
+      const country = countryData[countryKey];
+      const infoCard = document.getElementById('country-info');
+      const content = document.getElementById('country-content');
+      
+      if (country) {
+        content.innerHTML = `
+          <div class="text-center mb-4">
+            <div class="text-4xl mb-2">${country.flag}</div>
+            <h3 class="text-xl font-bold text-gray-900">${country.name}</h3>
+          </div>
+          
+          <div class="space-y-3">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="map-pin" class="h-4 w-4 text-${country.color}-600"></i>
+              <span class="text-sm"><strong>Cities:</strong> ${country.cities}</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <i data-lucide="users" class="h-4 w-4 text-${country.color}-600"></i>
+              <span class="text-sm"><strong>Population:</strong> ${country.population}</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <i data-lucide="trending-up" class="h-4 w-4 text-${country.color}-600"></i>
+              <span class="text-sm"><strong>Economy:</strong> ${country.economy}</span>
+            </div>
+            
+            <div class="mt-4">
+              <h4 class="font-semibold text-gray-900 mb-2">Key Features:</h4>
+              <ul class="space-y-1">
+                ${country.features.map(feature => `
+                  <li class="flex items-center space-x-2">
+                    <i data-lucide="check" class="h-3 w-3 text-${country.color}-600"></i>
+                    <span class="text-xs text-gray-600">${feature}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-200">
+              <div class="text-center">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colorClasses[country.color]}">
+                  Phase 1 Launch Market
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Show the info card
+        infoCard.classList.remove('opacity-0', 'translate-x-4');
+        infoCard.classList.add('opacity-100', 'translate-x-0');
+        
+        // Re-initialize Lucide icons for the new content
+        lucide.createIcons();
+      }
+    });
+    
+    // Hover effects
+    marker.addEventListener('mouseenter', function() {
+      this.querySelector('.marker-circle').setAttribute('r', '16');
+    });
+    
+    marker.addEventListener('mouseleave', function() {
+      this.querySelector('.marker-circle').setAttribute('r', '12');
+    });
+  });
+
+  // Close info card when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.country-marker') && !e.target.closest('#country-info')) {
+      const infoCard = document.getElementById('country-info');
+      infoCard.classList.add('opacity-0', 'translate-x-4');
+      infoCard.classList.remove('opacity-100', 'translate-x-0');
     }
   });
-  
-  // Add hover effects
-  marker.addEventListener('mouseenter', function() {
-    this.querySelector('.marker-circle').setAttribute('r', '16');
-  });
-  
-  marker.addEventListener('mouseleave', function() {
-    this.querySelector('.marker-circle').setAttribute('r', '12');
-  });
-});
-
-// Close info card when clicking outside
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.country-marker') && !e.target.closest('#country-info')) {
-    const infoCard = document.getElementById('country-info');
-    infoCard.classList.add('opacity-0', 'translate-x-4');
-    infoCard.classList.remove('opacity-100', 'translate-x-0');
-  }
-});
 </script>
 </body>
 </html>
