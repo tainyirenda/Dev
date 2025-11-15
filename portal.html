@@ -981,30 +981,41 @@ Afro Ubuntu<br class="block sm:hidden" />
         el.dispatchEvent(new Event(eventName));
       }
     } catch (e) {
-      // Fallback to basic Event if something goes wrong
       el.dispatchEvent(new Event(eventName));
     }
+  }
+
+  function setGoogleTransCookie(lang) {
+    // page language is 'en', so cookie must be /en/<target>
+    var value = "/en/" + lang;
+    var domain = window.location.hostname;
+
+    // set for current host
+    document.cookie = "googtrans=" + value + ";path=/;";
+    // and for root domain (handles www / subdomains)
+    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
   }
 
   // Robust helper that can be called from anywhere
   function setLanguage(lang) {
     function applyLang() {
-      const combo = document.querySelector('.goog-te-combo');
+      const combo = document.querySelector(".goog-te-combo");
       if (!combo) return false;
 
       combo.value = lang;
-      fireGoogleTranslateEvent(combo, 'change');
+      fireGoogleTranslateEvent(combo, "change");
+
       try {
-        localStorage.setItem('selectedLang', lang);
+        localStorage.setItem("selectedLang", lang);
       } catch (e) {}
 
       return true;
     }
 
-    // Try immediately
+    // 1) Try via the hidden dropdown
     if (applyLang()) return;
 
-    // If combo isn't ready yet, wait for it using a MutationObserver
+    // 2) If the dropdown isn't ready yet, wait a bit
     const observer = new MutationObserver(() => {
       if (applyLang()) {
         observer.disconnect();
@@ -1015,6 +1026,13 @@ Afro Ubuntu<br class="block sm:hidden" />
       childList: true,
       subtree: true
     });
+
+    // 3) Also set the cookie + reload as a guaranteed fallback
+    setGoogleTransCookie(lang);
+    // small timeout so cookie is set before reload
+    setTimeout(function () {
+      window.location.reload();
+    }, 300);
   }
 </script>
   
