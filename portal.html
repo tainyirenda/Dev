@@ -967,6 +967,25 @@ Afro Ubuntu<br class="block sm:hidden" />
   </div>
 
 <script>
+  // Fire a change event in the older "HTMLEvents" style Google expects
+  function fireGoogleTranslateEvent(el, eventName) {
+    try {
+      if (document.createEvent) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, true, true);
+        el.dispatchEvent(event);
+      } else if (document.createEventObject) { // IE fallback
+        var event = document.createEventObject();
+        el.fireEvent("on" + eventName, event);
+      } else {
+        el.dispatchEvent(new Event(eventName));
+      }
+    } catch (e) {
+      // Fallback to basic Event if something goes wrong
+      el.dispatchEvent(new Event(eventName));
+    }
+  }
+
   // Robust helper that can be called from anywhere
   function setLanguage(lang) {
     function applyLang() {
@@ -974,10 +993,11 @@ Afro Ubuntu<br class="block sm:hidden" />
       if (!combo) return false;
 
       combo.value = lang;
-      combo.dispatchEvent(new Event('change'));
+      fireGoogleTranslateEvent(combo, 'change');
       try {
         localStorage.setItem('selectedLang', lang);
       } catch (e) {}
+
       return true;
     }
 
