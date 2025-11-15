@@ -156,6 +156,14 @@
   display: none !important;
 }
 
+    /* like a "tab" chip */
+#lang-btn.tab-like {
+  padding-inline: 0.75rem;
+  padding-block: 0.4rem;
+  font-size: 0.75rem;
+}
+
+
   </style>
 </head>
 <body class="min-h-full">
@@ -173,10 +181,7 @@
         <li><a class="hover:text-white" href="#" data-modal-target="servicesModal">Services</a></li>
         <!-- Language menu -->
           <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
-            <button
-  id="lang-btn"
-  class="flex items-center gap-1 rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 hover:bg-white/15 hover:text-white focus-ring"
->
+           <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
   <i data-lucide="globe" class="h-4 w-4"></i>
   <span>Language</span>
 </button>
