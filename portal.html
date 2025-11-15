@@ -241,7 +241,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-4">
           <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
             <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
@@ -1056,7 +1056,9 @@
   window.addEventListener('scroll', function() {
     const nav = document.querySelector('nav');
     if (window.scrollY > 100) nav.classList.add('shadow-lg'); else nav.classList.remove('shadow-lg');
+    else nav.classList.remove('shadow-lg');
   });
+    
 
   // accessibility: trigger button on Enter/Space
   document.addEventListener('keydown', function(e) {
