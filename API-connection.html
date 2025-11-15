@@ -9,6 +9,123 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+   <script type="text/javascript">
+  // Fire a change event in the older "HTMLEvents" style Google expects
+  function fireGoogleTranslateEvent(el, eventName) {
+    try {
+      if (document.createEvent) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, true, true);
+        el.dispatchEvent(event);
+      } else if (document.createEventObject) { // IE fallback
+        var event = document.createEventObject();
+        el.fireEvent("on" + eventName, event);
+      } else {
+        el.dispatchEvent(new Event(eventName));
+      }
+    } catch (e) {
+      el.dispatchEvent(new Event(eventName));
+    }
+  }
+
+  function setGoogleTransCookie(lang) {
+    // page language is 'en', so cookie must be /en/<target>
+    var value = "/en/" + lang;
+    var domain = window.location.hostname;
+
+    // set for current host
+    document.cookie = "googtrans=" + value + ";path=/;";
+    // and for root domain (handles www / subdomains)
+    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
+  }
+
+  // Global helper used by the custom language menu
+  function setLanguage(lang) {
+    function applyLang() {
+      const combo = document.querySelector(".goog-te-combo");
+      if (!combo) return false;
+
+      combo.value = lang;
+      fireGoogleTranslateEvent(combo, "change");
+
+      try {
+        localStorage.setItem("selectedLang", lang);
+      } catch (e) {}
+
+      return true;
+    }
+
+    // 1) Try via hidden dropdown
+    if (applyLang()) return;
+
+    // 2) Wait for widget if not ready yet
+    const observer = new MutationObserver(() => {
+      if (applyLang()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // 3) Cookie + reload fallback to force translation
+    setGoogleTransCookie(lang);
+    setTimeout(function () {
+      window.location.reload();
+    }, 300);
+  }
+
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+
+    // Restore saved language once widget is ready
+    const observer = new MutationObserver(function (mutations, obs) {
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        const savedLang = localStorage.getItem('selectedLang');
+        if (savedLang) {
+          combo.value = savedLang;
+          fireGoogleTranslateEvent(combo, 'change');
+        }
+
+        combo.addEventListener('change', function () {
+          try {
+            localStorage.setItem('selectedLang', this.value);
+          } catch (e) {}
+        });
+
+        obs.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+</script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-N6PKL5BZQF');
+  </script>
+  
   <style>
     :root{
       /* Brand palette */
@@ -31,6 +148,14 @@
     .btn-gradient:hover{background:linear-gradient(135deg,var(--orange-700),var(--green-700));}
     .tab{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.85)}
     .tab-active{background:rgba(255,255,255,.15);color:#fff}
+
+    #google_translate_element,
+.goog-te-gadget,
+.goog-te-gadget > div,
+.goog-te-combo {
+  display: none !important;
+}
+
   </style>
 </head>
 <body class="min-h-full">
@@ -46,6 +171,29 @@
       <ul class="flex items-center gap-8 text-sm text-white/85">
         <li><a class="hover:text-white" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
         <li><a class="hover:text-white" href="#" data-modal-target="servicesModal">Services</a></li>
+        <!-- Language menu -->
+          <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
+            <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded-md bg-white border text-sm shadow-sm">
+              <i data-lucide="globe" class="h-4 w-4"></i>
+              <span>Language</span>
+            </button>
+
+            <div id="lang-menu"
+                 class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden z-20">
+              <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">English</button>
+              <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Swahili</button>
+              <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Shona</button>
+              <button data-lang="ny" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Nyanja</button>
+              <button data-lang="yo" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Yoruba</button>
+              <button data-lang="af" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Afrikaans</button>
+              <button data-lang="xh" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Xhosa</button>
+              <button data-lang="zu" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Zulu</button>
+              <button data-lang="fr" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">French</button>
+            </div>
+          </div>
+
+          <!-- Hidden actual Google Translate container -->
+          <div id="google_translate_element" class="hidden"></div>
       </ul>
     </nav>
   </header>
@@ -611,6 +759,38 @@ suEmailErr?.classList.toggle('hidden', emailValid);
       }
     }
   });
+
+    // Language dropdown behaviour
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("lang-btn");
+      const menu = document.getElementById("lang-menu");
+      const wrapper = document.getElementById("lang-menu-wrapper");
+
+      if (!btn || !menu || !wrapper) return;
+
+      // Toggle dropdown
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+
+      // Clicking outside closes the menu
+      document.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+
+      // Hook language buttons into global setLanguage
+      menu.querySelectorAll("button[data-lang]").forEach(item => {
+        item.addEventListener("click", () => {
+          const lang = item.getAttribute("data-lang");
+          if (window.setLanguage) {
+            window.setLanguage(lang);
+          }
+          menu.classList.add("hidden");
+        });
+      });
+    });
     
   </script>
 
