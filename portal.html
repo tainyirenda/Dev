@@ -62,6 +62,12 @@
       --orange-50: #fff7ed;
       --green-50: #f0fdf4;
     }
+
+    .goog-te-gadget,
+.goog-te-gadget > div,
+.goog-te-combo {
+  display: none !important;
+}
     
     .bg-gradient-orange-green {
       background: linear-gradient(135deg, var(--orange-600), var(--green-600));
@@ -285,6 +291,27 @@ Afro Ubuntu<br class="block sm:hidden" />
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div id="google_translate_element" class="text-right py-2 text-sm"></div>
+
+    <div id="lang-menu-wrapper"
+     class="absolute right-4 top-4 sm:right-8 sm:top-6 md:top-10 lg:top-12 z-20 inline-block text-left">
+    <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border">
+      <i data-lucide="globe" class="h-4 w-4"></i>
+      <span>Language</span>
+    </button>
+
+    <div id="lang-menu"
+         class="absolute mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
+      <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100">English</button>
+      <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Swahili</button>
+      <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Shona</button>
+      <button data-lang="ny" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Nyanja</button>
+      <button data-lang="yo" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Yoruba</button>
+      <button data-lang="af" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Afrikaans</button>
+      <button data-lang="xh" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Xhosa</button>
+      <button data-lang="zu" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Zulu</button>
+      <button data-lang="fr" class="block w-full text-left px-4 py-2 hover:bg-gray-100">French</button>
+    </div>
+  </div>
     
     <!-- Hero Section -->
     <div class="pt-16 pb-20 text-center">
