@@ -1174,7 +1174,9 @@ Afro Ubuntu<br class="block sm:hidden" />
     setTimeout(() => { rm(); _origSignIn(); }, 400);
   };
 
-    document.addEventListener("DOMContentLoaded", function () {
+    
+
+  document.addEventListener("DOMContentLoaded", function () {
   const btn = document.getElementById("lang-btn");
   const menu = document.getElementById("lang-menu");
 
@@ -1194,7 +1196,7 @@ Afro Ubuntu<br class="block sm:hidden" />
   menu.querySelectorAll("button[data-lang]").forEach(item => {
     item.addEventListener("click", () => {
       const lang = item.getAttribute("data-lang");
-      setLanguage(lang);
+      window.setLanguage(lang);   // ✅ call the global helper via window
       menu.classList.add("hidden");
     });
   });
