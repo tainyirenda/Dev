@@ -135,9 +135,23 @@
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series2.mov",
     "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series2.jpg"}
+  },
+
+  {
+    "title": "Tune-In Tuesdays - Episode 3",
+  "url": "https://www.linkedin.com/pulse/tune-in-tuesdays-episode-3-afro-ubuntu-tradenet-khqxe",
+  "date": "2025-11-18",
+  "excerpt": "Wuse Market, Abuja: OJC Business Links Ltd",
+  "image": "",
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech", "NGO"],
+  "video": {
+    "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series3.mov",
+    "type": "video/quicktime",
+    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series3.jpg"}
   }
   
 ]
+
 
 
 
