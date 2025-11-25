@@ -148,9 +148,23 @@
     "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series3.mov",
     "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series3.jpg"}
+  },
+
+  {
+    "title": "Tune-In Tuesdays - Wuse Market Recap",
+  "url": "https://www.linkedin.com/pulse/tune-in-tuesdays-wuse-market-recap-afro-ubuntu-tradenet-ucxbe",
+  "date": "2025-11-25",
+  "excerpt": "Wuse Market, Abuja: Wuse Recap",
+  "image": "",
+  "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "Fintech", "NGO"],
+  "video": {
+    "url": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series4.mov",
+    "type": "video/quicktime",
+    "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/series4.jpg"}
   }
   
 ]
+
 
 
 
