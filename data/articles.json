@@ -171,12 +171,13 @@
   "image": "",
   "tags": ["Informal Economy", "Data", "B2B", "WhatsApp", "AI", "FMCG", "FinTech", "NGO"],
   "video": {
-    "url": "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7397407225767489536?compact=1",
+    "url": <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7397407225767489536?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>,
     "type": "video/quicktime",
     "poster": "https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/FoundersVoice.jpg"}
   }
   
 ]
+
 
 
 
