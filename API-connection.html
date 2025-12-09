@@ -768,7 +768,7 @@
           const password = (pwdInput?.value || '');
           if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
           setBusy(loginBtn, 'Signing in…');
-          await api('/api/login', { email, password });
+          await api('/api/v1/login', { email, password });
           location.href = CONTINUE_URL;
         } catch (err) {
           showLoginError(err.message || 'Invalid email or password.');
@@ -860,7 +860,7 @@ suEmailErr?.classList.toggle('hidden', emailValid);
         if(errors.length) return showSuMsg(errors.join(' '), false);
         try{
           setBusy(suSubmit, 'Creating…');
-          await api('/api/signup', { name, email, password: p1 });
+          await api('/api/v1/signup', { name, email, password: p1 });
           showSuMsg('Account created. Please check your email to verify your address.', true);
         }catch(err){ showSuMsg(err.message || 'Could not create account.', false); }
         finally{ clearBusy(suSubmit); }
@@ -961,7 +961,7 @@ suEmailErr?.classList.toggle('hidden', emailValid);
       const url = (typeof resource === 'string') ? resource : resource.url;
       
       // CORRECTION: Added "|auth\/verify-otp" to the Regex below
-      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup|auth\/verify-otp)/.test(url)) {
+      if (url && url.startsWith(API_BASE) && /\/api\/v1\/(login|signup|auth\/verify-otp)/.test(url)) {
         const clone = res.clone();
         const data = await clone.json().catch(() => null);
         if (data && data.token) localStorage.setItem('token', data.token);
@@ -976,7 +976,7 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      const r = await fetch(`${API_BASE}/api/me`, { method:'GET' });
+      const r = await fetch(`${API_BASE}/api/v1/me`, { method:'GET' });
       const me = await r.json();
       const el = document.getElementById('welcomeName');
       if (el && me && me.user && me.user.email) {
