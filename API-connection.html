@@ -672,8 +672,8 @@
   const CONTINUE_URL = params.get('continue') || 'https://www.afroubuntutrade.co.uk/api-connection.min.html';
   
   // CORRECTION: Added '/api' prefix to match your Azure Function routing
-  const OTP_REQUEST_PATH = '/api/auth/request-otp';
-  const OTP_VERIFY_PATH  = '/api/auth/verify-otp';
+  const OTP_REQUEST_PATH = '/api/v1/auth/request-otp';
+  const OTP_VERIFY_PATH  = '/api/v1/auth/verify-otp';
 
   // ===== Helpers =====
   function setBusy(btn, label) {
