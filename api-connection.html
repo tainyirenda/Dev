@@ -670,9 +670,10 @@
   const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
   const params = new URLSearchParams(location.search);
   const CONTINUE_URL = params.get('continue') || 'https://www.afroubuntutrade.co.uk/api-connection.min.html';
-  // OTP endpoints (adjust to match your API if different)
-  const OTP_REQUEST_PATH = '/auth/request-otp';
-  const OTP_VERIFY_PATH  = '/auth/verify-otp';
+  
+  // CORRECTION: Added '/api' prefix to match your Azure Function routing
+  const OTP_REQUEST_PATH = '/api/v1/auth/request-otp';
+  const OTP_VERIFY_PATH  = '/api/v1/auth/verify-otp';
 
   // ===== Helpers =====
   function setBusy(btn, label) {
@@ -767,7 +768,7 @@
           const password = (pwdInput?.value || '');
           if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
           setBusy(loginBtn, 'Signing in…');
-          await api('/api/login', { email, password });
+          await api('/api/v1/login', { email, password });
           location.href = CONTINUE_URL;
         } catch (err) {
           showLoginError(err.message || 'Invalid email or password.');
@@ -815,6 +816,8 @@
     });
   });
 
+    
+
   // ===== Modal system =====
   (function(){
     const openStack = [];
@@ -857,7 +860,7 @@ suEmailErr?.classList.toggle('hidden', emailValid);
         if(errors.length) return showSuMsg(errors.join(' '), false);
         try{
           setBusy(suSubmit, 'Creating…');
-          await api('/api/signup', { name, email, password: p1 });
+          await api('/api/v1/signup', { name, email, password: p1 });
           showSuMsg('Account created. Please check your email to verify your address.', true);
         }catch(err){ showSuMsg(err.message || 'Could not create account.', false); }
         finally{ clearBusy(suSubmit); }
@@ -953,10 +956,12 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     } catch (e) {}
     const res = await _fetch(resource, init);
 
-    // If this was a login/signup response from our API and contains a token, store it
+    // If this was a login/signup OR OTP verification response, store the token
     try {
       const url = (typeof resource === 'string') ? resource : resource.url;
-      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup)/.test(url)) {
+      
+      // CORRECTION: Added "|auth\/verify-otp" to the Regex below
+      if (url && url.startsWith(API_BASE) && /\/api\/v1\/(login|signup|auth\/verify-otp)/.test(url)) {
         const clone = res.clone();
         const data = await clone.json().catch(() => null);
         if (data && data.token) localStorage.setItem('token', data.token);
@@ -971,7 +976,7 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      const r = await fetch(`${API_BASE}/api/me`, { method:'GET' });
+      const r = await fetch(`${API_BASE}/api/v1/me`, { method:'GET' });
       const me = await r.json();
       const el = document.getElementById('welcomeName');
       if (el && me && me.user && me.user.email) {
@@ -980,21 +985,6 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     } catch (e) {}
   });
 
-  // Soft-disable OTP flows if your backend doesn't have endpoints yet
-  document.addEventListener('click', (ev) => {
-    const target = ev.target;
-    if (!target) return;
-    const text = (target.textContent || '').toLowerCase();
-    // Intercept obvious OTP actions
-    if (text.includes('send code') || text.includes('verify code')) {
-      ev.preventDefault();
-      const alertBox = document.getElementById('alertBox');
-      const alertText = document.getElementById('alertText');
-      const msg = 'Phone/OTP login is not available yet. Please use email & password.';
-      if (alertText) alertText.textContent = msg;
-      if (alertBox) alertBox.classList.remove('hidden');
-    }
-  });
 })();
 </script>
 
