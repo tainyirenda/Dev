@@ -335,12 +335,13 @@
           </p>
 
           <div class="mt-6 text-xs text-white/70 flex flex-wrap items-center gap-3 justify-center">
-            <a class="hover:underline" href="privacy-policy.html">Privacy Policy</a>
+            <a href="#" class="hover:underline" data-modal-target="privacyModal">Privacy Policy</a>
             <span class="opacity-40">•</span>
-            <a class="hover:underline" href="terms-of-service.html">Terms of Service</a>
+            <a href="#" class="hover:underline" data-modal-target="termsModal">Terms of Service</a>
             <span class="opacity-40">•</span>
-            <a class="hover:underline" href="ethical-ai-policy.html">Ethical Data & AI Use</a>
+            <a href="#" class="hover:underline" data-modal-target="ethicalModal">Ethical Data &amp; AI Use</a>
           </div>
+
         </div>
       </div>
     </section>
@@ -545,6 +546,124 @@
       </div>
     </div>
   </div>
+
+  <!-- Privacy Policy Modal -->
+<div id="privacyModal"
+     class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60"
+     data-modal-overlay>
+  <div role="dialog" aria-modal="true"
+       class="w-full max-w-2xl rounded-2xl bg-white text-gray-900 shadow-xl border border-gray-200 p-6 sm:p-7 overflow-y-auto max-h-[85vh]">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h4 class="text-xl font-semibold">Privacy Policy</h4>
+        <p class="text-xs text-gray-500 mt-1">
+          How we collect, use and protect your data.
+        </p>
+      </div>
+      <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Embedded policy page -->
+    <div class="border border-gray-200 rounded-lg overflow-hidden mb-4">
+      <iframe
+        src="privacy-policy.html"
+        title="Privacy Policy"
+        class="w-full h-80"
+      ></iframe>
+    </div>
+
+    <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+      <a href="privacy-policy.html" target="_blank" class="underline text-gray-700 hover:text-gray-900">
+        Open full Privacy Policy in a new tab
+      </a>
+      <button data-modal-close
+              class="px-4 py-2 rounded-xl border border-gray-300 text-gray-800 hover:bg-gray-100 text-xs sm:text-sm">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Terms of Service Modal -->
+<div id="termsModal"
+     class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60"
+     data-modal-overlay>
+  <div role="dialog" aria-modal="true"
+       class="w-full max-w-2xl rounded-2xl bg-white text-gray-900 shadow-xl border border-gray-200 p-6 sm:p-7 overflow-y-auto max-h-[85vh]">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h4 class="text-xl font-semibold">Terms of Service</h4>
+        <p class="text-xs text-gray-500 mt-1">
+          The rules for using Afro Ubuntu TradeNet services.
+        </p>
+      </div>
+      <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Embedded terms page -->
+    <div class="border border-gray-200 rounded-lg overflow-hidden mb-4">
+      <iframe
+        src="terms-of-service.html"
+        title="Terms of Service"
+        class="w-full h-80"
+      ></iframe>
+    </div>
+
+    <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+      <a href="terms-of-service.html" target="_blank" class="underline text-gray-700 hover:text-gray-900">
+        Open full Terms of Service in a new tab
+      </a>
+      <button data-modal-close
+              class="px-4 py-2 rounded-xl border border-gray-300 text-gray-800 hover:bg-gray-100 text-xs sm:text-sm">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Ethical Data & AI Use Modal -->
+<div id="ethicalModal"
+     class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60"
+     data-modal-overlay>
+  <div role="dialog" aria-modal="true"
+       class="w-full max-w-2xl rounded-2xl bg-white text-gray-900 shadow-xl border border-gray-200 p-6 sm:p-7 overflow-y-auto max-h-[85vh]">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h4 class="text-xl font-semibold">Ethical Data &amp; AI Use</h4>
+        <p class="text-xs text-gray-500 mt-1">
+          Our commitment to responsible, Ubuntu-aligned AI.
+        </p>
+      </div>
+      <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Embedded ethical AI policy page -->
+    <div class="border border-gray-200 rounded-lg overflow-hidden mb-4">
+      <iframe
+        src="ethical-ai-policy.html"
+        title="Ethical Data &amp; AI Use Policy"
+        class="w-full h-80"
+      ></iframe>
+    </div>
+
+    <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+      <a href="ethical-ai-policy.html" target="_blank" class="underline text-gray-700 hover:text-gray-900">
+        Open full Ethical Data &amp; AI Use Policy in a new tab
+      </a>
+      <button data-modal-close
+              class="px-4 py-2 rounded-xl border border-gray-300 text-gray-800 hover:bg-gray-100 text-xs sm:text-sm">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
 
   <script>
   // ===== Brand & routes =====
