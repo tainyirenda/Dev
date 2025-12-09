@@ -980,21 +980,6 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     } catch (e) {}
   });
 
-  // Soft-disable OTP flows if your backend doesn't have endpoints yet
-  document.addEventListener('click', (ev) => {
-    const target = ev.target;
-    if (!target) return;
-    const text = (target.textContent || '').toLowerCase();
-    // Intercept obvious OTP actions
-    if (text.includes('send code') || text.includes('verify code')) {
-      ev.preventDefault();
-      const alertBox = document.getElementById('alertBox');
-      const alertText = document.getElementById('alertText');
-      const msg = 'Phone/OTP login is not available yet. Please use email & password.';
-      if (alertText) alertText.textContent = msg;
-      if (alertBox) alertBox.classList.remove('hidden');
-    }
-  });
 })();
 </script>
 
