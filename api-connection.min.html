@@ -313,27 +313,32 @@
   <script>
     lucide.createIcons();
 
-  // ---- Modal helpers ----
-  function openModal(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.remove('hidden');
-  }
+    // ---- Modal helpers ----
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('hidden');
+    }
 
-  function closeModal(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.add('hidden');
-  }
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+    }
 
-
-    // ---- Config: API + sign-in target (with continue back here)
+    // ---- Config: API + sign-in target ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
-    const ACCOUNT_URL = location.origin + '/api-connection.min.html';
-    const SIGNIN_PAGE = '/API-connection.html'; // adjust if your live sign-in file differs
+    
+    // The current page (Dashboard)
+    const ACCOUNT_URL = location.origin + '/api-connection.min.html'; 
+    
+    // The Login Page (Corrected based on your input)
+    const SIGNIN_PAGE = 'api-connection.html'; 
+    
+    // If not logged in, go to Login Page -> then redirect back here on success
     const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(ACCOUNT_URL)}`;
 
-    // ---- API helper (Bearer token from localStorage)
+    // ---- API helper (Bearer token from localStorage) ----
     async function call(path, method='GET', body=null) {
       const headers = { 'Content-Type': 'application/json' };
       const t = localStorage.getItem('token');
@@ -344,32 +349,46 @@
       return data;
     }
 
-    // ---- Page boot
+    // ---- Page boot ----
     async function init(){
       const status = document.getElementById('status');
       const welcome = document.getElementById('welcomeName');
       const emailEl = document.getElementById('email');
       const toSignIn = document.getElementById('toSignIn');
-      toSignIn.href = SIGNIN_WITH_CONTINUE;
+      
+      // Update the "Sign In" button link immediately
+      if(toSignIn) toSignIn.href = SIGNIN_WITH_CONTINUE;
 
       try {
         status.textContent = 'Loading…';
-        const me = await call('/api/me');
+        
+        // CRITICAL UPDATE: Pointing to v1 endpoint
+        const me = await call('/api/v1/me');
+        
         status.textContent = 'Signed in';
+        status.className = 'pill bg-green-100 text-green-700';
+        
         const name = me?.user?.name || '';
         const email = me?.user?.email || 'Unknown';
-        welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
-        emailEl.textContent = email;
+        
+        // Update UI
+        if(welcome) welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
+        if(emailEl) emailEl.textContent = email;
+        
       } catch (e) {
+        console.error("Auth check failed:", e);
         status.textContent = 'Not signed in';
-        toSignIn.style.display = 'inline-flex';
+        status.className = 'pill bg-gray-100 text-gray-500';
+        if(welcome) welcome.textContent = 'Guest';
+        if(emailEl) emailEl.textContent = '—';
+        if(toSignIn) toSignIn.style.display = 'inline-flex';
       }
     }
 
-    // Copy email
+    // Copy email button logic
     document.getElementById('copyBtn')?.addEventListener('click', async () => {
       const email = document.getElementById('email')?.textContent?.trim();
-      if (!email || email === '—') return;
+      if (!email || email === '—' || email === 'Unknown') return;
       try {
         await navigator.clipboard.writeText(email);
         const btn = document.getElementById('copyBtn');
@@ -379,17 +398,18 @@
       } catch {}
     });
 
-    // Logout -> clear token + go to sign-in (with continue back here if you like)
+    // Logout -> clear token + go to sign-in
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
       localStorage.removeItem('token');
       window.location.href = SIGNIN_WITH_CONTINUE;
     });
 
-    // Year
+    // Year update
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();
 
+    // Start
     document.addEventListener('DOMContentLoaded', init);
-  </script>
+</script>
 </body>
 </html>
