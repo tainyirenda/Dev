@@ -184,25 +184,37 @@
 <div id="privacyModal" class="fixed inset-0 z-50 hidden">
   <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
   <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
       <div class="flex items-start justify-between gap-3 mb-4">
         <div>
           <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">Privacy Policy</h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">How we collect, use and protect your data.</p>
+          <p class="text-xs text-[color:var(--au-stone)] mt-1">
+            How we collect, use and protect your data.
+          </p>
         </div>
-        <button type="button" onclick="closeModal('privacyModal')" class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
+        <button type="button"
+                onclick="closeModal('privacyModal')"
+                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div class="text-xs sm:text-sm text-[color:var(--au-ink)] space-y-3 max-h-80 overflow-y-auto">
-        <!-- Replace this placeholder with your real policy text -->
-        <p>
-          This is where your Privacy Policy will live. You can describe what data you collect, why you collect it,
-          how long you retain it, and how users can exercise their rights.
-        </p>
+
+      <!-- Embedded policy page -->
+      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
+        <iframe
+          src="privacy-policy.html"
+          title="Privacy Policy"
+          class="w-full h-80"
+        ></iframe>
       </div>
-      <div class="mt-5 flex justify-end">
-        <button type="button" onclick="closeModal('privacyModal')" class="btn-outline text-xs sm:text-sm">
+
+      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+        <a href="privacy-policy.html" target="_blank" class="link">
+          Open full Privacy Policy in a new tab
+        </a>
+        <button type="button"
+                onclick="closeModal('privacyModal')"
+                class="btn-outline text-xs sm:text-sm">
           Close
         </button>
       </div>
@@ -214,25 +226,37 @@
 <div id="termsModal" class="fixed inset-0 z-50 hidden">
   <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
   <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
       <div class="flex items-start justify-between gap-3 mb-4">
         <div>
           <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">Terms of Service</h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">The rules for using Afro Ubuntu TradeNet services.</p>
+          <p class="text-xs text-[color:var(--au-stone)] mt-1">
+            The rules for using Afro Ubuntu TradeNet services.
+          </p>
         </div>
-        <button type="button" onclick="closeModal('termsModal')" class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
+        <button type="button"
+                onclick="closeModal('termsModal')"
+                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div class="text-xs sm:text-sm text-[color:var(--au-ink)] space-y-3 max-h-80 overflow-y-auto">
-        <!-- Replace this placeholder with your real terms text -->
-        <p>
-          Here you can outline acceptable use, account responsibilities, limitations of liability, and other
-          contractual details governing access to the platform.
-        </p>
+
+      <!-- Embedded terms page -->
+      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
+        <iframe
+          src="terms-of-service.html"
+          title="Terms of Service"
+          class="w-full h-80"
+        ></iframe>
       </div>
-      <div class="mt-5 flex justify-end">
-        <button type="button" onclick="closeModal('termsModal')" class="btn-outline text-xs sm:text-sm">
+
+      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+        <a href="terms-of-service.html" target="_blank" class="link">
+          Open full Terms of Service in a new tab
+        </a>
+        <button type="button"
+                onclick="closeModal('termsModal')"
+                class="btn-outline text-xs sm:text-sm">
           Close
         </button>
       </div>
@@ -240,29 +264,44 @@
   </div>
 </div>
 
+
 <!-- Ethical Data & AI Use Modal -->
 <div id="ethicalModal" class="fixed inset-0 z-50 hidden">
   <div class="absolute inset-0 bg-black/40" onclick="closeModal('ethicalModal')"></div>
   <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
       <div class="flex items-start justify-between gap-3 mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">Ethical Data &amp; AI Use</h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">Our commitment to responsible, Ubuntu-aligned AI.</p>
+          <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">
+            Ethical Data &amp; AI Use
+          </h2>
+          <p class="text-xs text-[color:var(--au-stone)] mt-1">
+            Our commitment to responsible, Ubuntu-aligned AI.
+          </p>
         </div>
-        <button type="button" onclick="closeModal('ethicalModal')" class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
+        <button type="button"
+                onclick="closeModal('ethicalModal')"
+                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div class="text-xs sm:text-sm text-[color:var(--au-ink)] space-y-3 max-h-80 overflow-y-auto">
-        <!-- Replace this placeholder with your ethical AI policy -->
-        <p>
-          Use this section to describe how Afro Ubuntu TradeNet approaches fairness, transparency, accountability,
-          human oversight, and community benefit in all AI-enabled features.
-        </p>
+
+      <!-- Embedded ethical AI policy page -->
+      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
+        <iframe
+          src="ethical-ai-policy.html"
+          title="Ethical Data & AI Use Policy"
+          class="w-full h-80"
+        ></iframe>
       </div>
-      <div class="mt-5 flex justify-end">
-        <button type="button" onclick="closeModal('ethicalModal')" class="btn-outline text-xs sm:text-sm">
+
+      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
+        <a href="ethical-ai-policy.html" target="_blank" class="link">
+          Open full Ethical Data &amp; AI Use Policy in a new tab
+        </a>
+        <button type="button"
+                onclick="closeModal('ethicalModal')"
+                class="btn-outline text-xs sm:text-sm">
           Close
         </button>
       </div>
