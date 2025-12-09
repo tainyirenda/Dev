@@ -670,9 +670,10 @@
   const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
   const params = new URLSearchParams(location.search);
   const CONTINUE_URL = params.get('continue') || 'https://www.afroubuntutrade.co.uk/api-connection.min.html';
-  // OTP endpoints (adjust to match your API if different)
-  const OTP_REQUEST_PATH = '/auth/request-otp';
-  const OTP_VERIFY_PATH  = '/auth/verify-otp';
+  
+  // CORRECTION: Added '/api' prefix to match your Azure Function routing
+  const OTP_REQUEST_PATH = '/api/auth/request-otp';
+  const OTP_VERIFY_PATH  = '/api/auth/verify-otp';
 
   // ===== Helpers =====
   function setBusy(btn, label) {
@@ -815,6 +816,8 @@
     });
   });
 
+    
+
   // ===== Modal system =====
   (function(){
     const openStack = [];
@@ -953,10 +956,12 @@ suEmailErr?.classList.toggle('hidden', emailValid);
     } catch (e) {}
     const res = await _fetch(resource, init);
 
-    // If this was a login/signup response from our API and contains a token, store it
+    // If this was a login/signup OR OTP verification response, store the token
     try {
       const url = (typeof resource === 'string') ? resource : resource.url;
-      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup)/.test(url)) {
+      
+      // CORRECTION: Added "|auth\/verify-otp" to the Regex below
+      if (url && url.startsWith(API_BASE) && /\/api\/(login|signup|auth\/verify-otp)/.test(url)) {
         const clone = res.clone();
         const data = await clone.json().catch(() => null);
         if (data && data.token) localStorage.setItem('token', data.token);
