@@ -370,7 +370,7 @@
 
         const name = me?.user?.name || '';
 const businessName =
-  me?.user?.business_Name ||
+  me?.user?.businessName ||
   me?.user?.Name ||
   me?.user?.User_Name ||
   '';
@@ -380,9 +380,9 @@ const email = me?.user?.email || 'Unknown';
 // Decide what to show in "Welcome back, …"
 let displayName = 'User';
 
-if (business_Name) {
+if (businessName) {
   // Prefer full business name as-is
-  displayName = business_Name;
+  displayName = businessName;
 } else if (name) {
   // Use full personal name (or you can keep .split(' ')[0] if you prefer first name only)
   displayName = name;
