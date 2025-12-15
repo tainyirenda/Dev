@@ -369,23 +369,15 @@
         status.className = 'pill bg-green-100 text-green-700';
 
         const name = me?.user?.name || '';
-const businessName =
-  me?.user?.businessName ||
-  me?.user?.Name ||
-  me?.user?.UserName ||
-  '';
-
 const email = me?.user?.email || 'Unknown';
 
-// Decide what to show in "Welcome back, …"
 let displayName = 'User';
 
-if (businessName) {
-  // Prefer full business name as-is
-  displayName = businessName;
-} else if (name) {
-  // Use full personal name (or you can keep .split(' ')[0] if you prefer first name only)
+if (name) {
+  // You can use full name…
   displayName = name;
+  // …or first name only if you prefer:
+  // displayName = name.split(' ')[0];
 } else if (email && email !== 'Unknown') {
   displayName = email.split('@')[0];
 }
