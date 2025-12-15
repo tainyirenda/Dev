@@ -367,13 +367,39 @@
         
         status.textContent = 'Signed in';
         status.className = 'pill bg-green-100 text-green-700';
-        
+
         const name = me?.user?.name || '';
-        const email = me?.user?.email || 'Unknown';
+const businessName =
+  me?.user?.businessName ||
+  me?.user?.companyName ||
+  me?.user?.organisationName ||
+  '';
+
+const email = me?.user?.email || 'Unknown';
+
+// Decide what to show in "Welcome back, …"
+let displayName = 'User';
+
+if (businessName) {
+  // Prefer full business name as-is
+  displayName = businessName;
+} else if (name) {
+  // Use full personal name (or you can keep .split(' ')[0] if you prefer first name only)
+  displayName = name;
+} else if (email && email !== 'Unknown') {
+  displayName = email.split('@')[0];
+}
+
+if (welcome) welcome.textContent = displayName;
+if (emailEl) emailEl.textContent = email;
+
+        
+        //const name = me?.user?.name || '';
+        //const email = me?.user?.email || 'Unknown';
         
         // Update UI
-        if(welcome) welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
-        if(emailEl) emailEl.textContent = email;
+        //if(welcome) welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
+        //if(emailEl) emailEl.textContent = email;
         
       } catch (e) {
         console.error("Auth check failed:", e);
