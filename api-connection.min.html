@@ -468,6 +468,39 @@
       el.classList.add('hidden');
     }
 
+    // Language dropdown behaviour
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("lang-btn");
+      const menu = document.getElementById("lang-menu");
+      const wrapper = document.getElementById("lang-menu-wrapper");
+
+      if (!btn || !menu || !wrapper) return;
+
+      // Toggle dropdown
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+
+      // Clicking outside closes the menu
+      document.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+
+      // Hook language buttons into global setLanguage
+      menu.querySelectorAll("button[data-lang]").forEach(item => {
+        item.addEventListener("click", () => {
+          const lang = item.getAttribute("data-lang");
+          if (window.setLanguage) {
+            window.setLanguage(lang);
+          }
+          menu.classList.add("hidden");
+        });
+      });
+    });
+    
+
     // ---- Config: API + sign-in target ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
     
