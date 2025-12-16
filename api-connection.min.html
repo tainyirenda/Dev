@@ -11,6 +11,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-N6PKL5BZQF');
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{
@@ -52,6 +63,31 @@
         </div>
       </div>
       <nav class="flex items-center gap-2">
+        <!-- Language menu -->
+          <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
+           <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
+  <i data-lucide="globe" class="h-4 w-4"></i>
+  <span>Language</span>
+</button>
+
+            <div
+  id="lang-menu"
+  class="absolute right-0 mt-2 w-44 rounded-xl border border-white/15 bg-[#050b09]/95 backdrop-blur-xl shadow-xl hidden z-20"
+>
+  <button data-lang="en" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">English</button>
+  <button data-lang="sw" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Swahili</button>
+  <button data-lang="sn" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Shona</button>
+  <button data-lang="ny" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Nyanja</button>
+  <button data-lang="yo" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Yoruba</button>
+  <button data-lang="af" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Afrikaans</button>
+  <button data-lang="xh" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Xhosa</button>
+  <button data-lang="zu" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Zulu</button>
+  <button data-lang="fr" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">French</button>
+</div>
+          </div>
+
+          <!-- Hidden actual Google Translate container -->
+          <div id="google_translate_element" class="hidden"></div>
         <a href="/" class="btn-outline hidden sm:inline-block">Home</a>
         <button id="logoutBtn" class="btn-outline">Log out</button>
       </nav>
