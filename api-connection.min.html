@@ -7,15 +7,98 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   
-  <title>Afro Ubuntu • Dashboard</title>
+  <title>Afro Ubuntu • Account Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- CSS / Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   
-  <!-- Added Chart.js for the Analytics -->
+  <!-- Analytics Charting Library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Google Translate -->
+  <script type="text/javascript">
+  function fireGoogleTranslateEvent(el, eventName) {
+    try {
+      if (document.createEvent) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, true, true);
+        el.dispatchEvent(event);
+      } else if (document.createEventObject) {
+        var event = document.createEventObject();
+        el.fireEvent("on" + eventName, event);
+      } else {
+        el.dispatchEvent(new Event(eventName));
+      }
+    } catch (e) {
+      el.dispatchEvent(new Event(eventName));
+    }
+  }
+
+  function setGoogleTransCookie(lang) {
+    var value = "/en/" + lang;
+    var domain = window.location.hostname;
+    document.cookie = "googtrans=" + value + ";path=/;";
+    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
+  }
+
+  function setLanguage(lang) {
+    function applyLang() {
+      const combo = document.querySelector(".goog-te-combo");
+      if (!combo) return false;
+      combo.value = lang;
+      fireGoogleTranslateEvent(combo, "change");
+      try { localStorage.setItem("selectedLang", lang); } catch (e) {}
+      return true;
+    }
+    if (applyLang()) return;
+    const observer = new MutationObserver(() => {
+      if (applyLang()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    setGoogleTransCookie(lang);
+    setTimeout(function () { window.location.reload(); }, 300);
+  }
+
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+    const observer = new MutationObserver(function (mutations, obs) {
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        const savedLang = localStorage.getItem('selectedLang');
+        if (savedLang) {
+          combo.value = savedLang;
+          fireGoogleTranslateEvent(combo, 'change');
+        }
+        combo.addEventListener('change', function () {
+          try { localStorage.setItem('selectedLang', this.value); } catch (e) {}
+        });
+        obs.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  
+  <!-- Analytics Tag -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-N6PKL5BZQF');
+  </script>
+  
   <style>
     :root{
       --au-charcoal:#1f2937;
@@ -24,7 +107,7 @@
       --au-line:#e5e7eb;
       --au-surface:#f8fafc;
       --au-white:#ffffff;
-      --au-accent:#ea580c;
+      --au-accent:#ea580c;    /* orange-600 */
       --au-accent-soft: rgba(234,88,12,.08);
       --au-gold:#f5b400;
     }
@@ -42,228 +125,5 @@
     .btn:hover { opacity:.95 }
     .btn-outline { border:1px solid var(--au-line); border-radius:10px; padding:10px 14px; color: var(--au-ink); background: var(--au-white); }
     .btn-outline:hover { background:#f9fafb }
-    
-    /* Animation for AI Processing */
-    @keyframes pulse-orange {
-      0%, 100% { color: var(--au-accent); opacity: 1; }
-      50% { opacity: .6; }
-    }
-    .animate-ai { animation: pulse-orange 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-  </style>
-</head>
-<body>
-  <!-- Header -->
-  <header class="bg-white border-b border-[color:var(--au-line)]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
-        <div>
-          <p class="text-sm font-semibold text-[color:var(--au-ink)] leading-tight">Afro Ubuntu TradeNet</p>
-          <p class="text-xs text-[color:var(--au-stone)] -mt-0.5">Rooted in Africa, connected to the world</p>
-        </div>
-      </div>
-      <nav class="flex items-center gap-2">
-        <a href="/" class="btn-outline hidden sm:inline-block">Home</a>
-        <button id="logoutBtn" class="btn-outline">Log out</button>
-      </nav>
-    </div>
-    <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] via-[color:var(--au-gold)] to-[color:var(--au-ink)]"></div>
-  </header>
 
-  <!-- Main -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <!-- Greeting + status -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[color:var(--au-ink)]">Retailer Portal</h1>
-        <p class="text-[15px] text-[color:var(--au-stone)]">
-          Welcome back, <span id="welcomeName" class="font-semibold text-[color:var(--au-ink)]">—</span>
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="pill" id="status">Checking…</span>
-        <a class="btn" id="toSignIn" href="#" style="display:none">Sign in</a>
-      </div>
-    </div>
-
-    <!-- ANALYTICS DASHBOARD -->
-    <div id="analytics-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 hidden">
-      
-      <!-- 1. Revenue Chart -->
-      <div class="card p-5">
-        <h3 class="text-sm font-medium text-[color:var(--au-stone)]">Total Revenue (Month)</h3>
-        <p class="text-3xl font-bold mt-1 text-[color:var(--au-ink)]" id="disp_revenue">--</p>
-        <div class="h-32 mt-4 relative w-full">
-            <canvas id="revenueChart"></canvas>
-        </div>
-      </div>
-
-      <!-- 2. Credit Score -->
-      <div class="card p-5 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-            <h3 class="text-sm font-medium text-[color:var(--au-stone)]">Credit Score</h3>
-            <span class="pill bg-blue-100 text-blue-700" id="disp_tier">--</span>
-        </div>
-        <div class="flex flex-col items-center justify-center flex-1">
-            <div class="relative w-32 h-16 overflow-hidden">
-                <div class="absolute top-0 left-0 w-32 h-32 rounded-full border-8 border-gray-200"></div>
-                <div class="absolute top-0 left-0 w-32 h-32 rounded-full border-8 border-blue-600 border-b-transparent border-r-transparent transform -rotate-45"></div>
-            </div>
-            <span class="text-4xl font-bold text-[color:var(--au-ink)] -mt-8" id="disp_credit">--</span>
-            <p class="text-xs text-gray-400 mt-1">Based on consistency</p>
-        </div>
-      </div>
-
-      <!-- 3. Restock Alerts -->
-      <div class="card p-5 border-l-4 border-red-500 overflow-y-auto max-h-[200px]">
-        <div class="flex items-center gap-2 mb-3">
-            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
-            <h3 class="text-sm font-bold text-red-600">Action Required</h3>
-        </div>
-        <ul class="space-y-3 text-sm" id="list_alerts">
-            <li class="text-gray-400 italic text-xs">Loading insights...</li>
-        </ul>
-      </div>
-
-      <!-- 4. Top Products Table -->
-      <div class="card p-0 lg:col-span-3 overflow-hidden">
-        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
-            <h3 class="text-sm font-semibold text-gray-700">Top Selling Products</h3>
-        </div>
-        <table class="w-full text-sm text-left">
-            <thead class="text-xs text-gray-500 uppercase bg-white border-b">
-                <tr>
-                    <th class="px-5 py-3">Item Name</th>
-                    <th class="px-5 py-3 text-right">Quantity Sold</th>
-                    <th class="px-5 py-3 text-right">Revenue Contrib.</th>
-                </tr>
-            </thead>
-            <tbody id="list_top_products" class="divide-y divide-gray-100">
-                <!-- JS will populate -->
-            </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Platform Modules (Navigation) -->
-    <h3 class="text-lg font-bold mb-4 text-[color:var(--au-ink)]">Platform Modules</h3>
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <a href="/portal/connect" class="card p-5 hover:shadow transition-shadow group">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors">
-            <i data-lucide="messages-square" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold">Connect Hub</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Find suppliers & partners.</p>
-          </div>
-        </div>
-      </a>
-
-      <a href="/portal/verification" class="card p-5 hover:shadow transition-shadow group">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap group-hover:bg-green-100 group-hover:text-green-600 transition-colors">
-            <i data-lucide="badge-check" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold">Business Verification</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Status: <span class="text-green-600 font-medium">Verified</span></p>
-          </div>
-        </div>
-      </a>
-
-      <a href="/portal/billing" class="card p-5 hover:shadow transition-shadow group">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-            <i data-lucide="credit-card" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold">Billing & Plans</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Manage invoices.</p>
-          </div>
-        </div>
-      </a>
-    </section>
-
-    <!-- Help -->
-    <div class="mt-8 card p-5 bg-gray-50 border-none">
-      <div class="flex items-start gap-3">
-        <i data-lucide="info" class="w-5 h-5 text-[color:var(--au-stone)] mt-0.5"></i>
-        <p class="text-sm text-[color:var(--au-stone)]">
-          Need help? Email <a class="link" href="mailto:info@afroubuntutrade.co.uk">dev@afroubuntutrade.co.uk</a>.
-        </p>
-      </div>
-    </div>
-  </main>
-
-  <footer class="border-t border-[color:var(--au-line)] mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd</p>
-      <div class="flex items-center gap-4">
-        <button class="link" onclick="openModal('privacyModal')">Privacy</button>
-        <button class="link" onclick="openModal('termsModal')">Terms</button>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Modals (Privacy/Terms) -->
-  <div id="privacyModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
-        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
-        <button class="btn-outline mt-4 text-xs" onclick="closeModal('privacyModal')">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="termsModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
-        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
-        <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    lucide.createIcons();
-
-    // ---- Config ----
-    const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
-    const ACCOUNT_URL = location.origin + '/api-connection.min.html';
-    const SIGNIN_PAGE = 'api-connection.html'; 
-    const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(ACCOUNT_URL)}`;
-
-    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
-
-    // ---- API helper ----
-    async function call(path, method='GET', body=null) {
-      const headers = { 'Content-Type': 'application/json' };
-      const t = localStorage.getItem('token');
-      if (t) headers['Authorization'] = 'Bearer ' + t;
-      const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : null });
-      const data = await res.json().catch(()=>null);
-      if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
-      return data;
-    }
-
-    // ---- Load Dashboard Data (Revenue, Alerts, etc) ----
-    async function loadDashboardData() {
-        try {
-            // 1. Fetch Data
-            const data = await call('/api/v1/analytics/dashboard');
-            if(!data) return;
-
-            // Show the section
-            document.getElementById('analytics-section').classList.remove('hidden');
-
-            // 2. Revenue
-            document.getElementById('disp_revenue').innerText = '$' + (data.revenue || 0).toLocaleString();
-
-            // 3. Credit
-            document.getElementById('disp_credit
+    #google_transl
