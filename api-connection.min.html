@@ -9,18 +9,24 @@
   
   <title>Afro Ubuntu • Account Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- CSS / Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Analytics Charting Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Google Translate -->
   <script type="text/javascript">
-  // Fire a change event in the older "HTMLEvents" style Google expects
   function fireGoogleTranslateEvent(el, eventName) {
     try {
       if (document.createEvent) {
         var event = document.createEvent("HTMLEvents");
         event.initEvent(eventName, true, true);
         el.dispatchEvent(event);
-      } else if (document.createEventObject) { // IE fallback
+      } else if (document.createEventObject) {
         var event = document.createEventObject();
         el.fireEvent("on" + eventName, event);
       } else {
@@ -32,52 +38,28 @@
   }
 
   function setGoogleTransCookie(lang) {
-    // page language is 'en', so cookie must be /en/<target>
     var value = "/en/" + lang;
     var domain = window.location.hostname;
-
-    // set for current host
     document.cookie = "googtrans=" + value + ";path=/;";
-    // and for root domain (handles www / subdomains)
     document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
   }
 
-  // Global helper used by the custom language menu
   function setLanguage(lang) {
     function applyLang() {
       const combo = document.querySelector(".goog-te-combo");
       if (!combo) return false;
-
       combo.value = lang;
       fireGoogleTranslateEvent(combo, "change");
-
-      try {
-        localStorage.setItem("selectedLang", lang);
-      } catch (e) {}
-
+      try { localStorage.setItem("selectedLang", lang); } catch (e) {}
       return true;
     }
-
-    // 1) Try via hidden dropdown
     if (applyLang()) return;
-
-    // 2) Wait for widget if not ready yet
     const observer = new MutationObserver(() => {
-      if (applyLang()) {
-        observer.disconnect();
-      }
+      if (applyLang()) observer.disconnect();
     });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    // 3) Cookie + reload fallback to force translation
+    observer.observe(document.body, { childList: true, subtree: true });
     setGoogleTransCookie(lang);
-    setTimeout(function () {
-      window.location.reload();
-    }, 300);
+    setTimeout(function () { window.location.reload(); }, 300);
   }
 
   function googleTranslateElementInit() {
@@ -89,8 +71,6 @@
       },
       'google_translate_element'
     );
-
-    // Restore saved language once widget is ready
     const observer = new MutationObserver(function (mutations, obs) {
       const combo = document.querySelector('.goog-te-combo');
       if (combo) {
@@ -99,47 +79,37 @@
           combo.value = savedLang;
           fireGoogleTranslateEvent(combo, 'change');
         }
-
         combo.addEventListener('change', function () {
-          try {
-            localStorage.setItem('selectedLang', this.value);
-          } catch (e) {}
+          try { localStorage.setItem('selectedLang', this.value); } catch (e) {}
         });
-
         obs.disconnect();
       }
     });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
-</script>
+  </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   
-  <!-- Google tag (gtag.js) -->
+  <!-- Analytics Tag -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-N6PKL5BZQF');
   </script>
   
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --au-charcoal:#1f2937;  /* slate-800 */
-      --au-ink:#111827;       /* gray-900 */
-      --au-stone:#6b7280;     /* gray-500 */
-      --au-line:#e5e7eb;      /* gray-200 */
-      --au-surface:#f8fafc;   /* slate-50 */
+      --au-charcoal:#1f2937;
+      --au-ink:#111827;
+      --au-stone:#6b7280;
+      --au-line:#e5e7eb;
+      --au-surface:#f8fafc;
       --au-white:#ffffff;
       --au-accent:#ea580c;    /* orange-600 */
       --au-accent-soft: rgba(234,88,12,.08);
-      --au-gold:#f5b400;      /* warm gold for tiny flourishes */
+      --au-gold:#f5b400;
     }
     html,body{height:100%}
     body{
@@ -155,6 +125,18 @@
     .btn:hover { opacity:.95 }
     .btn-outline { border:1px solid var(--au-line); border-radius:10px; padding:10px 14px; color: var(--au-ink); background: var(--au-white); }
     .btn-outline:hover { background:#f9fafb }
+
+    #google_translate_element, .goog-te-gadget, .goog-te-combo { display: none !important; }
+    #lang-btn.tab-like { padding-inline: 0.75rem; padding-block: 0.4rem; font-size: 0.75rem; }
+    .tab { padding:.5rem .75rem; border-radius:.5rem; font-size:.875rem; font-weight:600; color:var(--au-stone); }
+    .tab-active { background:rgba(0,0,0,.05); color:var(--au-ink); }
+
+    /* AI Loading Pulse */
+    @keyframes pulse-orange {
+      0%, 100% { color: var(--au-accent); opacity: 1; }
+      50% { opacity: .6; }
+    }
+    .animate-ai { animation: pulse-orange 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   </style>
 </head>
 <body>
@@ -169,31 +151,19 @@
         </div>
       </div>
       <nav class="flex items-center gap-2">
-        <!-- Language menu -->
-          <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
+        <!-- Language -->
+        <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
            <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
-  <i data-lucide="globe" class="h-4 w-4"></i>
-  <span>Language</span>
-</button>
+             <i data-lucide="globe" class="h-4 w-4"></i><span>Language</span>
+           </button>
+           <div id="lang-menu" class="absolute right-0 mt-2 w-44 rounded-xl border border-gray-200 bg-white shadow-xl hidden z-20">
+             <button data-lang="en" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50">English</button>
+             <button data-lang="sw" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50">Swahili</button>
+             <button data-lang="fr" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50">French</button>
+           </div>
+        </div>
+        <div id="google_translate_element" class="hidden"></div>
 
-            <div
-  id="lang-menu"
-  class="absolute right-0 mt-2 w-44 rounded-xl border border-white/15 bg-[#050b09]/95 backdrop-blur-xl shadow-xl hidden z-20"
->
-  <button data-lang="en" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">English</button>
-  <button data-lang="sw" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Swahili</button>
-  <button data-lang="sn" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Shona</button>
-  <button data-lang="ny" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Nyanja</button>
-  <button data-lang="yo" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Yoruba</button>
-  <button data-lang="af" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Afrikaans</button>
-  <button data-lang="xh" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Xhosa</button>
-  <button data-lang="zu" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Zulu</button>
-  <button data-lang="fr" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">French</button>
-</div>
-          </div>
-
-          <!-- Hidden actual Google Translate container -->
-          <div id="google_translate_element" class="hidden"></div>
         <a href="/" class="btn-outline hidden sm:inline-block">Home</a>
         <button id="logoutBtn" class="btn-outline">Log out</button>
       </nav>
@@ -201,18 +171,19 @@
     <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] via-[color:var(--au-gold)] to-[color:var(--au-ink)]"></div>
   </header>
 
-  <!-- Subtle background accents -->
+  <!-- Background decorations -->
   <div class="fixed inset-0 -z-10 pointer-events-none">
     <div class="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full" style="background: radial-gradient(closest-side, rgba(234,88,12,.06), transparent 70%);"></div>
     <div class="absolute -bottom-28 -left-28 w-[520px] h-[520px] rounded-full" style="background: radial-gradient(closest-side, rgba(17,24,39,.06), transparent 70%);"></div>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
     <!-- Greeting + status -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[color:var(--au-ink)]">Your account</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[color:var(--au-ink)]">Dashboard</h1>
         <p class="text-[15px] text-[color:var(--au-stone)]">
           Welcome back, <span id="welcomeName" class="font-semibold text-[color:var(--au-ink)]">—</span>
         </p>
@@ -223,8 +194,8 @@
       </div>
     </div>
 
-    <!-- Identity -->
-    <div class="mt-4 card p-4 sm:p-5 flex items-center justify-between gap-3">
+    <!-- Identity Box -->
+    <div class="mt-4 mb-8 card p-4 sm:p-5 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <div class="iconwrap"><i data-lucide="user" class="w-5 h-5"></i></div>
         <div class="min-w-0">
@@ -235,41 +206,83 @@
       <button class="btn-outline" id="copyBtn" title="Copy email">Copy</button>
     </div>
 
-    <!-- Cards -->
-    <section class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <a href="/portal/dashboard" class="card p-5 hover:shadow transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
-          <div>
-            <h3 class="text-lg font-semibold">Dashboard</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Usage, APIs and performance KPIs.</p>
-          </div>
+    <!-- ANALYTICS DASHBOARD (Hidden until loaded) -->
+    <div id="analytics-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 hidden">
+      
+      <!-- 1. Revenue Chart -->
+      <div class="card p-5">
+        <h3 class="text-sm font-medium text-[color:var(--au-stone)]">Total Revenue (Month)</h3>
+        <p class="text-3xl font-bold mt-1 text-[color:var(--au-ink)]" id="disp_revenue">--</p>
+        <div class="h-32 mt-4 relative w-full">
+            <canvas id="revenueChart"></canvas>
         </div>
-      </a>
+      </div>
 
-      <a href="/portal/insights" class="card p-5 hover:shadow transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="line-chart" class="w-6 h-6"></i></div>
-          <div>
-            <h3 class="text-lg font-semibold">Insights</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Predictive analysis, alerts & recommendations.</p>
-          </div>
+      <!-- 2. Credit Score -->
+      <div class="card p-5 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+            <h3 class="text-sm font-medium text-[color:var(--au-stone)]">Credit Score</h3>
+            <span class="pill bg-blue-100 text-blue-700" id="disp_tier">--</span>
         </div>
-      </a>
+        <div class="flex flex-col items-center justify-center flex-1">
+            <div class="relative w-32 h-16 overflow-hidden">
+                <div class="absolute top-0 left-0 w-32 h-32 rounded-full border-8 border-gray-200"></div>
+                <div class="absolute top-0 left-0 w-32 h-32 rounded-full border-8 border-blue-600 border-b-transparent border-r-transparent transform -rotate-45"></div>
+            </div>
+            <span class="text-4xl font-bold text-[color:var(--au-ink)] -mt-8" id="disp_credit">--</span>
+            <p class="text-xs text-gray-400 mt-1">Based on consistency</p>
+        </div>
+      </div>
 
-      <a href="/portal/connect" class="card p-5 hover:shadow transition-shadow">
+      <!-- 3. Restock Alerts -->
+      <div class="card p-5 border-l-4 border-red-500 overflow-y-auto max-h-[200px]">
+        <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+            <h3 class="text-sm font-bold text-red-600">Action Required</h3>
+        </div>
+        <ul class="space-y-3 text-sm" id="list_alerts">
+            <li class="text-gray-400 italic text-xs">Loading insights...</li>
+        </ul>
+      </div>
+
+      <!-- 4. Top Products Table -->
+      <div class="card p-0 lg:col-span-3 overflow-hidden">
+        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+            <h3 class="text-sm font-semibold text-gray-700">Top Selling Products</h3>
+        </div>
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-500 uppercase bg-white border-b">
+                <tr>
+                    <th class="px-5 py-3">Item Name</th>
+                    <th class="px-5 py-3 text-right">Qty</th>
+                    <th class="px-5 py-3 text-right">Value</th>
+                </tr>
+            </thead>
+            <tbody id="list_top_products" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Platform Modules -->
+    <h3 class="text-lg font-bold mb-4 text-[color:var(--au-ink)]">Platform Modules</h3>
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <a href="/portal/connect" class="card p-5 hover:shadow transition-shadow group">
         <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="messages-square" class="w-6 h-6"></i></div>
+          <div class="iconwrap group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors">
+            <i data-lucide="messages-square" class="w-6 h-6"></i>
+          </div>
           <div>
             <h3 class="text-lg font-semibold">Connect Hub</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Discover partners & AI-assisted matching.</p>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Find suppliers & partners.</p>
           </div>
         </div>
       </a>
 
-      <a href="/portal/verification" class="card p-5 hover:shadow transition-shadow">
+      <a href="/portal/verification" class="card p-5 hover:shadow transition-shadow group">
         <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="badge-check" class="w-6 h-6"></i></div>
+          <div class="iconwrap group-hover:bg-green-100 group-hover:text-green-600 transition-colors">
+            <i data-lucide="badge-check" class="w-6 h-6"></i>
+          </div>
           <div>
             <h3 class="text-lg font-semibold">Business Verification</h3>
             <p class="mt-1 text-sm text-[color:var(--au-stone)]">Confirm your business details.</p>
@@ -277,243 +290,106 @@
         </div>
       </a>
 
-      <a href="/portal/track" class="card p-5 hover:shadow transition-shadow">
+      <a href="/portal/billing" class="card p-5 hover:shadow transition-shadow group">
         <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="receipt-text" class="w-6 h-6"></i></div>
-          <div>
-            <h3 class="text-lg font-semibold">Track Application</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">See submission and review status.</p>
+          <div class="iconwrap group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+            <i data-lucide="credit-card" class="w-6 h-6"></i>
           </div>
-        </div>
-      </a>
-
-      <a href="/portal/billing" class="card p-5 hover:shadow transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="iconwrap"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
           <div>
             <h3 class="text-lg font-semibold">Billing & Plans</h3>
-            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Manage plan, invoices and add-ons.</p>
+            <p class="mt-1 text-sm text-[color:var(--au-stone)]">Manage invoices.</p>
           </div>
         </div>
       </a>
     </section>
 
     <!-- Help -->
-    <div class="mt-8 card p-5">
+    <div class="mt-8 card p-5 bg-gray-50 border-none">
       <div class="flex items-start gap-3">
-        <i data-lucide="info" class="w-5 h-5 text-[color:var(--au-accent)] mt-0.5"></i>
+        <i data-lucide="info" class="w-5 h-5 text-[color:var(--au-stone)] mt-0.5"></i>
         <p class="text-sm text-[color:var(--au-stone)]">
-          Need help? Visit <a class="link" href="/portal/docs">Developer Docs</a> or email
+          Need help? Visit <a class="link" href="/portal/docs">Docs</a> or email
           <a class="link" href="mailto:info@afroubuntutrade.co.uk">dev@afroubuntutrade.co.uk</a>.
         </p>
       </div>
     </div>
   </main>
 
-  <footer class="border-t border-[color:var(--au-line)]">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-    <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd • Rooted in Ubuntu Philosophy</p>
-    <div class="flex items-center gap-4">
-      <button class="link" type="button" onclick="openModal('privacyModal')">Privacy</button>
-      <button class="link" type="button" onclick="openModal('termsModal')">Terms</button>
-      <button class="link" type="button" onclick="openModal('ethicalModal')">Ethical Data &amp; AI Use</button>
+  <footer class="border-t border-[color:var(--au-line)] mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd</p>
+      <div class="flex items-center gap-4">
+        <button class="link" onclick="openModal('privacyModal')">Privacy</button>
+        <button class="link" onclick="openModal('termsModal')">Terms</button>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
   <!-- Modals -->
-<!-- Privacy Policy Modal -->
-<div id="privacyModal" class="fixed inset-0 z-50 hidden">
-  <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
-  <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
-      <div class="flex items-start justify-between gap-3 mb-4">
-        <div>
-          <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">Privacy Policy</h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">
-            How we collect, use and protect your data.
-          </p>
-        </div>
-        <button type="button"
-                onclick="closeModal('privacyModal')"
-                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Embedded policy page -->
-      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
-        <iframe
-          src="privacy-policy.html"
-          title="Privacy Policy"
-          class="w-full h-80"
-        ></iframe>
-      </div>
-
-      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
-        <a href="privacy-policy.html" target="_blank" class="link">
-          Open full Privacy Policy in a new tab
-        </a>
-        <button type="button"
-                onclick="closeModal('privacyModal')"
-                class="btn-outline text-xs sm:text-sm">
-          Close
-        </button>
+  <div id="privacyModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('privacyModal')">Close</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Terms of Service Modal -->
-<div id="termsModal" class="fixed inset-0 z-50 hidden">
-  <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
-  <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
-      <div class="flex items-start justify-between gap-3 mb-4">
-        <div>
-          <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">Terms of Service</h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">
-            The rules for using Afro Ubuntu TradeNet services.
-          </p>
-        </div>
-        <button type="button"
-                onclick="closeModal('termsModal')"
-                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Embedded terms page -->
-      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
-        <iframe
-          src="terms-of-service.html"
-          title="Terms of Service"
-          class="w-full h-80"
-        ></iframe>
-      </div>
-
-      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
-        <a href="terms-of-service.html" target="_blank" class="link">
-          Open full Terms of Service in a new tab
-        </a>
-        <button type="button"
-                onclick="closeModal('termsModal')"
-                class="btn-outline text-xs sm:text-sm">
-          Close
-        </button>
+  <div id="termsModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
       </div>
     </div>
   </div>
-</div>
 
-
-<!-- Ethical Data & AI Use Modal -->
-<div id="ethicalModal" class="fixed inset-0 z-50 hidden">
-  <div class="absolute inset-0 bg-black/40" onclick="closeModal('ethicalModal')"></div>
-  <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-7">
-      <div class="flex items-start justify-between gap-3 mb-4">
-        <div>
-          <h2 class="text-lg font-semibold text-[color:var(--au-ink)]">
-            Ethical Data &amp; AI Use
-          </h2>
-          <p class="text-xs text-[color:var(--au-stone)] mt-1">
-            Our commitment to responsible, Ubuntu-aligned AI.
-          </p>
-        </div>
-        <button type="button"
-                onclick="closeModal('ethicalModal')"
-                class="text-[color:var(--au-stone)] hover:text-[color:var(--au-ink)]">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Embedded ethical AI policy page -->
-      <div class="border border-[color:var(--au-line)] rounded-lg overflow-hidden mb-4">
-        <iframe
-          src="ethical-ai-policy.html"
-          title="Ethical Data & AI Use Policy"
-          class="w-full h-80"
-        ></iframe>
-      </div>
-
-      <div class="flex items-center justify-between gap-3 text-xs sm:text-sm">
-        <a href="ethical-ai-policy.html" target="_blank" class="link">
-          Open full Ethical Data &amp; AI Use Policy in a new tab
-        </a>
-        <button type="button"
-                onclick="closeModal('ethicalModal')"
-                class="btn-outline text-xs sm:text-sm">
-          Close
-        </button>
+  <div id="ethicalModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('ethicalModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Ethical Data</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="ethical-ai-policy.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('ethicalModal')">Close</button>
       </div>
     </div>
   </div>
-</div>
 
-
+  <!-- SCRIPT LOGIC -->
   <script>
     lucide.createIcons();
 
-    // ---- Modal helpers ----
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove('hidden');
-    }
+    // ---- Config ----
+    const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
+    const ACCOUNT_URL = location.origin + '/api-connection.min.html';
+    const SIGNIN_PAGE = 'api-connection.html'; 
+    const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(ACCOUNT_URL)}`;
 
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.add('hidden');
-    }
+    // ---- Helper Functions ----
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
 
-    // Language dropdown behaviour
+    // Language Menu Toggle
     document.addEventListener("DOMContentLoaded", function () {
       const btn = document.getElementById("lang-btn");
       const menu = document.getElementById("lang-menu");
       const wrapper = document.getElementById("lang-menu-wrapper");
-
       if (!btn || !menu || !wrapper) return;
-
-      // Toggle dropdown
-      btn.addEventListener("click", () => {
-        menu.classList.toggle("hidden");
-      });
-
-      // Clicking outside closes the menu
-      document.addEventListener("click", (e) => {
-        if (!wrapper.contains(e.target)) {
-          menu.classList.add("hidden");
-        }
-      });
-
-      // Hook language buttons into global setLanguage
+      btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+      document.addEventListener("click", (e) => { if (!wrapper.contains(e.target)) menu.classList.add("hidden"); });
       menu.querySelectorAll("button[data-lang]").forEach(item => {
         item.addEventListener("click", () => {
-          const lang = item.getAttribute("data-lang");
-          if (window.setLanguage) {
-            window.setLanguage(lang);
-          }
+          if (window.setLanguage) window.setLanguage(item.getAttribute("data-lang"));
           menu.classList.add("hidden");
         });
       });
     });
-    
 
-    // ---- Config: API + sign-in target ----
-    const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
-    
-    // The current page (Dashboard)
-    const ACCOUNT_URL = location.origin + '/api-connection.min.html'; 
-    
-    // The Login Page (Corrected based on your input)
-    const SIGNIN_PAGE = 'api-connection.html'; 
-    
-    // If not logged in, go to Login Page -> then redirect back here on success
-    const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(ACCOUNT_URL)}`;
-
-    // ---- API helper (Bearer token from localStorage) ----
+    // ---- API helper ----
     async function call(path, method='GET', body=null) {
       const headers = { 'Content-Type': 'application/json' };
       const t = localStorage.getItem('token');
@@ -524,55 +400,127 @@
       return data;
     }
 
-    // ---- Page boot ----
+    // ---- Dashboard Data Loader ----
+    async function loadDashboardData() {
+        try {
+            // 1. Fetch from new Analytics Endpoint
+            const data = await call('/api/v1/analytics/dashboard');
+            if(!data) return;
+
+            // Reveal Dashboard
+            document.getElementById('analytics-section').classList.remove('hidden');
+
+            // 2. Fill Numbers
+            document.getElementById('disp_revenue').innerText = '$' + (data.revenue || 0).toLocaleString();
+            document.getElementById('disp_credit').innerText = data.credit.score || 0;
+            document.getElementById('disp_tier').innerText = data.credit.tier || 'Unrated';
+
+            // 3. Fill Alerts
+            const alertList = document.getElementById('list_alerts');
+            alertList.innerHTML = '';
+            if(!data.alerts || data.alerts.length === 0) {
+                alertList.innerHTML = '<li class="text-green-600 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> All stock levels good.</li>';
+            } else {
+                data.alerts.forEach(a => {
+                    if (a.item && a.item.includes("Unconfirmed")) {
+                        // AI Animation for Pending
+                        alertList.innerHTML += `
+                            <li class="flex items-center gap-2 animate-ai text-orange-600">
+                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                <span>AI analyzing new upload...</span>
+                            </li>`;
+                    } else {
+                        // Standard alert
+                        alertList.innerHTML += `
+                            <li class="flex justify-between items-center bg-red-50 p-2 rounded">
+                                <span>${a.item}</span>
+                                <span class="font-bold text-red-600 text-xs">${a.stock}</span>
+                            </li>`;
+                    }
+                });
+            }
+            lucide.createIcons();
+
+            // 4. Fill Table
+            const prodList = document.getElementById('list_top_products');
+            prodList.innerHTML = '';
+            if(data.top_products) {
+                data.top_products.forEach(p => {
+                    prodList.innerHTML += `
+                        <tr class="bg-white hover:bg-gray-50">
+                            <td class="px-5 py-3 font-medium text-gray-900">${p.item}</td>
+                            <td class="px-5 py-3 text-right">${p.qty}</td>
+                            <td class="px-5 py-3 text-right">$${p.value.toLocaleString()}</td>
+                        </tr>`;
+                });
+            }
+
+            // 5. Render Chart
+            const ctx = document.getElementById('revenueChart');
+            if(ctx && data.chart_labels) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.chart_labels,
+                        datasets: [{
+                            label: 'Revenue',
+                            data: data.chart_values,
+                            borderColor: '#ea580c',
+                            backgroundColor: 'rgba(234,88,12,0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: { 
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: {display: false} }, 
+                        scales: { x: { display: false }, y: { display: false } } 
+                    }
+                });
+            }
+
+        } catch (e) {
+            console.error("Dashboard error", e);
+        }
+    }
+
+    // ---- Init ----
     async function init(){
       const status = document.getElementById('status');
       const welcome = document.getElementById('welcomeName');
       const emailEl = document.getElementById('email');
       const toSignIn = document.getElementById('toSignIn');
       
-      // Update the "Sign In" button link immediately
       if(toSignIn) toSignIn.href = SIGNIN_WITH_CONTINUE;
 
       try {
         status.textContent = 'Loading…';
         
-        // CRITICAL UPDATE: Pointing to v1 endpoint
+        // Auth check via V1
         const me = await call('/api/v1/me');
-        //const me = await call('/api/me');
-
         
-        status.textContent = 'Signed in';
+        status.textContent = 'Active';
         status.className = 'pill bg-green-100 text-green-700';
-
+        
         const name = me?.user?.name || '';
-const email = me?.user?.email || 'Unknown';
-
-let displayName = 'User';
-
-if (name) {
-  // You can use full name…
-  displayName = name;
-  // …or first name only if you prefer:
-  // displayName = name.split(' ')[0];
-} else if (email && email !== 'Unknown') {
-  displayName = email.split('@')[0];
-}
-
-if (welcome) welcome.textContent = displayName;
-if (emailEl) emailEl.textContent = email;
-
+        const email = me?.user?.email || 'Unknown';
         
-        //const name = me?.user?.name || '';
-        //const email = me?.user?.email || 'Unknown';
-        
-        // Update UI
-        //if(welcome) welcome.textContent = name ? name.split(' ')[0] : (email.split('@')[0] || 'User');
-        //if(emailEl) emailEl.textContent = email;
-        
+        let displayName = 'User';
+        if (name) displayName = name;
+        else if (email && email !== 'Unknown') displayName = email.split('@')[0];
+
+        if(welcome) welcome.textContent = displayName;
+        if(emailEl) emailEl.textContent = email;
+
+        // LOAD DASHBOARD DATA
+        loadDashboardData();
+
       } catch (e) {
         console.error("Auth check failed:", e);
-        status.textContent = 'Not signed in';
+        status.textContent = 'Guest';
         status.className = 'pill bg-gray-100 text-gray-500';
         if(welcome) welcome.textContent = 'Guest';
         if(emailEl) emailEl.textContent = '—';
@@ -580,10 +528,16 @@ if (emailEl) emailEl.textContent = email;
       }
     }
 
-    // Copy email button logic
+    // Logout
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = SIGNIN_WITH_CONTINUE;
+    });
+
+    // Copy Email
     document.getElementById('copyBtn')?.addEventListener('click', async () => {
       const email = document.getElementById('email')?.textContent?.trim();
-      if (!email || email === '—' || email === 'Unknown') return;
+      if (!email || email === '—') return;
       try {
         await navigator.clipboard.writeText(email);
         const btn = document.getElementById('copyBtn');
@@ -593,18 +547,11 @@ if (emailEl) emailEl.textContent = email;
       } catch {}
     });
 
-    // Logout -> clear token + go to sign-in
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-      localStorage.removeItem('token');
-      window.location.href = SIGNIN_WITH_CONTINUE;
-    });
-
-    // Year update
+    // Year
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();
 
-    // Start
     document.addEventListener('DOMContentLoaded', init);
-</script>
+  </script>
 </body>
 </html>
