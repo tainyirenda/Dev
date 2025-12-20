@@ -18,19 +18,110 @@
 
   <!-- Google Translate Logic -->
   <script type="text/javascript">
-  function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
-  function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
-  // Expose setLanguage globally so the buttons can call it
-  window.setLanguage = function(lang) { 
-    function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
-    if (apply()) return; 
-    const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
-    obs.observe(document.body, { childList: true, subtree: true }); 
-    setGoogleTransCookie(lang); 
-    setTimeout(() => window.location.reload(), 300); 
-  };
-  function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr,pcm,nd,ha', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
-  </script>
+  // Fire a change event in the older "HTMLEvents" style Google expects
+  function fireGoogleTranslateEvent(el, eventName) {
+    try {
+      if (document.createEvent) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, true, true);
+        el.dispatchEvent(event);
+      } else if (document.createEventObject) { // IE fallback
+        var event = document.createEventObject();
+        el.fireEvent("on" + eventName, event);
+      } else {
+        el.dispatchEvent(new Event(eventName));
+      }
+    } catch (e) {
+      el.dispatchEvent(new Event(eventName));
+    }
+  }
+
+  function setGoogleTransCookie(lang) {
+    // page language is 'en', so cookie must be /en/<target>
+    var value = "/en/" + lang;
+    var domain = window.location.hostname;
+
+    // set for current host
+    document.cookie = "googtrans=" + value + ";path=/;";
+    // and for root domain (handles www / subdomains)
+    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
+  }
+
+  // Global helper used by the custom language menu
+  function setLanguage(lang) {
+    function applyLang() {
+      const combo = document.querySelector(".goog-te-combo");
+      if (!combo) return false;
+
+      combo.value = lang;
+      fireGoogleTranslateEvent(combo, "change");
+
+      try {
+        localStorage.setItem("selectedLang", lang);
+      } catch (e) {}
+
+      return true;
+    }
+
+    // 1) Try via hidden dropdown
+    if (applyLang()) return;
+
+    // 2) Wait for widget if not ready yet
+    const observer = new MutationObserver(() => {
+      if (applyLang()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // 3) Cookie + reload fallback to force translation
+    setGoogleTransCookie(lang);
+    setTimeout(function () {
+      window.location.reload();
+    }, 300);
+  }
+
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        // UPDATED: Added 'ha' (Hausa), 'pcm' (Pidgin), 'nd' (Ndebele)
+        includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+
+    // Restore saved language once widget is ready
+    const observer = new MutationObserver(function (mutations, obs) {
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        const savedLang = localStorage.getItem('selectedLang');
+        if (savedLang) {
+          combo.value = savedLang;
+          fireGoogleTranslateEvent(combo, 'change');
+        }
+
+        combo.addEventListener('change', function () {
+          try {
+            localStorage.setItem('selectedLang', this.value);
+          } catch (e) {}
+        });
+
+        obs.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+</script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   
   <style>
