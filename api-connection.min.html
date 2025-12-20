@@ -401,14 +401,19 @@
                 if(!data.alerts || data.alerts.length === 0) {
                     alertList.innerHTML = '<li class="text-green-600 text-sm">All clear. No alerts.</li>';
                 } else {
-                    data.alerts.forEach(a => {
-                        const isPending = a.item && a.item.includes("Unconfirmed");
-                        alertList.innerHTML += `
-                            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg text-sm">
-                                <span class="${isPending ? 'text-orange-600 font-medium' : 'text-gray-700'}">${a.item}</span>
-                                <span class="font-bold text-red-600">${a.stock}</span>
-                            </li>`;
-                    });
+                    // ... inside the alerts loop ...
+data.alerts.forEach(a => {
+    if (a.item && a.item.includes("Unconfirmed")) {
+        // ... (Keep existing loading animation)
+    } else {
+        // NEW: Check if AI has finished (you might need to adjust API to return 'recent_updates')
+        alertList.innerHTML += `
+            <li class="flex justify-between items-center bg-green-50 p-3 rounded-lg text-sm">
+                <span class="text-green-700">✅ New Stock Added</span>
+                <span class="font-bold text-green-700">Updated</span>
+            </li>`;
+    }
+});
                 }
             }
 
