@@ -968,25 +968,44 @@ function closeMobileMenu() {
     }
 
     function card(a) {
-      // ... (Keep your card function exactly as it is) ...
       const div = document.createElement('div');
       div.className = "bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition";
 
+      // 1. We use 'bg-black' so video letterboxing looks natural
+      // 2. We use 'object-contain' so the full image/video fits without zooming/cropping
+      
       let media = '';
       if (a.video && a.video.url) {
         media = `
-          <div class="aspect-video bg-gray-50 overflow-hidden">
-            <video src="${a.video.url}" ${a.video.type ? `type="${a.video.type}"` : ''} ${a.video.poster ? `poster="${a.video.poster}"` : ''} controls playsinline class="w-full h-full object-cover"></video>
+          <div class="aspect-video bg-black overflow-hidden relative">
+            <video 
+              src="${a.video.url}" 
+              ${a.video.type ? `type="${a.video.type}"` : ''} 
+              ${a.video.poster ? `poster="${a.video.poster}"` : ''} 
+              controls 
+              playsinline 
+              class="w-full h-full object-contain">
+            </video>
           </div>`;
       } else if (a.embed && a.embed.url) {
         media = `
-          <div class="aspect-video bg-gray-50 overflow-hidden">
-            <iframe src="${a.embed.url}" title="${a.title}" frameborder="0" allowfullscreen class="w-full h-full object-cover"></iframe>
+          <div class="aspect-video bg-black overflow-hidden relative">
+            <iframe 
+              src="${a.embed.url}" 
+              title="${a.title}" 
+              frameborder="0" 
+              allowfullscreen 
+              class="w-full h-full object-contain">
+            </iframe>
           </div>`;
       } else if (a.image) {
         media = `
-          <div class="aspect-video bg-gray-50 overflow-hidden">
-            <img src="${a.image}" alt="" class="w-full h-full object-cover" loading="lazy">
+          <div class="aspect-video bg-black overflow-hidden relative flex items-center justify-center">
+            <img 
+              src="${a.image}" 
+              alt="${a.title}" 
+              class="w-full h-full object-contain" 
+              loading="lazy">
           </div>`;
       }
 
@@ -1031,6 +1050,7 @@ function closeMobileMenu() {
 </body>
 
 </html>
+
 
 
 
