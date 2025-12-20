@@ -18,110 +18,18 @@
 
   <!-- Google Translate Logic -->
   <script type="text/javascript">
-  // Fire a change event in the older "HTMLEvents" style Google expects
-  function fireGoogleTranslateEvent(el, eventName) {
-    try {
-      if (document.createEvent) {
-        var event = document.createEvent("HTMLEvents");
-        event.initEvent(eventName, true, true);
-        el.dispatchEvent(event);
-      } else if (document.createEventObject) { // IE fallback
-        var event = document.createEventObject();
-        el.fireEvent("on" + eventName, event);
-      } else {
-        el.dispatchEvent(new Event(eventName));
-      }
-    } catch (e) {
-      el.dispatchEvent(new Event(eventName));
-    }
-  }
-
-  function setGoogleTransCookie(lang) {
-    // page language is 'en', so cookie must be /en/<target>
-    var value = "/en/" + lang;
-    var domain = window.location.hostname;
-
-    // set for current host
-    document.cookie = "googtrans=" + value + ";path=/;";
-    // and for root domain (handles www / subdomains)
-    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
-  }
-
-  // Global helper used by the custom language menu
-  function setLanguage(lang) {
-    function applyLang() {
-      const combo = document.querySelector(".goog-te-combo");
-      if (!combo) return false;
-
-      combo.value = lang;
-      fireGoogleTranslateEvent(combo, "change");
-
-      try {
-        localStorage.setItem("selectedLang", lang);
-      } catch (e) {}
-
-      return true;
-    }
-
-    // 1) Try via hidden dropdown
-    if (applyLang()) return;
-
-    // 2) Wait for widget if not ready yet
-    const observer = new MutationObserver(() => {
-      if (applyLang()) {
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    // 3) Cookie + reload fallback to force translation
-    setGoogleTransCookie(lang);
-    setTimeout(function () {
-      window.location.reload();
-    }, 300);
-  }
-
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      {
-        pageLanguage: 'en',
-        // UPDATED: Added 'ha' (Hausa), 'pcm' (Pidgin), 'nd' (Ndebele)
-        includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      },
-      'google_translate_element'
-    );
-
-    // Restore saved language once widget is ready
-    const observer = new MutationObserver(function (mutations, obs) {
-      const combo = document.querySelector('.goog-te-combo');
-      if (combo) {
-        const savedLang = localStorage.getItem('selectedLang');
-        if (savedLang) {
-          combo.value = savedLang;
-          fireGoogleTranslateEvent(combo, 'change');
-        }
-
-        combo.addEventListener('change', function () {
-          try {
-            localStorage.setItem('selectedLang', this.value);
-          } catch (e) {}
-        });
-
-        obs.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-</script>
+  function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
+  function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
+  window.setLanguage = function(lang) { 
+    function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
+    if (apply()) return; 
+    const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
+    obs.observe(document.body, { childList: true, subtree: true }); 
+    setGoogleTransCookie(lang); 
+    setTimeout(() => window.location.reload(), 300); 
+  };
+  function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
+  </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   
   <style>
@@ -140,6 +48,13 @@
     .view-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
+    /* AI Pulse Animation */
+    @keyframes pulse-orange {
+      0%, 100% { color: var(--au-accent); opacity: 1; }
+      50% { opacity: .6; }
+    }
+    .animate-ai { animation: pulse-orange 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    
     #google_translate_element { display: none !important; }
   </style>
 </head>
@@ -148,7 +63,7 @@
   <!-- Header -->
   <header class="bg-white border-b border-[color:var(--au-line)] sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <!-- Clicking Logo goes to Hub View -->
+      <!-- Clicking Logo returns to Hub -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
         <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
         <div class="hidden sm:block">
@@ -164,25 +79,22 @@
            </button>
            <!-- Dropdown Menu -->
            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
-  <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
-  <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
-  <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
-  
-  <!-- Newly Added -->
-  <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
-  <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
-  <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
-  
-  <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
-  <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
-  <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
-  <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
-  <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
-  <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
-</div>
+             <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
+             <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
+             <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
+             <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
+             <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
+             <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
+             <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
+             <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
+             <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
+             <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
+             <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
+             <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
+           </div>
         </div>
         
-        <!-- Home Button (Restored to Link) -->
+        <!-- Home Button -->
         <a href="index.html" class="btn-outline text-xs text-gray-700 hover:text-black">Home</a>
         
         <button id="logoutBtn" class="btn-outline text-xs text-red-600 border-red-100 hover:bg-red-50">Log out</button>
@@ -194,9 +106,8 @@
   <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- ================= VIEW 1: HUB (The Landing Page) ================= -->
+    <!-- ================= VIEW 1: HUB (DEFAULT) ================= -->
     <section id="view-hub" class="view-section active">
-      <!-- Greeting -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 class="text-3xl font-extrabold text-[color:var(--au-ink)]">Your account</h1>
@@ -307,7 +218,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Revenue -->
         <div class="card p-6">
-            <h3 class="text-sm font-medium text-gray-500">Total Revenue (Month)</h3>
+            <h3 class="text-sm font-medium text-gray-500">Total Revenue</h3>
             <p class="text-4xl font-bold mt-2 text-gray-900" id="disp_revenue">Loading...</p>
             <div class="h-32 mt-4"><canvas id="revenueChart"></canvas></div>
         </div>
@@ -390,6 +301,39 @@
 
   </main>
 
+  <footer class="border-t border-[color:var(--au-line)] mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd</p>
+      <div class="flex items-center gap-4">
+        <button class="link" onclick="openModal('privacyModal')">Privacy</button>
+        <button class="link" onclick="openModal('termsModal')">Terms</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals -->
+  <div id="privacyModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('privacyModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="termsModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ---- CONFIGURATION ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
@@ -397,27 +341,19 @@
 
     // ---- VIEW ROUTER ----
     function switchView(viewName) {
-        // Hide all sections
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        
-        // Show target section
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
-        
-        // Load icons again in case of dynamic insert
         lucide.createIcons();
-
-        // If Dashboard or Insights, load data
         if(viewName === 'dashboard' || viewName === 'insights') {
             loadAnalytics();
         }
     }
 
-    // ---- LANGUAGE TOGGLE LOGIC ----
+    // ---- LANGUAGE TOGGLE ----
     document.addEventListener("DOMContentLoaded", () => {
         const langBtn = document.getElementById("lang-btn");
         const langMenu = document.getElementById("lang-menu");
-        
         if(langBtn && langMenu) {
             langBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -431,9 +367,9 @@
         }
     });
 
-    // ---- COPY EMAIL LOGIC ----
+    // ---- COPY EMAIL ----
     document.getElementById('copyBtn')?.addEventListener('click', async () => {
-      const email = document.getElementById('email')?.textContent?.trim();
+      const email = document.getElementById('email')?.innerText?.trim();
       if (!email || email === '—') return;
       try {
         await navigator.clipboard.writeText(email);
@@ -444,13 +380,16 @@
       } catch {}
     });
 
-    // ---- LOGOUT LOGIC ----
+    // ---- LOGOUT ----
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
         localStorage.removeItem('token');
         window.location.href = SIGNIN_PAGE;
     });
 
-    // ---- API HELPER ----
+    // ---- HELPERS ----
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+
     async function call(path) {
         const t = localStorage.getItem('token');
         if(!t) throw new Error("No token");
@@ -460,23 +399,23 @@
         return await res.json();
     }
 
-    // ---- DATA LOADER ----
+    // ---- ANALYTICS LOGIC ----
     async function loadAnalytics() {
         try {
             const data = await call('/api/v1/analytics/dashboard');
             if(!data) return;
 
-            // 1. Fill Revenue
+            // 1. Revenue
             const revEl = document.getElementById('disp_revenue');
             if(revEl) revEl.innerText = '$' + (data.revenue || 0).toLocaleString();
             
-            // 2. Fill Credit
+            // 2. Credit
             const credEl = document.getElementById('disp_credit');
             const tierEl = document.getElementById('disp_tier');
             if(credEl) credEl.innerText = data.credit.score || 0;
             if(tierEl) tierEl.innerText = 'TIER: ' + (data.credit.tier || 'Unrated');
 
-            // 3. Fill Table
+            // 3. Table
             const tBody = document.getElementById('list_top_products');
             if(tBody) {
                 tBody.innerHTML = '';
@@ -485,13 +424,14 @@
                         tBody.innerHTML += `
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-3 text-gray-900 font-medium">${p.item}</td>
-                                <td class="px-6 py-3 text-right text-gray-500">$${p.value}</td>
+                                <td class="px-6 py-3 text-right text-gray-500">${p.qty}</td>
+                                <td class="px-6 py-3 text-right text-gray-900 font-semibold">$${p.value}</td>
                             </tr>`;
                     });
                 }
             }
 
-            // 4. Fill Alerts (Shared by Dashboard & Insights)
+            // 4. Alerts
             const alertList = document.getElementById('list_alerts');
             if(alertList) {
                 alertList.innerHTML = '';
@@ -499,25 +439,28 @@
                     alertList.innerHTML = '<li class="text-green-600 text-sm">All clear. No alerts.</li>';
                 } else {
                     data.alerts.forEach(a => {
-    if (a.item && a.item.includes("Unconfirmed")) {
-        // ... (Keep existing loading animation)
-    } else {
-        // NEW: Check if AI has finished (you might need to adjust API to return 'recent_updates')
-        alertList.innerHTML += `
-            <li class="flex justify-between items-center bg-green-50 p-3 rounded-lg text-sm">
-                <span class="text-green-700">✅ New Stock Added</span>
-                <span class="font-bold text-green-700">Updated</span>
-            </li>`;
-    }
-});
+                        if (a.item && a.item.includes("Unconfirmed")) {
+                            alertList.innerHTML += `
+                                <li class="flex items-center gap-2 animate-ai text-orange-600 p-2 text-sm bg-orange-50 rounded mb-2">
+                                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                    <span>AI analyzing new upload...</span>
+                                </li>`;
+                        } else {
+                            alertList.innerHTML += `
+                                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg text-sm mb-2">
+                                    <span class="text-gray-700">${a.item}</span>
+                                    <span class="font-bold text-red-600">${a.stock}</span>
+                                </li>`;
+                        }
+                    });
                 }
+                lucide.createIcons();
             }
 
             // 5. Chart
             const ctx = document.getElementById('revenueChart');
             if(ctx && data.chart_labels) {
                 if(window.myRevenueChart) window.myRevenueChart.destroy();
-                
                 window.myRevenueChart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -545,11 +488,8 @@
     // ---- BOOT ----
     async function init() {
         lucide.createIcons();
-        
         try {
-            // Load Profile
             const me = await call('/api/v1/me');
-            
             const name = me?.user?.name || '';
             const email = me?.user?.email || 'Unknown';
             let display = name ? name : (email.split('@')[0]);
@@ -557,12 +497,13 @@
             document.getElementById('welcomeName').innerText = display;
             document.getElementById('email').innerText = email;
             document.getElementById('status').innerText = 'Signed in';
-
         } catch(e) {
-            // Not logged in? Redirect
             window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
         }
     }
+
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
