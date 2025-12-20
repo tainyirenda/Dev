@@ -84,7 +84,7 @@
     new google.translate.TranslateElement(
       {
         pageLanguage: 'en',
-        includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr',
+        includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr,pcm,nd,ha',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       },
       'google_translate_element'
@@ -237,18 +237,23 @@
               <span>Language</span>
             </button>
 
-            <div id="lang-menu"
-                 class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden z-20">
-              <button data-lang="en" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">English</button>
-              <button data-lang="sw" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Swahili</button>
-              <button data-lang="sn" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Shona</button>
-              <button data-lang="ny" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Nyanja</button>
-              <button data-lang="yo" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Yoruba</button>
-              <button data-lang="af" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Afrikaans</button>
-              <button data-lang="xh" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Xhosa</button>
-              <button data-lang="zu" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Zulu</button>
-              <button data-lang="fr" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">French</button>
-            </div>
+            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
+  <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
+  <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
+  <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
+  
+  <!-- Newly Added -->
+  <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
+  <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
+  <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
+  
+  <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
+  <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
+  <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
+  <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
+  <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
+  <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
+</div>
           </div>
 
           <!-- Hidden actual Google Translate container -->
