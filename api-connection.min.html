@@ -20,7 +20,6 @@
   <script type="text/javascript">
   function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
   function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
-  // Expose setLanguage globally so the buttons can call it
   window.setLanguage = function(lang) { 
     function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
     if (apply()) return; 
@@ -57,7 +56,7 @@
   <!-- Header -->
   <header class="bg-white border-b border-[color:var(--au-line)] sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <!-- Clicking Logo goes to Hub View -->
+      <!-- Clicking Logo returns to Hub -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
         <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
         <div class="hidden sm:block">
@@ -66,40 +65,29 @@
         </div>
       </div>
       <nav class="flex items-center gap-2">
-        <!-- Language Dropdown -->
         <div class="relative group">
            <button id="lang-btn" class="btn-outline text-xs">
              <i data-lucide="globe" class="w-3 h-3"></i> Language
            </button>
-           <!-- Dropdown Menu -->
            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50">
              <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
              <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
-             <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
-             <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
-             <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
-             <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
-             <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
-             <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
              <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
            </div>
         </div>
         
-        <!-- Home Button (Restored to Link) -->
-        <a href="index.html" class="btn-outline text-xs text-gray-700 hover:text-black">Home</a>
-        
+        <button onclick="switchView('hub')" class="btn-outline text-xs text-gray-700 hover:text-black">Portal Home</button>
         <button id="logoutBtn" class="btn-outline text-xs text-red-600 border-red-100 hover:bg-red-50">Log out</button>
       </nav>
     </div>
     <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] to-[color:var(--au-ink)]"></div>
   </header>
 
-  <!-- Main Content Container -->
+  <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- ================= VIEW 1: HUB (The Landing Page) ================= -->
+    <!-- ================= VIEW 1: HUB (DEFAULT) ================= -->
     <section id="view-hub" class="view-section active">
-      <!-- Greeting -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 class="text-3xl font-extrabold text-[color:var(--au-ink)]">Your account</h1>
@@ -192,7 +180,6 @@
         </button>
       </div>
 
-      <!-- Help Footer -->
       <div class="mt-8 card p-5 bg-gray-50 border-none flex items-start gap-3">
         <i data-lucide="info" class="w-5 h-5 text-gray-400 mt-0.5"></i>
         <p class="text-sm text-gray-500">Need help? Visit <a class="link" href="#">Docs</a> or email <a class="link" href="mailto:dev@afroubuntutrade.co.uk">dev@afroubuntutrade.co.uk</a>.</p>
@@ -210,7 +197,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Revenue -->
         <div class="card p-6">
-            <h3 class="text-sm font-medium text-gray-500">Total Revenue (Month)</h3>
+            <h3 class="text-sm font-medium text-gray-500">Total Revenue</h3>
             <p class="text-4xl font-bold mt-2 text-gray-900" id="disp_revenue">Loading...</p>
             <div class="h-32 mt-4"><canvas id="revenueChart"></canvas></div>
         </div>
@@ -275,23 +262,57 @@
 
     <!-- Placeholders for other views -->
     <section id="view-connect" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
         <h2 class="text-2xl font-bold text-gray-300">Connect Hub Coming Soon</h2>
     </section>
     <section id="view-verification" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
         <h2 class="text-2xl font-bold text-gray-300">Verification Module Loading...</h2>
     </section>
     <section id="view-billing" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
         <h2 class="text-2xl font-bold text-gray-300">Billing Module Loading...</h2>
     </section>
     <section id="view-track" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
         <h2 class="text-2xl font-bold text-gray-300">Tracking Module Loading...</h2>
     </section>
 
   </main>
+
+  <!-- Modals & Footer -->
+  <footer class="border-t border-[color:var(--au-line)] mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd</p>
+      <div class="flex items-center gap-4">
+        <button class="link" onclick="openModal('privacyModal')">Privacy</button>
+        <button class="link" onclick="openModal('termsModal')">Terms</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals -->
+  <div id="privacyModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('privacyModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="termsModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // ---- CONFIGURATION ----
@@ -307,7 +328,7 @@
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
         
-        // Load icons again in case of dynamic insert
+        // Re-init icons
         lucide.createIcons();
 
         // If Dashboard or Insights, load data
@@ -352,6 +373,10 @@
         localStorage.removeItem('token');
         window.location.href = SIGNIN_PAGE;
     });
+
+    // ---- HELPER ----
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
 
     // ---- API HELPER ----
     async function call(path) {
@@ -455,13 +480,18 @@
 
             document.getElementById('welcomeName').innerText = display;
             document.getElementById('email').innerText = email;
-            document.getElementById('status').innerText = 'Signed in';
+            document.getElementById('status').innerText = 'Active';
 
         } catch(e) {
             // Not logged in? Redirect
-            window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+            const SIGNIN_WITH_CONTINUE = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+            window.location.href = SIGNIN_WITH_CONTINUE;
         }
     }
+
+    // Year
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
