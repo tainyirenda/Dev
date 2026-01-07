@@ -65,7 +65,6 @@
     new google.translate.TranslateElement(
       {
         pageLanguage: 'en',
-        // UPDATED: Added 'ha' (Hausa), 'pcm' (Pidgin), 'nd' (Ndebele)
         includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       },
@@ -122,7 +121,9 @@
     .btn-gradient:hover{background:linear-gradient(135deg,var(--orange-700),var(--green-700));}
     .tab{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.85)}
     .tab-active{background:rgba(255,255,255,.15);color:#fff}
-
+    /* Disabled state for animation */
+    .btn-disabled { opacity: 0.7; cursor: not-allowed; }
+    
     #google_translate_element, .goog-te-gadget, .goog-te-gadget > div, .goog-te-combo { display: none !important; }
     #lang-btn.tab-like { padding-inline: 0.75rem; padding-block: 0.4rem; font-size: 0.75rem; }
   </style>
@@ -143,29 +144,22 @@
         <!-- Language menu -->
           <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
            <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
-  <i data-lucide="globe" class="h-4 w-4"></i>
-  <span>Language</span>
-</button>
-
-            <div
-  id="lang-menu"
-  class="absolute right-0 mt-2 w-44 rounded-xl border border-white/15 bg-[#050b09]/95 backdrop-blur-xl shadow-xl hidden z-20 max-h-60 overflow-y-auto"
->
-  <button data-lang="en" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">English</button>
-  <button data-lang="sw" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Swahili</button>
-  <button data-lang="fr" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">French</button>
-  
-  <button data-lang="ha" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Hausa</button>
-  <button data-lang="pcm" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Pidgin</button>
-  <button data-lang="nd" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Ndebele</button>
-  
-  <button data-lang="yo" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Yoruba</button>
-  <button data-lang="zu" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Zulu</button>
-  <button data-lang="xh" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Xhosa</button>
-  <button data-lang="sn" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Shona</button>
-  <button data-lang="ny" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Nyanja</button>
-  <button data-lang="af" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Afrikaans</button>
-</div>
+             <i data-lucide="globe" class="h-4 w-4"></i><span>Language</span>
+           </button>
+           <div id="lang-menu" class="absolute right-0 mt-2 w-44 rounded-xl border border-white/15 bg-[#050b09]/95 backdrop-blur-xl shadow-xl hidden z-20 max-h-60 overflow-y-auto">
+             <button onclick="window.setLanguage('en')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">English</button>
+             <button onclick="window.setLanguage('sw')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Swahili</button>
+             <button onclick="window.setLanguage('fr')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">French</button>
+             <button onclick="window.setLanguage('ha')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Hausa</button>
+             <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Pidgin</button>
+             <button onclick="window.setLanguage('nd')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Ndebele</button>
+             <button onclick="window.setLanguage('yo')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Yoruba</button>
+             <button onclick="window.setLanguage('zu')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Zulu</button>
+             <button onclick="window.setLanguage('xh')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Xhosa</button>
+             <button onclick="window.setLanguage('sn')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Shona</button>
+             <button onclick="window.setLanguage('ny')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Nyanja</button>
+             <button onclick="window.setLanguage('af')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">Afrikaans</button>
+           </div>
           </div>
           <div id="google_translate_element" class="hidden"></div>
       </ul>
@@ -305,13 +299,9 @@
     <div role="dialog" aria-modal="true" class="glass w-full max-w-lg rounded-2xl border border-white/10 bg-white/10 p-6 text-white">
       <div class="flex items-center justify-between">
         <h4 class="text-xl font-semibold">Create your account</h4>
-        <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-
       <div id="su_alert" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
-
       <form id="signUpForm" class="mt-4 space-y-4">
         <div>
           <label class="block text-sm text-white/85 mb-1" for="su_name">Full name</label>
@@ -342,7 +332,7 @@
           <span>I agree to the Terms, Privacy Policy, and the use of my data.</span>
         </label>
         <div class="flex items-center gap-3 pt-2">
-          <button id="su_submit" type="submit" class="rounded-xl btn-gradient px-4 py-2 font-medium text-white hover:opacity-95 focus-ring">Create account</button>
+          <button id="su_submit" type="submit" class="rounded-xl btn-gradient px-4 py-2 font-medium text-white hover:opacity-95 focus-ring transition-all">Create account</button>
           <button type="button" data-modal-close class="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10 focus-ring">Cancel</button>
         </div>
       </form>
@@ -357,7 +347,7 @@
         <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <p class="text-gray-600 text-sm mb-6">All plans include WhatsApp onboarding & secure data.</p>
-      <!-- (Content simplified for brevity) -->
+      <!-- (Standard Pricing Tiers content) -->
       <div class="text-center p-10 bg-gray-50 rounded-lg">
           <h3 class="text-lg font-bold">Standard Pricing Tiers Loaded</h3>
           <p class="text-sm text-gray-500">Retailers, FMCG, NGOs, Fintechs</p>
@@ -365,7 +355,7 @@
     </div>
   </div>
 
-  <!-- Modals -->
+  <!-- Privacy, Terms, Ethical Modals -->
   <div id="privacyModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
     <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
@@ -398,22 +388,26 @@
   const OTP_REQUEST_PATH = '/api/v1/auth/request-otp';
   const OTP_VERIFY_PATH  = '/api/v1/auth/verify-otp';
 
-  // ===== Helpers =====
+  // ===== HELPERS =====
+  // 1. Min Delay Helper
+  const minDelay = (ms) => new Promise(res => setTimeout(res, ms));
+
   function setBusy(btn, label) {
     if (!btn) return;
     btn.disabled = true;
-    btn.classList.add('opacity-70', 'cursor-not-allowed');
-    btn.dataset.__orig = btn.innerHTML; // Save original HTML
+    btn.classList.add('btn-disabled'); // Opacity style
+    btn.dataset.__orig = btn.innerHTML; // Save original HTML (icon + text)
     if (label) btn.innerHTML = `<i data-lucide="loader-2" class="inline w-4 h-4 animate-spin mr-2"></i>${label}`;
     lucide.createIcons();
   }
   function clearBusy(btn) {
     if (!btn) return;
     btn.disabled = false;
-    btn.classList.remove('opacity-70', 'cursor-not-allowed');
+    btn.classList.remove('btn-disabled');
     if (btn.dataset.__orig) btn.innerHTML = btn.dataset.__orig;
     lucide.createIcons();
   }
+
   async function api(path, body, method = 'POST') {
     const res = await fetch(`${API_BASE}${path}`, {
       method,
@@ -435,7 +429,6 @@
 
   // ===== Toggle UI Logic =====
   document.addEventListener('DOMContentLoaded', () => {
-    // Password
     function attachPwdToggle(inputId, btnId){
         const input = document.getElementById(inputId), btn = document.getElementById(btnId);
         if(input && btn) btn.addEventListener('click', () => input.type = input.type==='password'?'text':'password');
@@ -443,7 +436,6 @@
     attachPwdToggle('passwordInput','togglePassword');
     attachPwdToggle('su_password','toggleSuPassword');
 
-    // Tabs
     const tEmail = document.getElementById('tabEmail'), tPhone = document.getElementById('tabPhone');
     const fEmail = document.getElementById('loginForm'), fPhone = document.getElementById('otpForm');
     if(tEmail && tPhone){
@@ -451,7 +443,6 @@
         tPhone.addEventListener('click', ()=>{ tPhone.classList.add('tab-active'); tEmail.classList.remove('tab-active'); fPhone.classList.remove('hidden'); fEmail.classList.add('hidden'); });
     }
 
-    // Language
     const lBtn = document.getElementById('lang-btn'), lMenu = document.getElementById('lang-menu');
     if(lBtn && lMenu){
         lBtn.addEventListener('click', (e)=>{ e.stopPropagation(); lMenu.classList.toggle('hidden'); });
@@ -475,10 +466,14 @@
         const email = document.getElementById('emailInput').value.trim();
         const password = document.getElementById('passwordInput').value;
         
-        setBusy(loginBtn, 'Signing in...'); // <--- ANIMATION
+        setBusy(loginBtn, 'Signing in...'); 
         
         try {
-          await api('/api/v1/login', { email, password });
+          // Force a minimum delay of 1.2s for smoothness
+          await Promise.all([
+             api('/api/v1/login', { email, password }),
+             minDelay(1200)
+          ]);
           location.href = CONTINUE_URL;
         } catch (err) {
           showError(err.message || 'Invalid email or password.');
@@ -504,9 +499,12 @@
       const phone = phoneInput.value.trim();
       if (!isPhone(phone)) return showError('Enter valid phone number.');
       
-      setBusy(sendBtn, 'Sending...'); // <--- ANIMATION
+      setBusy(sendBtn, 'Sending...'); 
       try{
-        await api(OTP_REQUEST_PATH, { phone });
+        await Promise.all([
+             api(OTP_REQUEST_PATH, { phone }),
+             minDelay(1200)
+        ]);
         alertBox?.classList.add('hidden');
         alert("Code sent to WhatsApp!");
         codeInput.focus();
@@ -519,9 +517,12 @@
       const phone = phoneInput.value.trim();
       const code = codeInput.value.trim();
       
-      setBusy(loginBtn, 'Verifying...'); // <--- ANIMATION
+      setBusy(loginBtn, 'Verifying...'); 
       try{
-        await api(OTP_VERIFY_PATH, { phone, code });
+        await Promise.all([
+             api(OTP_VERIFY_PATH, { phone, code }),
+             minDelay(1200)
+        ]);
         location.href = CONTINUE_URL;
       }catch(err){ showError(err.message || 'Invalid code.'); }
       finally{ clearBusy(loginBtn); }
@@ -543,9 +544,12 @@
         const agree = document.getElementById('su_agree').checked;
         if(!agree) return alert("Please agree to terms.");
 
-        setBusy(suSubmit, 'Creating...'); // <--- ANIMATION
+        setBusy(suSubmit, 'Creating...'); 
         try{
-          await api('/api/v1/signup', { name, email, password: p1 });
+          await Promise.all([
+             api('/api/v1/signup', { name, email, password: p1 }),
+             minDelay(1200)
+          ]);
           suAlert.classList.remove('hidden');
           suAlert.textContent = 'Account created! Check your email to verify.';
           suAlert.className = "mt-4 p-3 rounded-xl border text-sm bg-green-500/10 border-green-300/40 text-green-200";
@@ -575,7 +579,7 @@
     window.fetch = async function(resource, init={}) {
       const url = (typeof resource === 'string') ? resource : resource.url;
       const res = await _fetch(resource, init);
-      // Capture Token on Login/Signup/OTP
+      // Capture Token
       if (url && url.includes('/api/v1/') && (url.includes('/login') || url.includes('/signup') || url.includes('/verify-otp'))) {
           try {
               const clone = res.clone();
