@@ -135,10 +135,10 @@
       <!-- Module Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         
-        <!-- Dashboard Card -->
+        <!-- Dashboard Card (Purple Theme) -->
         <button onclick="switchView('dashboard')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
           <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-gray-200 transition-colors"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
+            <div class="iconwrap group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
             <div>
               <h3 class="text-lg font-bold text-gray-900">Dashboard</h3>
               <p class="mt-1 text-sm text-gray-500">Usage, APIs and performance KPIs.</p>
@@ -146,10 +146,10 @@
           </div>
         </button>
 
-        <!-- Insights Card -->
+        <!-- Insights Card (Indigo Theme) -->
         <button onclick="switchView('insights')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
           <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-gray-200 transition-colors"><i data-lucide="line-chart" class="w-6 h-6"></i></div>
+            <div class="iconwrap group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"><i data-lucide="line-chart" class="w-6 h-6"></i></div>
             <div>
               <h3 class="text-lg font-bold text-gray-900">Insights</h3>
               <p class="mt-1 text-sm text-gray-500">Predictive analysis, alerts & recommendations.</p>
@@ -179,10 +179,10 @@
           </div>
         </button>
 
-        <!-- Track App -->
+        <!-- Track App (Teal Theme) -->
         <button onclick="switchView('track')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
           <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-gray-200 transition-colors"><i data-lucide="receipt-text" class="w-6 h-6"></i></div>
+            <div class="iconwrap group-hover:bg-teal-100 group-hover:text-teal-600 transition-colors"><i data-lucide="receipt-text" class="w-6 h-6"></i></div>
             <div>
               <h3 class="text-lg font-bold text-gray-900">Track Application</h3>
               <p class="mt-1 text-sm text-gray-500">See submission and review status.</p>
@@ -321,16 +321,75 @@
         </div>
     </section>
 
-    <!-- Placeholders for Billing/Track -->
-    <section id="view-billing" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-        <h2 class="text-2xl font-bold text-gray-300">Billing Module Loading...</h2>
-    </section>
-    <section id="view-track" class="view-section text-center py-20">
-        <button onclick="switchView('hub')" class="btn-outline mb-6 flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-        <h2 class="text-2xl font-bold text-gray-300">Tracking Module Loading...</h2>
-    </section>
+    <!-- ================= VIEW 6: TRACK APPLICATION ================= -->
+    <section id="view-track" class="view-section">
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Application Status</h1>
+        </div>
 
+        <div class="card p-8 max-w-3xl mx-auto">
+            <!-- Header Info -->
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4">
+                    <i data-lucide="file-search" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Business Verification</h2>
+                <p class="text-gray-500 text-sm mt-1">Tracking ID: <span id="track_id" class="font-mono text-gray-700">--</span></p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="relative">
+                <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative flex items-start mb-8 group">
+                    <div class="absolute left-0 w-16 flex justify-center">
+                        <div id="step1_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="ml-20">
+                        <h3 class="font-bold text-gray-900">Application Submitted</h3>
+                        <p class="text-sm text-gray-500 mt-1">Your details have been received by our compliance team.</p>
+                        <p id="step1_date" class="text-xs text-gray-400 mt-1">--</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex items-start mb-8 group">
+                    <div class="absolute left-0 w-16 flex justify-center">
+                        <div id="step2_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
+                            <i data-lucide="loader-2" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="ml-20">
+                        <h3 class="font-bold text-gray-900">Under Review</h3>
+                        <p class="text-sm text-gray-500 mt-1">We are verifying your Tax ID and Registration with local authorities.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex items-start group">
+                    <div class="absolute left-0 w-16 flex justify-center">
+                        <div id="step3_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
+                            <i data-lucide="award" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="ml-20">
+                        <h3 class="font-bold text-gray-900">Verification Complete</h3>
+                        <p class="text-sm text-gray-500 mt-1">Your business is fully verified. You now have access to Gold Tier credit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Area -->
+            <div id="track_action" class="mt-10 p-4 bg-gray-50 rounded-lg text-center hidden">
+                <p class="text-sm text-gray-600 mb-3">Verification failed? You may need to resubmit documents.</p>
+                <button onclick="switchView('verification')" class="btn-outline text-xs">Update Information</button>
+            </div>
+        </div>
+    </section>
   </main>
 
   <footer class="border-t border-[color:var(--au-line)] mt-10">
