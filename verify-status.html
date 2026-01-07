@@ -66,7 +66,7 @@ document.getElementById('send').addEventListener('click', async () => {
   if (!email) { note.textContent = 'Enter your email address.'; return; }
   note.textContent = 'Sending…';
   try {
-    const res = await fetch(API_BASE + '/api/resend-verify', {
+    const res = await fetch(API_BASE + '/api/v1/resend-verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
