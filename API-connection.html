@@ -15,79 +15,20 @@
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-   <script type="text/javascript">
-  // Fire a change event in the older "HTMLEvents" style Google expects
-  function fireGoogleTranslateEvent(el, eventName) {
-    try {
-      if (document.createEvent) {
-        var event = document.createEvent("HTMLEvents");
-        event.initEvent(eventName, true, true);
-        el.dispatchEvent(event);
-      } else if (document.createEventObject) { // IE fallback
-        var event = document.createEventObject();
-        el.fireEvent("on" + eventName, event);
-      } else {
-        el.dispatchEvent(new Event(eventName));
-      }
-    } catch (e) {
-      el.dispatchEvent(new Event(eventName));
-    }
-  }
-
-  function setGoogleTransCookie(lang) {
-    // page language is 'en', so cookie must be /en/<target>
-    var value = "/en/" + lang;
-    var domain = window.location.hostname;
-    document.cookie = "googtrans=" + value + ";path=/;";
-    document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
-  }
-
-  // Global helper used by the custom language menu
-  function setLanguage(lang) {
-    function applyLang() {
-      const combo = document.querySelector(".goog-te-combo");
-      if (!combo) return false;
-      combo.value = lang;
-      fireGoogleTranslateEvent(combo, "change");
-      try { localStorage.setItem("selectedLang", lang); } catch (e) {}
-      return true;
-    }
-    if (applyLang()) return;
-    const observer = new MutationObserver(() => {
-      if (applyLang()) observer.disconnect();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    setGoogleTransCookie(lang);
-    setTimeout(function () { window.location.reload(); }, 300);
-  }
-
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      {
-        pageLanguage: 'en',
-        includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      },
-      'google_translate_element'
-    );
-
-    const observer = new MutationObserver(function (mutations, obs) {
-      const combo = document.querySelector('.goog-te-combo');
-      if (combo) {
-        const savedLang = localStorage.getItem('selectedLang');
-        if (savedLang) {
-          combo.value = savedLang;
-          fireGoogleTranslateEvent(combo, 'change');
-        }
-        combo.addEventListener('change', function () {
-          try { localStorage.setItem('selectedLang', this.value); } catch (e) {}
-        });
-        obs.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
-</script>
+  <!-- Google Translate -->
+  <script type="text/javascript">
+  function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
+  function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
+  window.setLanguage = function(lang) { 
+    function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
+    if (apply()) return; 
+    const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
+    obs.observe(document.body, { childList: true, subtree: true }); 
+    setGoogleTransCookie(lang); 
+    setTimeout(() => window.location.reload(), 300); 
+  };
+  function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
+  </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   
   <!-- Google tag (gtag.js) -->
@@ -100,19 +41,10 @@
   </script>
   
   <style>
-    :root{
-      /* Brand palette */
-      --orange-600:#ea580c;
-      --orange-700:#c2410c;
-      --green-600:#16a34a;
-      --green-700:#15803d;
-    }
+    :root{ --orange-600:#ea580c; --orange-700:#c2410c; --green-600:#16a34a; --green-700:#15803d; }
     html,body{height:100%}
     body{
-      background:
-        radial-gradient(900px 600px at 10% 0%, rgba(234,88,12,0.12), transparent 60%),
-        radial-gradient(900px 600px at 90% 10%, rgba(22,163,74,0.18), transparent 60%),
-        linear-gradient(135deg, #0d1b14 0%, #0b1511 40%, #0d1b14 100%);
+      background: radial-gradient(900px 600px at 10% 0%, rgba(234,88,12,0.12), transparent 60%), radial-gradient(900px 600px at 90% 10%, rgba(22,163,74,0.18), transparent 60%), linear-gradient(135deg, #0d1b14 0%, #0b1511 40%, #0d1b14 100%);
       color:#fff;
     }
     .glass{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
@@ -121,8 +53,9 @@
     .btn-gradient:hover{background:linear-gradient(135deg,var(--orange-700),var(--green-700));}
     .tab{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.85)}
     .tab-active{background:rgba(255,255,255,.15);color:#fff}
-    /* Disabled state for animation */
     .btn-disabled { opacity: 0.7; cursor: not-allowed; }
+    .btn-outline-dark { border: 1px solid #d1d5db; color: #374151; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; transition: background 0.2s; }
+    .btn-outline-dark:hover { background-color: #f3f4f6; }
     
     #google_translate_element, .goog-te-gadget, .goog-te-gadget > div, .goog-te-combo { display: none !important; }
     #lang-btn.tab-like { padding-inline: 0.75rem; padding-block: 0.4rem; font-size: 0.75rem; }
@@ -140,7 +73,7 @@
       </div>
       <ul class="flex items-center gap-8 text-sm text-white/85">
         <li><a class="hover:text-white" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
-        <li><a class="hover:text-white" href="#" data-modal-target="servicesModal">Services</a></li>
+        <li><a class="hover:text-white cursor-pointer" data-modal-target="servicesModal">Services</a></li>
         <!-- Language menu -->
           <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
            <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
@@ -339,42 +272,183 @@
     </div>
   </div>
 
-  <!-- Services Modal -->
+  <!-- Services / Pricing Modal -->
   <div id="servicesModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
     <div role="dialog" aria-modal="true" class="glass w-full max-w-5xl rounded-2xl border border-white/10 bg-white p-6 text-gray-900 overflow-y-auto max-h-[85vh]">
       <div class="flex items-center justify-between mb-2">
         <h4 class="text-xl font-semibold">Services & Pricing</h4>
-        <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <p class="text-gray-600 text-sm mb-6">All plans include WhatsApp onboarding & secure data.</p>
-      <!-- (Standard Pricing Tiers content) -->
-      <div class="text-center p-10 bg-gray-50 rounded-lg">
-          <h3 class="text-lg font-bold">Standard Pricing Tiers Loaded</h3>
-          <p class="text-sm text-gray-500">Retailers, FMCG, NGOs, Fintechs</p>
+      <p class="text-gray-600 text-sm mb-6">All plans include WhatsApp onboarding, secure data handling, and access to our customer success team.</p>
+      
+      <!-- FMCGs Table -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+            <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-green-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$1,500/month <span class="text-gray-500">(£1,200)</span></td>
+                <td class="px-6 py-4">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$3,500/month <span class="text-gray-500">(£2,800)</span></td>
+                <td class="px-6 py-4">Multi-region, advanced forecasting, competitor insights, API integration</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$75k–$150k/year <span class="text-gray-500">(£60k–£120k)</span></td>
+                <td class="px-6 py-4">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NGOs & Development Partners -->
+      <div class="mb-10">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+            <i data-lucide="users" class="w-5 h-5 text-[color:var(--orange-600)]"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-[color:var(--orange-700)]">NGOs & Development Partners</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-orange-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$300/month <span class="text-gray-500">(£240)</span></td>
+                <td class="px-6 py-4">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$1,200/month <span class="text-gray-500">(£950)</span></td>
+                <td class="px-6 py-4">Multi-region, real-time dashboards, grant reporting, alerts</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$25k–$100k/year <span class="text-gray-500">(£20k–£80k)</span></td>
+                <td class="px-6 py-4">Custom program analytics, donor-facing reports, field integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FinTechs -->
+      <div class="mb-2">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <i data-lucide="banknote" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price Range</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">What's Included</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100 text-gray-700">
+              <tr>
+                <td class="px-6 py-4 font-semibold">Starter</td>
+                <td class="px-6 py-4">$750/month <span class="text-gray-500">(£600)</span></td>
+                <td class="px-6 py-4">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 font-semibold">Growth</td>
+                <td class="px-6 py-4">$2,500/month <span class="text-gray-500">(£2,000)</span></td>
+                <td class="px-6 py-4">Expanded API, repayment analysis, portfolio monitoring</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 font-semibold">Enterprise</td>
+                <td class="px-6 py-4">$50k–$200k/year <span class="text-gray-500">(£40k–£160k)</span> + rev share</td>
+                <td class="px-6 py-4">Full API, predictive risk engine, dedicated integration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-600 bg-white border border-gray-200 rounded-lg p-3 mt-4">
+        Prices are indicative and may vary with scope, data volumes, and integration complexity. Enterprise plans include custom SLAs and security reviews. VAT may apply.
       </div>
     </div>
   </div>
 
   <!-- Privacy, Terms, Ethical Modals -->
   <div id="privacyModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-       <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 relative">
+       <div class="flex items-center justify-between mb-3">
+         <div>
+           <h2 class="text-lg font-semibold text-gray-900">Privacy Policy</h2>
+           <p class="text-xs text-gray-500 mt-1">How we collect, use and protect your data.</p>
+         </div>
+         <button class="p-2 rounded-lg hover:bg-gray-100" data-modal-close><i data-lucide="x" class="w-5 h-5 text-gray-500"></i></button>
+       </div>
        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
-       <button class="btn-outline mt-4 text-xs" data-modal-close>Close</button>
+       <div class="mt-4 flex justify-end">
+           <button class="btn-outline-dark text-xs" data-modal-close>Close</button>
+       </div>
     </div>
   </div>
+
   <div id="termsModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-       <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 relative">
+       <div class="flex items-center justify-between mb-3">
+         <div>
+           <h2 class="text-lg font-semibold text-gray-900">Terms of Service</h2>
+           <p class="text-xs text-gray-500 mt-1">The rules for using Afro Ubuntu TradeNet services.</p>
+         </div>
+         <button class="p-2 rounded-lg hover:bg-gray-100" data-modal-close><i data-lucide="x" class="w-5 h-5 text-gray-500"></i></button>
+       </div>
        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
-       <button class="btn-outline mt-4 text-xs" data-modal-close>Close</button>
+       <div class="mt-4 flex justify-end">
+           <button class="btn-outline-dark text-xs" data-modal-close>Close</button>
+       </div>
     </div>
   </div>
+
   <div id="ethicalModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-       <h2 class="text-lg font-semibold mb-2">Ethical Data & AI</h2>
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 relative">
+       <div class="flex items-center justify-between mb-3">
+         <div>
+           <h2 class="text-lg font-semibold text-gray-900">Ethical Data & AI</h2>
+           <p class="text-xs text-gray-500 mt-1">Our commitment to responsible, Ubuntu-aligned AI.</p>
+         </div>
+         <button class="p-2 rounded-lg hover:bg-gray-100" data-modal-close><i data-lucide="x" class="w-5 h-5 text-gray-500"></i></button>
+       </div>
        <div class="border rounded-lg overflow-hidden h-64"><iframe src="ethical-ai-policy.html" class="w-full h-full"></iframe></div>
-       <button class="btn-outline mt-4 text-xs" data-modal-close>Close</button>
+       <div class="mt-4 flex justify-end">
+           <button class="btn-outline-dark text-xs" data-modal-close>Close</button>
+       </div>
     </div>
   </div>
 
