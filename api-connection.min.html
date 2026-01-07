@@ -576,6 +576,52 @@
         await call('/api/v1/connect', 'POST', { target_id: targetId });
     }
 
+    // ---- LOAD TRACKING ----
+    async function loadTracking() {
+        try {
+            // Re-use the verification endpoint (it returns status)
+            const data = await call('/api/v1/verification');
+            
+            const s1 = document.getElementById('step1_icon');
+            const s2 = document.getElementById('step2_icon');
+            const s3 = document.getElementById('step3_icon');
+            const dateEl = document.getElementById('step1_date');
+            const trackId = document.getElementById('track_id');
+
+            // Reset styles
+            [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
+
+            if (data.status === "NOT_SUBMITTED") {
+                trackId.innerText = "N/A";
+                dateEl.innerText = "Not yet started";
+                // Show "Go apply" logic if needed
+            } else {
+                // Step 1 is always done if submitted
+                s1.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                dateEl.innerText = new Date(data.date).toLocaleDateString();
+                trackId.innerText = "VER-" + Math.floor(Math.random()*10000); // Mock ID or fetch real one
+            }
+
+            if (data.status === "PENDING") {
+                // Step 2 Active
+                s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+            } else if (data.status === "APPROVED") {
+                // Step 2 Done
+                s2.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                // Step 3 Done
+                s3.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+            } else if (data.status === "REJECTED") {
+                 s2.className = "w-8 h-8 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                 s2.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
+                 document.getElementById('track_action').classList.remove('hidden');
+            }
+            
+            lucide.createIcons();
+
+        } catch(e) { console.error(e); }
+    }
+
     // ---- VERIFICATION ----
     async function loadVerification() {
         const statusBox = document.getElementById('verif_status_box');
