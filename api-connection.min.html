@@ -390,6 +390,143 @@
             </div>
         </div>
     </section>
+
+    <!-- ================= VIEW 7: BILLING & PLANS ================= -->
+    <section id="view-billing" class="view-section">
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
+            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Billing & Plans</h1>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 text-sm text-blue-800 flex items-start gap-3">
+            <i data-lucide="info" class="w-5 h-5 mt-0.5 shrink-0"></i>
+            <p>All plans include WhatsApp onboarding, secure data handling, and access to our customer success team. Prices are indicative and may vary with scope.</p>
+        </div>
+
+        <div class="space-y-10">
+            
+            <!-- FMCGs Table -->
+            <div class="card overflow-hidden">
+                <div class="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i data-lucide="package" class="w-4 h-4"></i></div>
+                    <h3 class="text-lg font-bold text-green-800">FMCGs (Consumer Goods & Distributors)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 font-medium">Tier</th>
+                                <th class="px-6 py-3 font-medium">Price Range</th>
+                                <th class="px-6 py-3 font-medium">What's Included</th>
+                                <th class="px-6 py-3 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
+                                <td class="px-6 py-4 text-gray-600">$1,500/mo <span class="text-xs text-gray-400">(£1,200)</span></td>
+                                <td class="px-6 py-4 text-gray-600">1 region, inventory + sales dashboards, basic forecasts</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50/50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
+                                <td class="px-6 py-4 text-gray-600">$3,500/mo <span class="text-xs text-gray-400">(£2,800)</span></td>
+                                <td class="px-6 py-4 text-gray-600">Multi-region, advanced forecasting, competitor insights</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
+                                <td class="px-6 py-4 text-gray-600">$75k–$150k/yr</td>
+                                <td class="px-6 py-4 text-gray-600">Unlimited coverage, custom analytics, white-label dashboards</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- NGOs Table -->
+            <div class="card overflow-hidden">
+                <div class="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i data-lucide="users" class="w-4 h-4"></i></div>
+                    <h3 class="text-lg font-bold text-orange-800">NGOs & Development Partners</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 font-medium">Tier</th>
+                                <th class="px-6 py-3 font-medium">Price Range</th>
+                                <th class="px-6 py-3 font-medium">What's Included</th>
+                                <th class="px-6 py-3 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
+                                <td class="px-6 py-4 text-gray-600">$300/mo <span class="text-xs text-gray-400">(£240)</span></td>
+                                <td class="px-6 py-4 text-gray-600">Basic data for 1 region, monitoring dashboards, CSV export</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50/50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
+                                <td class="px-6 py-4 text-gray-600">$1,200/mo <span class="text-xs text-gray-400">(£950)</span></td>
+                                <td class="px-6 py-4 text-gray-600">Multi-region, real-time dashboards, grant reporting</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
+                                <td class="px-6 py-4 text-gray-600">$25k–$100k/yr</td>
+                                <td class="px-6 py-4 text-gray-600">Custom program analytics, donor-facing reports</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fintechs Table -->
+            <div class="card overflow-hidden">
+                <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i data-lucide="banknote" class="w-4 h-4"></i></div>
+                    <h3 class="text-lg font-bold text-blue-800">FinTechs (Banks, Microfinance)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 font-medium">Tier</th>
+                                <th class="px-6 py-3 font-medium">Price Range</th>
+                                <th class="px-6 py-3 font-medium">What's Included</th>
+                                <th class="px-6 py-3 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
+                                <td class="px-6 py-4 text-gray-600">$750/mo <span class="text-xs text-gray-400">(£600)</span></td>
+                                <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50/50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
+                                <td class="px-6 py-4 text-gray-600">$2,500/mo <span class="text-xs text-gray-400">(£2,000)</span></td>
+                                <td class="px-6 py-4 text-gray-600">Expanded API, repayment analysis, portfolio monitoring</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
+                                <td class="px-6 py-4 text-gray-600">$50k–$200k/yr</td>
+                                <td class="px-6 py-4 text-gray-600">Full API, predictive risk engine, dedicated integration</td>
+                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    
   </main>
 
   <footer class="border-t border-[color:var(--au-line)] mt-10">
