@@ -681,6 +681,10 @@
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
     const SIGNIN_PAGE = 'api-connection.html';
 
+    // ---- GLOBAL STATE ----
+    let currentUserType = 'Retailer';
+    let currentVerifStatus = 'NOT_SUBMITTED';
+
     // ---- API HELPER ----
     async function call(path, method='GET', body=null) {
         const t = localStorage.getItem('token');
@@ -694,20 +698,35 @@
 
         const res = await fetch(API_BASE + path, opts);
         const data = await res.json().catch(()=>null);
+        
+        // Return explicit error for access control
+        if (res.status === 403) throw new Error("VERIFICATION_REQUIRED");
         if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
+        
         return data;
     }
 
-    // ---- VIEW ROUTER ----
+    // ---- VIEW ROUTER (ACCESS CONTROL FIXED) ----
     async function switchView(viewName) {
         // 1. ACCESS CONTROL CHECK
         if (['dashboard', 'insights', 'connect'].includes(viewName)) {
+            // Check global state first (Fastest)
             if (currentUserType !== 'Retailer' && currentVerifStatus !== 'APPROVED') {
-                viewName = 'restricted'; // Force redirect to lock screen
+                viewName = 'restricted';
+            } 
+            else {
+                // Double check with API (Secure)
+                try {
+                    await call('/api/v1/analytics/dashboard');
+                } catch (e) {
+                    if (e.message === 'VERIFICATION_REQUIRED' || e.message.includes('403')) {
+                        viewName = 'restricted';
+                    }
+                }
             }
         }
 
-        // 2. Standard Switching
+        // 2. SWITCH UI
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
@@ -715,12 +734,86 @@
         lucide.createIcons();
         window.scrollTo(0, 0);
 
+        // 3. LOAD DATA
         if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'connect') loadConnectHub();
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
     }
 
+    // ---- CONNECT HUB LOGIC ----
+    async function loadConnectHub(mode = 'browse') {
+        // Toggle Tabs
+        document.getElementById('tab-browse').className = mode==='browse' ? "pb-2 border-b-2 border-orange-500 font-semibold text-orange-600" : "pb-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700";
+        document.getElementById('tab-network').className = mode==='connections' ? "pb-2 border-b-2 border-orange-500 font-semibold text-orange-600" : "pb-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700";
+
+        const list = document.getElementById('connect_list');
+        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading marketplace...</p>';
+        lucide.createIcons();
+
+        // Filters
+        const type = document.getElementById('filter_type')?.value || '';
+        const loc = document.getElementById('filter_loc')?.value || '';
+
+        try {
+            let url = `/api/v1/connect?mode=${mode}`;
+            if(mode === 'browse') {
+                if(type) url += `&type=${type}`;
+                if(loc) url += `&loc=${loc}`;
+            }
+
+            const data = await call(url);
+            list.innerHTML = '';
+            
+            if(!data.results || data.results.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No matches found.</p>';
+                return;
+            }
+
+            data.results.forEach(b => {
+                let actionBtn = '';
+                // Blue Tick for Verified
+                const verifiedBadge = b.is_verified 
+                    ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-100 ml-1 inline-block" title="Verified"></i>` 
+                    : '';
+
+                if(mode === 'browse') {
+                    actionBtn = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-blue-50">Connect +</button>`;
+                } else {
+                    actionBtn = `<button onclick="openChat('${b.id}', '${b.name}')" class="btn-primary text-xs flex gap-2 items-center"><i data-lucide="message-circle" class="w-3 h-3"></i> Chat</button>`;
+                }
+
+                list.innerHTML += `
+                <div class="card p-5 hover:shadow-md transition bg-white">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-900 flex items-center">
+                                ${b.name} ${verifiedBadge}
+                            </h3>
+                            <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                                <i data-lucide="map-pin" class="w-3 h-3"></i> ${b.loc}
+                            </p>
+                            <span class="pill bg-gray-100 text-gray-600 mt-3 inline-block text-[10px] uppercase font-bold tracking-wide">${b.type}</span>
+                        </div>
+                        ${actionBtn}
+                    </div>
+                </div>`;
+            });
+            lucide.createIcons();
+            
+            checkNotifications();
+
+        } catch(e) { 
+            console.error(e);
+            // If verification required, the switchView logic handles it, 
+            // but just in case, show specific error in grid
+            if (e.message === "VERIFICATION_REQUIRED") {
+                switchView('restricted'); 
+            } else {
+                list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
+            }
+        }
+    }
 
     // ---- ANALYTICS ----
     async function loadAnalytics() {
@@ -805,78 +898,8 @@
         } catch(e) { console.error(e); }
     }
 
-    // ---- LOAD CONNECT HUB ----
-    async function loadConnectHub(mode = 'browse') {
-        // Toggle Tabs UI
-        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600" : "text-sm text-gray-500 hover:text-gray-700";
-        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600" : "text-sm text-gray-500 hover:text-gray-700";
-
-        const list = document.getElementById('connect_list');
-        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
-        lucide.createIcons();
-
-        // Get Filter Values
-        const type = document.getElementById('filter_type').value;
-        const loc = document.getElementById('filter_loc').value;
-
-        try {
-            // Build Query Params
-            let url = `/api/v1/connect?mode=${mode}`;
-            if(mode === 'browse') {
-                if(type) url += `&type=${type}`;
-                if(loc) url += `&loc=${loc}`;
-            }
-
-            const data = await call(url);
-            list.innerHTML = '';
-            
-            if(!data.results || data.results.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No matches found.</p>';
-                return;
-            }
-
-            data.results.forEach(b => {
-                let actionBtn = '';
-                // Logic for Badge
-                const verifiedBadge = b.is_verified 
-                    ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-100 ml-1 inline-block" title="Verified Business"></i>` 
-                    : '';
-
-                if(mode === 'browse') {
-                    actionBtn = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200">Connect +</button>`;
-                } else {
-                    actionBtn = `<button onclick="openChat('${b.id}', '${b.name}')" class="btn-primary text-xs flex gap-2 items-center"><i data-lucide="message-circle" class="w-3 h-3"></i> Chat</button>`;
-                }
-
-                list.innerHTML += `
-                <div class="card p-5 hover:shadow-md transition bg-white">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 flex items-center">
-                                ${b.name} ${verifiedBadge}
-                            </h3>
-                            <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                                <i data-lucide="map-pin" class="w-3 h-3"></i> ${b.loc}
-                            </p>
-                            <span class="pill bg-gray-100 text-gray-600 mt-3 inline-block text-[10px] uppercase font-bold tracking-wide">${b.type}</span>
-                        </div>
-                        ${actionBtn}
-                    </div>
-                </div>`;
-            });
-            lucide.createIcons();
-            
-            checkNotifications();
-
-        } catch(e) { 
-            console.error(e);
-            list.innerHTML = '<p class="text-red-500 col-span-3 text-center">Error loading data.</p>';
-        }
-    }
-
-    // ---- ACTIONS (FIXED SENDING STATE) ----
+    // ---- ACTIONS ----
     async function sendConnect(id, btn) {
-        // 1. UI Feedback
         const originalText = btn.innerText;
         btn.innerText = "Sending...";
         btn.disabled = true;
@@ -884,14 +907,10 @@
 
         try {
             await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
-            
-            // 2. Success State
             btn.innerText = "Request Sent";
             btn.classList.remove('text-blue-600', 'border-blue-200');
             btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
-            
         } catch(e) {
-            // 3. Error State (Revert)
             alert("Failed to send request. Please try again.");
             btn.innerText = originalText;
             btn.disabled = false;
@@ -899,14 +918,39 @@
         }
     }
 
-    
+    async function loadRequests() {
+        const panel = document.getElementById('requests_panel');
+        const list = document.getElementById('requests_list');
+        panel.classList.toggle('hidden');
+        const data = await call('/api/v1/connect?mode=requests');
+        list.innerHTML = '';
+        if(data.results.length === 0) { list.innerHTML = '<p class="text-xs text-gray-500">No pending requests.</p>'; return; }
+        data.results.forEach(r => {
+            list.innerHTML += `<div class="flex justify-between items-center bg-white p-2 rounded border"><span class="font-medium text-sm">${r.name}</span><button onclick="acceptRequest('${r.id}', this)" class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">Accept</button></div>`;
+        });
+    }
+
+    async function acceptRequest(connId, btn) {
+        btn.innerText = "...";
+        await call('/api/v1/connect', 'POST', { action: 'accept', connection_id: connId });
+        btn.parentElement.remove();
+        loadConnectHub('connections'); 
+    }
+
+    async function checkNotifications() {
+        const data = await call('/api/v1/connect?mode=requests');
+        if(data.results && data.results.length > 0) document.getElementById('notif_badge').classList.remove('hidden');
+    }
+
     // ---- CHAT SYSTEM ----
+    let currentChatPartner = null;
+    let chatInterval = null;
+
     function openChat(partnerId, partnerName) {
         currentChatPartner = partnerId;
         document.getElementById('chat_partner_name').innerText = partnerName;
         document.getElementById('chat_modal').classList.remove('hidden');
         loadMessages();
-        // Poll for new messages every 3 seconds
         chatInterval = setInterval(loadMessages, 3000);
     }
 
@@ -919,13 +963,8 @@
     async function loadMessages() {
         if(!currentChatPartner) return;
         const box = document.getElementById('chat_box');
-        
-        // Only fetch if chat is open
         const data = await call(`/api/v1/chat?partner_id=${currentChatPartner}`);
-        
-        // Simple render (in production, diffing is better to avoid scroll jumping)
         const isAtBottom = box.scrollHeight - box.scrollTop === box.clientHeight;
-        
         box.innerHTML = '';
         data.messages.forEach(m => {
             const align = m.is_me ? "self-end bg-orange-600 text-white" : "self-start bg-gray-200 text-gray-800";
@@ -937,7 +976,6 @@
                 <span class="text-[10px] text-gray-400 mt-1">${m.time}</span>
             </div>`;
         });
-
         if(isAtBottom) box.scrollTop = box.scrollHeight;
     }
 
@@ -945,74 +983,11 @@
         const input = document.getElementById('chat_input');
         const text = input.value.trim();
         if(!text) return;
-        
-        input.value = ''; // Clear immediately
+        input.value = ''; 
         await call('/api/v1/chat', 'POST', { partner_id: currentChatPartner, content: text });
-        loadMessages(); // Refresh immediately
+        loadMessages(); 
     }
-    
-    // Allow "Enter" to send
-    document.getElementById('chat_input').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') sendMessage();
-    });
-
-    async function connectRequest(targetId, btn) {
-        btn.innerText = "Sent!";
-        btn.disabled = true;
-        await call('/api/v1/connect', 'POST', { target_id: targetId });
-    }
-
-    // ---- LOAD TRACKING ----
-    async function loadTracking() {
-        try {
-            // Re-use the verification endpoint (it returns status)
-            const data = await call('/api/v1/verification');
-            
-            const s1 = document.getElementById('step1_icon');
-            const s2 = document.getElementById('step2_icon');
-            const s3 = document.getElementById('step3_icon');
-            const dateEl = document.getElementById('step1_date');
-            const trackId = document.getElementById('track_id');
-            const actionDiv = document.getElementById('track_action');
-            if (data.status === 'REJECTED') {
-                actionDiv.classList.remove('hidden');
-            } else {
-                actionDiv.classList.add('hidden');
-            }
-
-            // Reset styles
-            [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
-
-            if (data.status === "NOT_SUBMITTED") {
-                trackId.innerText = "N/A";
-                dateEl.innerText = "Not yet started";
-                // Show "Go apply" logic if needed
-            } else {
-                // Step 1 is always done if submitted
-                s1.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                dateEl.innerText = new Date(data.date).toLocaleDateString();
-                trackId.innerText = "VER-" + Math.floor(Math.random()*10000); // Mock ID or fetch real one
-            }
-
-            if (data.status === "PENDING") {
-                // Step 2 Active
-                s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
-            } else if (data.status === "APPROVED") {
-                // Step 2 Done
-                s2.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                // Step 3 Done
-                s3.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-            } else if (data.status === "REJECTED") {
-                 s2.className = "w-8 h-8 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                 s2.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
-                 document.getElementById('track_action').classList.remove('hidden');
-            }
-            
-            lucide.createIcons();
-
-        } catch(e) { console.error(e); }
-    }
+    document.getElementById('chat_input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
 
     // ---- VERIFICATION ----
     async function loadVerification() {
@@ -1023,56 +998,50 @@
         try {
             const data = await call('/api/v1/verification');
             
-            // Pre-fill
             if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
             if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
             
-            // Logic: "Edit" should be available for Approved/Pending too (Issue 4)
             editBtn.classList.remove('hidden'); 
 
             if (data.status === "NOT_SUBMITTED") {
-                statusCard.classList.add('hidden');
-                form.classList.remove('hidden');
+                statusCard.classList.add('hidden'); form.classList.remove('hidden');
             } 
             else if (data.status === "PENDING") {
-                // Show Card, Hide Form
-                form.classList.add('hidden');
-                statusCard.classList.remove('hidden');
-                // ... (set styles blue) ...
+                form.classList.add('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
                 document.getElementById('verif_title').innerText = "Application Under Review";
                 document.getElementById('verif_desc').innerText = "You can update your details if needed.";
             }
             else if (data.status === "APPROVED") {
-                form.classList.add('hidden');
-                statusCard.classList.remove('hidden');
-                // ... (set styles green) ...
+                form.classList.add('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
                 document.getElementById('verif_title').innerText = "Business Verified";
                 document.getElementById('verif_desc').innerText = "Your business is verified. Click edit to update details.";
             }
             else if (data.status === "REJECTED") {
-                // Show Card AND Form (Issue 1 & 2 Fix)
-                form.classList.remove('hidden');
-                statusCard.classList.remove('hidden');
-                // ... (set styles red) ...
+                form.classList.remove('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
                 document.getElementById('verif_title').innerText = "Action Required";
                 document.getElementById('verif_desc').innerText = "Please correct your details and resubmit.";
-                editBtn.classList.add('hidden'); // Hide edit button because form is already open
+                editBtn.classList.add('hidden');
             }
             lucide.createIcons();
         } catch(e) { console.error(e); }
     }
 
-
-    // 2. Helper to manually show form (if Pending)
     window.enableVerifEdit = function() {
         document.getElementById('verifForm').classList.remove('hidden');
-        document.getElementById('verif_status_card').classList.add('hidden'); // Hide status card while editing
+        document.getElementById('verif_status_card').classList.add('hidden');
     }
 
-    // 3. Submit Handler
     document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const payload = {
             business_name: document.getElementById('v_biz_name').value,
             business_location: document.getElementById('v_biz_loc').value,
@@ -1080,38 +1049,47 @@
             registration_number: document.getElementById('v_reg_num').value,
             tax_id: document.getElementById('v_tax_id').value || null
         };
-
         const btn = e.target.querySelector('button');
         const oldText = btn.innerText;
-        btn.innerText = "Submitting...";
-        btn.disabled = true;
-
+        btn.innerText = "Submitting..."; btn.disabled = true;
         try {
             await call('/api/v1/verification', 'POST', payload);
-            
-            // Success!
             alert("Application Submitted! Your status is now Pending.");
-            
-            // 1. Refresh Verification View (Hides form, shows Status Card)
             await loadVerification();
-            
-            // 2. Refresh Tracking View (Updates the timeline)
-            // We clear the cached state if any logic relies on it
-            if(document.getElementById('view-track').classList.contains('active')) {
-                loadTracking();
-            }
-
-        } catch(err) {
-            alert("Error: " + err.message);
-        } finally {
-            btn.innerText = oldText;
-            btn.disabled = false;
-        }
+            if(document.getElementById('view-track').classList.contains('active')) loadTracking();
+            const me = await call('/api/v1/me');
+            currentUserType = me?.user?.type || 'Retailer';
+            currentVerifStatus = me?.user?.status || 'PENDING';
+        } catch(err) { alert("Error: " + err.message); } 
+        finally { btn.innerText = oldText; btn.disabled = false; }
     });
 
-    // ---- GLOBAL STATE ----
-    let currentUserType = 'Retailer';
-    let currentVerifStatus = 'NOT_SUBMITTED';
+    async function loadTracking() {
+        try {
+            const data = await call('/api/v1/verification');
+            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon');
+            const actionDiv = document.getElementById('track_action');
+            if (data.status === 'REJECTED') actionDiv.classList.remove('hidden'); else actionDiv.classList.add('hidden');
+            
+            [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
+
+            if (data.status !== "NOT_SUBMITTED") {
+                s1.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                document.getElementById('track_id').innerText = "VER-" + Math.floor(Math.random()*10000);
+            }
+            if (data.status === "PENDING") {
+                s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+            } else if (data.status === "APPROVED") {
+                s2.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                s3.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+            } else if (data.status === "REJECTED") {
+                 s2.className = "w-8 h-8 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                 s2.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
+            }
+            lucide.createIcons();
+        } catch(e) {}
+    }
 
     // ---- INIT ----
     async function init() {
@@ -1120,13 +1098,12 @@
             const me = await call('/api/v1/me');
             const name = me?.user?.name || '';
             const email = me?.user?.email || 'Unknown';
-            const verif = await call('/api/v1/verification');
-          
+            
+            // Save GLOBAL State
             currentUserType = me?.user?.type || 'Retailer';
             currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
-          
-            let display = name ? name : (email.split('@')[0]);
 
+            let display = name ? name : (email.split('@')[0]);
             document.getElementById('welcomeName').innerText = display;
             document.getElementById('email').innerText = email;
             document.getElementById('status').innerText = 'Signed in';
@@ -1135,113 +1112,36 @@
         }
     }
 
-    // ---- POPULATE COUNTRIES ----
-    const allCountries = [
-        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
-        "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
-        "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (DRC)", "Congo (Republic)", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic",
-        "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-        "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
-        "Fiji", "Finland", "France",
-        "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
-        "Haiti", "Honduras", "Hungary",
-        "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
-        "Jamaica", "Japan", "Jordan",
-        "Kazakhstan", "Kenya", "Kiribati", "Korea (North)", "Korea (South)", "Kosovo", "Kuwait", "Kyrgyzstan",
-        "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
-        "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
-        "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway",
-        "Oman",
-        "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
-        "Qatar",
-        "Romania", "Russia", "Rwanda",
-        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
-        "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
-        "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
-        "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
-        "Yemen",
-        "Zambia", "Zimbabwe"
-    ];
-
-    function initCountries() {
-        const select = document.getElementById('v_biz_loc');
+    // ---- MISC LISTENERS ----
+    const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (DRC)","Congo (Republic)","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea (North)","Korea (South)","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+    
+    function initCountries(selectId) {
+        const select = document.getElementById(selectId);
         if(!select) return;
-        
-        // Keep the first "Select Country" option
         select.innerHTML = '<option value="">Select Country</option>';
-        
-        allCountries.forEach(country => {
-            const option = document.createElement('option');
-            option.value = country;
-            option.textContent = country;
-            select.appendChild(option);
+        allCountries.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            select.appendChild(opt);
         });
     }
 
-    // ---- UI LISTENERS ----
-    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
-
     document.addEventListener("DOMContentLoaded", () => {
-        initCountries();
-
-        const filterLoc = document.getElementById('filter_loc');
-        if(filterLoc) {
-            const allCountries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
-        "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
-        "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (DRC)", "Congo (Republic)", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic",
-        "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-        "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
-        "Fiji", "Finland", "France",
-        "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
-        "Haiti", "Honduras", "Hungary",
-        "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
-        "Jamaica", "Japan", "Jordan",
-        "Kazakhstan", "Kenya", "Kiribati", "Korea (North)", "Korea (South)", "Kosovo", "Kuwait", "Kyrgyzstan",
-        "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
-        "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
-        "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway",
-        "Oman",
-        "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
-        "Qatar",
-        "Romania", "Russia", "Rwanda",
-        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
-        "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
-        "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
-        "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
-        "Yemen",
-        "Zambia", "Zimbabwe"];
-            allCountries.forEach(c => {
-                 const opt = document.createElement('option');
-                 opt.value = c; opt.innerText = c;
-                 filterLoc.appendChild(opt);
-             });
-        }
+        initCountries('v_biz_loc');
+        initCountries('filter_loc'); // Populate the Filter dropdown too!
+        
         const langBtn = document.getElementById("lang-btn");
         const langMenu = document.getElementById("lang-menu");
         if(langBtn && langMenu) {
-            langBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                langMenu.classList.toggle("hidden");
-            });
-            document.addEventListener("click", (e) => {
-                if(!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-                    langMenu.classList.add("hidden");
-                }
-            });
+            langBtn.addEventListener("click", (e) => { e.stopPropagation(); langMenu.classList.toggle("hidden"); });
+            document.addEventListener("click", (e) => { if(!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add("hidden"); });
         }
     });
 
     document.getElementById('copyBtn')?.addEventListener('click', async () => {
       const email = document.getElementById('email')?.innerText?.trim();
       if (!email || email === '—') return;
-      try {
-        await navigator.clipboard.writeText(email);
-        const btn = document.getElementById('copyBtn');
-        const old = btn.innerText;
-        btn.innerText = 'Copied';
-        setTimeout(()=> btn.innerText = old, 1200);
-      } catch {}
+      try { await navigator.clipboard.writeText(email); const btn = document.getElementById('copyBtn'); const old = btn.innerText; btn.innerText = 'Copied'; setTimeout(()=> btn.innerText = old, 1200); } catch {}
     });
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
