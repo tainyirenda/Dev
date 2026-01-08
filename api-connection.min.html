@@ -695,16 +695,8 @@
     async function switchView(viewName) {
         // 1. ACCESS CONTROL CHECK
         if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-            try {
-                const check = await call('/api/v1/analytics/dashboard');
-            } catch (e) {
-                if (e.message.includes('403')) {
-                    // Show Restricted View
-                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                    document.getElementById('view-restricted').classList.add('active');
-                    lucide.createIcons();
-                    return;
-                }
+            if (currentUserType !== 'Retailer' && currentVerifStatus !== 'APPROVED') {
+                viewName = 'restricted'; // Force redirect to lock screen
             }
         }
 
