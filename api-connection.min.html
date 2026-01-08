@@ -922,9 +922,17 @@
         const panel = document.getElementById('requests_panel');
         const list = document.getElementById('requests_list');
         panel.classList.toggle('hidden');
+        
         const data = await call('/api/v1/connect?mode=requests');
         list.innerHTML = '';
-        if(data.results.length === 0) { list.innerHTML = '<p class="text-xs text-gray-500">No pending requests.</p>'; return; }
+        
+        // Update badge immediately based on fresh data
+        if(data.results.length === 0) {
+            document.getElementById('notif_badge').classList.add('hidden');
+            list.innerHTML = '<p class="text-xs text-gray-500">No pending requests.</p>'; 
+            return; 
+        }
+        
         data.results.forEach(r => {
             list.innerHTML += `<div class="flex justify-between items-center bg-white p-2 rounded border"><span class="font-medium text-sm">${r.name}</span><button onclick="acceptRequest('${r.id}', this)" class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">Accept</button></div>`;
         });
@@ -939,9 +947,18 @@
 
     async function checkNotifications() {
         const data = await call('/api/v1/connect?mode=requests');
-        if(data.results && data.results.length > 0) document.getElementById('notif_badge').classList.remove('hidden');
+        const badge = document.getElementById('notif_badge');
+        
+        if(data.results && data.results.length > 0) {
+            badge.classList.remove('hidden');
+            badge.innerText = data.results.length; // Optional: Show count
+        } else {
+            // FIX: Explicitly hide if 0
+            badge.classList.add('hidden');
+        }
     }
 
+    
     // ---- CHAT SYSTEM ----
     let currentChatPartner = null;
     let chatInterval = null;
