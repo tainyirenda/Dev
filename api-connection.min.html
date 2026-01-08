@@ -349,16 +349,30 @@
         </div>
 
         <div class="card p-8 max-w-2xl mx-auto">
-            <div id="verif_status_box" class="mb-6 hidden p-4 rounded-lg bg-yellow-50 text-yellow-800 border border-yellow-200">
-                Status: <span class="font-bold" id="verif_status_text">PENDING</span>
+            
+            <!-- STATUS BANNER (Dynamic) -->
+            <div id="verif_status_card" class="hidden mb-6 p-5 rounded-lg border flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                    <div id="verif_icon_box" class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100">
+                        <i id="verif_icon" data-lucide="info" class="w-5 h-5 text-gray-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg" id="verif_title">Application Status</h3>
+                        <p class="text-sm" id="verif_desc">Checking...</p>
+                    </div>
+                </div>
+                <!-- The Edit Button -->
+                <button id="btn_edit_verif" onclick="enableVerifEdit()" class="btn-outline text-xs self-end hidden">
+                    Edit & Resubmit
+                </button>
             </div>
 
+            <!-- FORM -->
             <form id="verifForm" class="space-y-4">
                 <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6">
-                    <p><strong>Note:</strong> Verification is primarily for Organizations (FMCG, NGO, Fintech etc.). Retailers are verified via transaction history.</p>
+                    <p><strong>Note:</strong> Verification is primarily for Organizations. Retailers are verified via transaction history.</p>
                 </div>
 
-                <!-- Business Details -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Business Name</label>
                     <input type="text" id="v_biz_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" required>
@@ -366,11 +380,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-    <label class="block text-sm font-medium text-gray-700">Business Location</label>
-    <select id="v_biz_loc" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
-        <option value="">Select Country</option>
-    </select>
-</div>
+                        <label class="block text-sm font-medium text-gray-700">Business Location</label>
+                        <!-- Country Dropdown (Populated by JS) -->
+                        <select id="v_biz_loc" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
+                            <option value="">Select Country</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Organization Type</label>
                         <select id="v_biz_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
@@ -384,17 +399,16 @@
                     </div>
                 </div>
 
-                <!-- Legal Details -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Business Registration Number</label>
-                    <input type="text" id="v_reg_num" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" placeholder="e.g. BN-123456" required>
+                    <input type="text" id="v_reg_num" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Tax ID / TIN <span class="text-gray-400 font-normal">(Optional)</span></label>
-                    <input type="text" id="v_tax_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" placeholder="Providing this speeds up verification">
+                    <input type="text" id="v_tax_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border">
                 </div>
 
-                <button type="submit" class="w-full btn-primary mt-4">Submit Application & Update Profile</button>
+                <button type="submit" class="w-full btn-primary mt-4">Submit Application</button>
             </form>
         </div>
     </section>
@@ -987,25 +1001,83 @@
     }
 
     // ---- VERIFICATION ----
+    
+    // 1. Load Data & Determine View State
     async function loadVerification() {
-        const statusBox = document.getElementById('verif_status_box');
         const form = document.getElementById('verifForm');
+        const statusCard = document.getElementById('verif_status_card');
+        const title = document.getElementById('verif_title');
+        const desc = document.getElementById('verif_desc');
+        const iconBox = document.getElementById('verif_icon_box');
+        const editBtn = document.getElementById('btn_edit_verif');
+
         try {
+            // Get Status + Saved Data
             const data = await call('/api/v1/verification');
-            if (data.status !== "NOT_SUBMITTED") {
-                statusBox.classList.remove('hidden');
-                const txt = document.getElementById('verif_status_text');
-                txt.innerText = data.status;
-                if(data.status === 'APPROVED') {
-                    txt.className = "font-bold text-green-700";
-                    statusBox.className = "mb-6 p-4 rounded-lg bg-green-50 text-green-800 border border-green-200";
-                }
-                form.innerHTML = '<p class="text-center text-gray-500 py-10">Application is under review by our compliance team.</p>';
+            
+            // Pre-fill fields if they exist
+            if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
+            if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
+            
+            // Handle Status
+            if (data.status === "NOT_SUBMITTED") {
+                statusCard.classList.add('hidden');
+                form.classList.remove('hidden');
+            } 
+            else if (data.status === "PENDING") {
+                // Show "Under Review" Card, Hide Form
+                form.classList.add('hidden');
+                statusCard.classList.remove('hidden');
+                
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
+                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
+                iconBox.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
+                
+                title.innerText = "Application Under Review";
+                desc.innerText = "Our compliance team is reviewing your documents. You can still update details if you made a mistake.";
+                
+                editBtn.classList.remove('hidden'); // Show Edit Button
+                editBtn.className = "btn-outline text-xs self-end text-blue-700 border-blue-300 hover:bg-blue-100";
             }
-        } catch(e) {}
+            else if (data.status === "APPROVED") {
+                // Verified! Hide Form completely
+                form.classList.add('hidden');
+                statusCard.classList.remove('hidden');
+
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
+                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
+                iconBox.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
+                
+                title.innerText = "Business Verified";
+                desc.innerText = "Your business is fully verified. You have full access to Gold Tier features.";
+                editBtn.classList.add('hidden');
+            }
+            else if (data.status === "REJECTED") {
+                // Rejected. Show Warning Card AND Form
+                form.classList.remove('hidden');
+                statusCard.classList.remove('hidden');
+
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
+                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
+                iconBox.innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
+                
+                title.innerText = "Action Required";
+                desc.innerText = "Your application was returned. Please check your details and resubmit.";
+                editBtn.classList.add('hidden');
+            }
+            
+            lucide.createIcons();
+
+        } catch(e) { console.error(e); }
     }
 
+    // 2. Helper to manually show form (if Pending)
+    window.enableVerifEdit = function() {
+        document.getElementById('verifForm').classList.remove('hidden');
+        document.getElementById('verif_status_card').classList.add('hidden'); // Hide status card while editing
+    }
 
+    // 3. Submit Handler
     document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -1014,21 +1086,22 @@
             business_location: document.getElementById('v_biz_loc').value,
             business_type: document.getElementById('v_biz_type').value,
             registration_number: document.getElementById('v_reg_num').value,
-            tax_id: document.getElementById('v_tax_id').value || null // Handle optional
+            tax_id: document.getElementById('v_tax_id').value || null
         };
 
         const btn = e.target.querySelector('button');
+        const oldText = btn.innerText;
         btn.innerText = "Submitting...";
         btn.disabled = true;
 
         try {
             await call('/api/v1/verification', 'POST', payload);
-            alert("Application Submitted Successfully! Your profile has been updated.");
-            loadVerification();
+            alert("Application Updated Successfully!");
+            loadVerification(); // Refresh view
         } catch(err) {
             alert("Error: " + err.message);
         } finally {
-            btn.innerText = "Submit Application & Update Profile";
+            btn.innerText = oldText;
             btn.disabled = false;
         }
     });
