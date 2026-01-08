@@ -235,39 +235,64 @@
         <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div id="su_alert" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
-      <form id="signUpForm" class="mt-4 space-y-4">
-        <div>
-          <label class="block text-sm text-white/85 mb-1" for="su_name">Full name</label>
-          <input id="su_name" type="text" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="Jane Doe" required />
-        </div>
-        <div>
-          <label class="block text-sm text-white/85 mb-1" for="su_email">Email</label>
-          <input id="su_email" type="email" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-white placeholder-white/60" placeholder="you@example.com" required />
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-sm text-white/85 mb-1" for="su_password">Password</label>
-            <div class="relative">
-              <input id="su_password" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-2 text-white placeholder-white/60" placeholder="At least 8 characters" required />
-              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+      <form id="signUpForm" class="mt-4 space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+        <!-- Personal -->
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs text-white/70 mb-1">Full Name</label>
+                <input id="su_name" type="text" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="John Doe" required />
             </div>
+            <div>
+                <label class="block text-xs text-white/70 mb-1">Phone</label>
+                <input id="su_phone" type="tel" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="+44..." required />
+            </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-white/70 mb-1">Email</label>
+          <input id="su_email" type="email" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="you@example.com" required />
+        </div>
+
+        <!-- Business Details (NEW) -->
+        <div>
+            <label class="block text-xs text-white/70 mb-1">Business Name</label>
+            <input id="su_biz_name" type="text" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="e.g. John's Supplies" required />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs text-white/70 mb-1">Location (City, Country)</label>
+                <input id="su_biz_loc" type="text" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="Lagos, NG" required />
+            </div>
+            <div>
+                <label class="block text-xs text-white/70 mb-1">Business Type</label>
+                <select id="su_biz_type" class="w-full rounded-lg border border-white/10 bg-[#0d1b14] px-3 py-2 text-sm text-white focus:outline-none">
+                    <option value="Retailer">Retailer</option>
+                    <option value="FMCG">FMCG / Supplier</option>
+                    <option value="NGO">NGO / Partner</option>
+                    <option value="Fintech">Fintech / Bank</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-white/70 mb-1">Password</label>
+            <input id="su_password" type="password" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" placeholder="8+ chars" required />
           </div>
           <div>
-            <label class="block text-sm text-white/85 mb-1" for="su_password2">Confirm</label>
-            <div class="relative">
-              <input id="su_password2" type="password" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-2 text-white placeholder-white/60" placeholder="Repeat password" required />
-              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
-            </div>
+            <label class="block text-xs text-white/70 mb-1">Confirm</label>
+            <input id="su_password2" type="password" class="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white" required />
           </div>
         </div>
-        <label class="mt-2 flex items-start gap-3 text-sm text-white/85">
+
+        <label class="mt-2 flex items-start gap-3 text-xs text-white/70">
           <input id="su_agree" type="checkbox" class="mt-1 rounded border-white/20 bg-transparent" />
-          <span>I agree to the Terms, Privacy Policy, and the use of my data.</span>
+          <span>I agree to the Terms & Privacy Policy.</span>
         </label>
-        <div class="flex items-center gap-3 pt-2">
-          <button id="su_submit" type="submit" class="rounded-xl btn-gradient px-4 py-2 font-medium text-white hover:opacity-95 focus-ring transition-all">Create account</button>
-          <button type="button" data-modal-close class="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10 focus-ring">Cancel</button>
-        </div>
+        
+        <button id="su_submit" type="submit" class="w-full rounded-xl btn-gradient px-4 py-2 font-medium text-white shadow-lg hover:opacity-95">Create Account</button>
       </form>
     </div>
   </div>
@@ -612,18 +637,28 @@
     if (suForm) {
       suForm.addEventListener('submit', async (e) => {
         e.preventDefault(); 
-        const name = document.getElementById('su_name').value;
-        const email = document.getElementById('su_email').value;
-        const p1 = document.getElementById('su_password').value;
+        
+        // Gather all fields
+        const payload = {
+            name: document.getElementById('su_name').value,
+            email: document.getElementById('su_email').value,
+            password: document.getElementById('su_password').value,
+            // New Fields
+            phone: document.getElementById('su_phone').value,
+            business_name: document.getElementById('su_biz_name').value,
+            business_location: document.getElementById('su_biz_loc').value,
+            business_type: document.getElementById('su_biz_type').value
+        };
+
+        const p2 = document.getElementById('su_password2').value;
         const agree = document.getElementById('su_agree').checked;
+
+        if(payload.password !== p2) return alert("Passwords do not match");
         if(!agree) return alert("Please agree to terms.");
 
         setBusy(suSubmit, 'Creating...'); 
         try{
-          await Promise.all([
-             api('/api/v1/signup', { name, email, password: p1 }),
-             minDelay(1200)
-          ]);
+          await api('/api/v1/signup', payload); // Send full payload
           suAlert.classList.remove('hidden');
           suAlert.textContent = 'Account created! Check your email to verify.';
           suAlert.className = "mt-4 p-3 rounded-xl border text-sm bg-green-500/10 border-green-300/40 text-green-200";
