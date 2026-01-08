@@ -1112,8 +1112,19 @@
 
         try {
             await call('/api/v1/verification', 'POST', payload);
-            alert("Application Updated Successfully!");
-            loadVerification(); // Refresh view
+            
+            // Success!
+            alert("Application Submitted! Your status is now Pending.");
+            
+            // 1. Refresh Verification View (Hides form, shows Status Card)
+            await loadVerification();
+            
+            // 2. Refresh Tracking View (Updates the timeline)
+            // We clear the cached state if any logic relies on it
+            if(document.getElementById('view-track').classList.contains('active')) {
+                loadTracking();
+            }
+
         } catch(err) {
             alert("Error: " + err.message);
         } finally {
