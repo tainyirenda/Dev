@@ -741,28 +741,22 @@
         if(viewName === 'track') loadTracking();
     }
 
-    // ---- CONNECT HUB LOGIC ----
+    
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         // Toggle Tabs UI
-        const tBrowse = document.getElementById('tab-browse');
-        const tNetwork = document.getElementById('tab-network');
-        if (tBrowse && tNetwork) {
-            tBrowse.className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
-            tNetwork.className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        }
+        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
         const list = document.getElementById('connect_list');
         list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
         lucide.createIcons();
 
-        // Filters
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
             let url = `/api/v1/connect?mode=${mode}`;
-            // Add filters only if in browse mode
             if(mode === 'browse') {
                 if(type) url += `&type=${encodeURIComponent(type)}`;
                 if(loc) url += `&loc=${encodeURIComponent(loc)}`;
@@ -772,28 +766,28 @@
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No results found.</p>';
+                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No items found.</p>';
                 return;
             }
 
             data.results.forEach(b => {
-                let actionBtns = '';
-                // Blue Tick
+                let actionHTML = '';
                 const verifiedBadge = b.is_verified 
                     ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-100 ml-1 inline-block" title="Verified"></i>` 
                     : '';
 
                 if(mode === 'browse') {
-                    actionBtns = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-blue-50">Connect +</button>`;
+                    // BROWSE MODE: Show "Connect"
+                    actionHTML = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-blue-50">Connect +</button>`;
                 } else {
-                    // My Network: Show Chat AND Disconnect
-                    actionBtns = `
-                        <div class="flex gap-2">
-                            <button onclick="disconnectUser('${b.id}', '${b.name}')" class="p-2 text-gray-400 hover:text-red-500 border border-gray-200 rounded-lg hover:border-red-200" title="Disconnect">
-                                <i data-lucide="user-x" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="openChat('${b.id}', '${b.name}')" class="btn-primary text-xs flex gap-2 items-center">
+                    // NETWORK MODE: Show "Chat" AND "Disconnect" (For everyone)
+                    actionHTML = `
+                        <div class="flex flex-col items-end gap-2">
+                            <button onclick="openChat('${b.id}', '${b.name}')" class="btn-primary text-xs flex gap-2 items-center w-full justify-center">
                                 <i data-lucide="message-circle" class="w-3 h-3"></i> Chat
+                            </button>
+                            <button onclick="disconnectUser('${b.id}', '${b.name}')" class="text-xs text-red-500 hover:text-red-700 hover:underline flex items-center gap-1">
+                                <i data-lucide="user-x" class="w-3 h-3"></i> Disconnect
                             </button>
                         </div>
                     `;
@@ -811,14 +805,11 @@
                             </p>
                             <span class="pill bg-gray-100 text-gray-600 mt-3 inline-block text-[10px] uppercase font-bold tracking-wide">${b.type}</span>
                         </div>
-                        <div class="flex flex-col items-end gap-2">
-                            ${actionBtns}
-                        </div>
+                        ${actionHTML}
                     </div>
                 </div>`;
             });
             lucide.createIcons();
-            
             checkNotifications();
 
         } catch(e) { 
@@ -826,7 +817,7 @@
             list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
         }
     }
-
+    
     // ---- ACTIONS ----
     
     async function sendConnect(id, btn) {
