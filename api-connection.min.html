@@ -1016,13 +1016,33 @@
         } catch(e) {}
     }
 
+
     document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const reg = document.getElementById('reg_num').value;
-        const tax = document.getElementById('tax_id').value;
-        await call('/api/v1/verification', 'POST', { registration_number: reg, tax_id: tax });
-        alert("Application Submitted Successfully!");
-        loadVerification();
+        
+        const payload = {
+            business_name: document.getElementById('v_biz_name').value,
+            business_location: document.getElementById('v_biz_loc').value,
+            business_type: document.getElementById('v_biz_type').value,
+            registration_number: document.getElementById('v_reg_num').value,
+            tax_id: document.getElementById('v_tax_id').value || null // Handle optional
+        };
+
+        const btn = e.target.querySelector('button');
+        btn.innerText = "Submitting...";
+        btn.disabled = true;
+
+        try {
+            await call('/api/v1/verification', 'POST', payload);
+            alert("Application Submitted! Your profile has been updated.");
+            alert("Application Submitted Successfully!");
+            loadVerification();
+        } catch(err) {
+            alert("Error: " + err.message);
+        } finally {
+            btn.innerText = "Submit Application & Update Profile";
+            btn.disabled = false;
+        }
     });
 
     // ---- INIT ----
