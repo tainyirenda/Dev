@@ -1145,7 +1145,10 @@
             const name = me?.user?.name || '';
             const email = me?.user?.email || 'Unknown';
             const verif = await call('/api/v1/verification');
-            currentVerifStatus = verif.status;
+          
+            currentUserType = me?.user?.type || 'Retailer';
+            currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
+          
             let display = name ? name : (email.split('@')[0]);
 
             document.getElementById('welcomeName').innerText = display;
