@@ -1023,8 +1023,7 @@
 
         try {
             await call('/api/v1/verification', 'POST', payload);
-            alert("Application Submitted! Your profile has been updated.");
-            alert("Application Submitted Successfully!");
+            alert("Application Submitted Successfully! Your profile has been updated.");
             loadVerification();
         } catch(err) {
             alert("Error: " + err.message);
