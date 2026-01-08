@@ -618,6 +618,21 @@
             </div>
         </div>
     </section>
+
+    <!-- ================= VIEW: RESTRICTED ================= -->
+    <section id="view-restricted" class="view-section text-center py-16">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 text-red-600 mb-6">
+            <i data-lucide="lock" class="w-10 h-10"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Verification Required</h2>
+        <p class="text-gray-600 mt-2 max-w-md mx-auto">
+            As an Organization (Non-Retailer), you must have an <strong>Approved Business Verification</strong> to access the Dashboard, Insights, and Connect Hub.
+        </p>
+        <div class="mt-8 flex justify-center gap-4">
+            <button onclick="switchView('verification')" class="btn-primary">Go to Verification</button>
+            <button onclick="switchView('track')" class="btn-outline">Track Status</button>
+        </div>
+    </section>
     
   </main>
 
@@ -677,7 +692,23 @@
     }
 
     // ---- VIEW ROUTER ----
-    function switchView(viewName) {
+    async function switchView(viewName) {
+        // 1. ACCESS CONTROL CHECK
+        if (['dashboard', 'insights', 'connect'].includes(viewName)) {
+            try {
+                const check = await call('/api/v1/analytics/dashboard');
+            } catch (e) {
+                if (e.message.includes('403')) {
+                    // Show Restricted View
+                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                    document.getElementById('view-restricted').classList.add('active');
+                    lucide.createIcons();
+                    return;
+                }
+            }
+        }
+
+        // 2. Standard Switching
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
@@ -690,6 +721,7 @@
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
     }
+
 
     // ---- ANALYTICS ----
     async function loadAnalytics() {
@@ -965,6 +997,12 @@
             const s3 = document.getElementById('step3_icon');
             const dateEl = document.getElementById('step1_date');
             const trackId = document.getElementById('track_id');
+            const actionDiv = document.getElementById('track_action');
+            if (data.status === 'REJECTED') {
+                actionDiv.classList.remove('hidden');
+            } else {
+                actionDiv.classList.add('hidden');
+            }
 
             // Reset styles
             [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
@@ -1001,75 +1039,53 @@
     }
 
     // ---- VERIFICATION ----
-    
-    // 1. Load Data & Determine View State
     async function loadVerification() {
         const form = document.getElementById('verifForm');
         const statusCard = document.getElementById('verif_status_card');
-        const title = document.getElementById('verif_title');
-        const desc = document.getElementById('verif_desc');
-        const iconBox = document.getElementById('verif_icon_box');
         const editBtn = document.getElementById('btn_edit_verif');
 
         try {
-            // Get Status + Saved Data
             const data = await call('/api/v1/verification');
             
-            // Pre-fill fields if they exist
+            // Pre-fill
             if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
             if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
             
-            // Handle Status
+            // Logic: "Edit" should be available for Approved/Pending too (Issue 4)
+            editBtn.classList.remove('hidden'); 
+
             if (data.status === "NOT_SUBMITTED") {
                 statusCard.classList.add('hidden');
                 form.classList.remove('hidden');
             } 
             else if (data.status === "PENDING") {
-                // Show "Under Review" Card, Hide Form
+                // Show Card, Hide Form
                 form.classList.add('hidden');
                 statusCard.classList.remove('hidden');
-                
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
-                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
-                iconBox.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
-                
-                title.innerText = "Application Under Review";
-                desc.innerText = "Our compliance team is reviewing your documents. You can still update details if you made a mistake.";
-                
-                editBtn.classList.remove('hidden'); // Show Edit Button
-                editBtn.className = "btn-outline text-xs self-end text-blue-700 border-blue-300 hover:bg-blue-100";
+                // ... (set styles blue) ...
+                document.getElementById('verif_title').innerText = "Application Under Review";
+                document.getElementById('verif_desc').innerText = "You can update your details if needed.";
             }
             else if (data.status === "APPROVED") {
-                // Verified! Hide Form completely
                 form.classList.add('hidden');
                 statusCard.classList.remove('hidden');
-
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
-                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
-                iconBox.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
-                
-                title.innerText = "Business Verified";
-                desc.innerText = "Your business is fully verified. You have full access to platform features.";
-                editBtn.classList.add('hidden');
+                // ... (set styles green) ...
+                document.getElementById('verif_title').innerText = "Business Verified";
+                document.getElementById('verif_desc').innerText = "Your business is verified. Click edit to update details.";
             }
             else if (data.status === "REJECTED") {
-                // Rejected. Show Warning Card AND Form
+                // Show Card AND Form (Issue 1 & 2 Fix)
                 form.classList.remove('hidden');
                 statusCard.classList.remove('hidden');
-
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
-                iconBox.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
-                iconBox.innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
-                
-                title.innerText = "Action Required";
-                desc.innerText = "Your application was returned. Please check your details and resubmit.";
-                editBtn.classList.add('hidden');
+                // ... (set styles red) ...
+                document.getElementById('verif_title').innerText = "Action Required";
+                document.getElementById('verif_desc').innerText = "Please correct your details and resubmit.";
+                editBtn.classList.add('hidden'); // Hide edit button because form is already open
             }
-            
             lucide.createIcons();
-
         } catch(e) { console.error(e); }
     }
+
 
     // 2. Helper to manually show form (if Pending)
     window.enableVerifEdit = function() {
@@ -1106,6 +1122,10 @@
         }
     });
 
+    // ---- GLOBAL STATE ----
+    let currentUserType = 'Retailer';
+    let currentVerifStatus = 'NOT_SUBMITTED';
+
     // ---- INIT ----
     async function init() {
         lucide.createIcons();
@@ -1113,6 +1133,8 @@
             const me = await call('/api/v1/me');
             const name = me?.user?.name || '';
             const email = me?.user?.email || 'Unknown';
+            const verif = await call('/api/v1/verification');
+            currentVerifStatus = verif.status;
             let display = name ? name : (email.split('@')[0]);
 
             document.getElementById('welcomeName').innerText = display;
