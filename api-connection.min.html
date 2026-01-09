@@ -351,7 +351,54 @@
                 </div>
             </div>
         </div>
+
+      <!-- Business Profile Detail Modal -->
+<div id="profile_detail_modal" class="fixed inset-0 z-[70] hidden bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+            <h3 class="font-bold text-gray-900">Business Profile</h3>
+            <button onclick="closeProfileModal()" class="p-1 hover:bg-gray-200 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
+            <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Business Name</label>
+                <div class="flex items-center gap-2 mt-1">
+                    <h2 id="pd_name" class="text-2xl font-extrabold text-gray-900 leading-tight">--</h2>
+                    <span id="pd_verified" class="hidden"><i data-lucide="badge-check" class="w-6 h-6 text-blue-500 fill-blue-50"></i></span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sector</label>
+                    <p id="pd_type" class="font-semibold text-indigo-600 mt-1">--</p>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Match Score</label>
+                    <p id="pd_score" class="font-semibold text-orange-600 mt-1">--</p>
+                </div>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Address / Location</label>
+                <p id="pd_loc" class="text-gray-700 mt-1 text-base">--</p>
+            </div>
+            <div id="pd_verif_box" class="p-4 bg-blue-50 rounded-xl border border-blue-100 hidden">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Verification Details</label>
+                <div class="mt-2 text-sm text-blue-900 space-y-1">
+                    <p><strong>Registration:</strong> <span id="pd_reg_num">--</span></p>
+                    <p><strong>Tax ID:</strong> <span id="pd_tax_id">--</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="p-6 bg-gray-50 border-t flex gap-3">
+             <button id="pd_chat_btn" class="flex-1 btn-primary text-sm py-2.5">Chat Now</button>
+             <button onclick="closeProfileModal()" class="flex-1 btn-outline text-sm py-2.5">Close</button>
+        </div>
+    </div>
+</div>
+      
     </section>
+
+    
 
     
     <!-- ================= VIEW 5: BUSINESS VERIFICATION ================= -->
@@ -1089,7 +1136,46 @@
         }
     }
 
+    //Business card in connection hub
+    let currentProfileData = null;
+
+function openProfileModal(data) {
+    currentProfileData = data;
+    document.getElementById('pd_name').innerText = data.name;
+    document.getElementById('pd_type').innerText = data.type;
+    document.getElementById('pd_loc').innerText = data.loc;
+    document.getElementById('pd_score').innerText = data.score || 'N/A';
     
+    // Show/Hide verification box
+    const vBox = document.getElementById('pd_verif_box');
+    const vBadge = document.getElementById('pd_verified');
+    if (data.is_verified) {
+        vBox.classList.remove('hidden');
+        vBadge.classList.remove('hidden');
+        document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
+        document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
+    } else {
+        vBox.classList.add('hidden');
+        vBadge.classList.add('hidden');
+    }
+
+    // Connect the Chat button inside the modal
+    const chatBtn = document.getElementById('pd_chat_btn');
+    if (data.is_connected) {
+        chatBtn.classList.remove('hidden');
+        chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
+        chatBtn.innerText = "Send Message";
+    } else {
+        chatBtn.classList.add('hidden');
+    }
+
+    document.getElementById('profile_detail_modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeProfileModal() {
+    document.getElementById('profile_detail_modal').classList.add('hidden');
+}
     // ---- CHAT SYSTEM ----
     let currentChatPartner = null;
     let chatInterval = null;
