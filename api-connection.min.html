@@ -814,13 +814,12 @@
     
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
-        // Toggle Tabs UI
-        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
-
         const list = document.getElementById('connect_list');
         list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
-        lucide.createIcons();
+        
+        // Tab UI Logic
+        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
@@ -836,24 +835,24 @@
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No items found.</p>';
+                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No connections found.</p>';
                 return;
             }
 
             data.results.forEach(b => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
                 const verifiedBadge = b.is_verified 
-                    ? `<i data-lucide="badge-check" class="w-[18px] h-[18px] text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` 
+                    ? `<i data-lucide="badge-check" class="w-[18px] h-[18px] text-blue-500 fill-blue-50 ml-2 shrink-0" title="Verified Account"></i>` 
                     : '';
 
-                // AI Badge Logic: Only show if score is high (indicates Country + Sector match)
+                // AI BADGE LOGIC
+                // We show this in 'Browse' mode if the score is 10 or higher (Country match or Sector match)
                 let aiBadge = '';
-                let cardStyle = 'border-l-transparent';
-                
-                if (mode === 'browse' && b.score >= 15) {
-                    cardStyle = 'border-l-orange-500 bg-orange-50/30'; // Subtle orange tint for top matches
+                let cardClass = 'border-l-transparent';
+                if (mode === 'browse' && b.score >= 10) {
+                    cardClass = 'border-l-orange-500 bg-orange-50/20'; 
                     aiBadge = `
-                        <div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-md mb-2 w-fit">
+                        <div class="flex items-center gap-1.5 text-[10px] font-extrabold text-orange-600 bg-orange-100 px-2.5 py-1 rounded-full mb-3 w-fit tracking-wider">
                             <i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> AI RECOMMENDED
                         </div>
                     `;
@@ -861,26 +860,31 @@
 
                 let actionHTML = '';
                 if(mode === 'browse') {
-                    actionHTML = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-white">Connect +</button>`;
-                } else {
-                    // (Keep your existing Network Mode Chat/Disconnect/Report HTML here)
                     actionHTML = `
                         <div class="flex flex-col items-end gap-2">
-                            <button onclick="openChat('${b.id}', '${escapedName}')" class="btn-primary text-xs flex gap-2 items-center w-full justify-center">
-                                <i data-lucide="message-circle" class="w-3 h-3"></i> Chat
+                            <button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-white w-full">Connect +</button>
+                             <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1">
+                                <i data-lucide="flag" class="w-3 h-3"></i> Report
                             </button>
-                            <div class="flex items-center gap-3 mt-1">
-                                 <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1">
-                                    <i data-lucide="flag" class="w-2.5 h-2.5"></i> Report
-                                </button>
-                                <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1">
-                                    <i data-lucide="user-x" class="w-2.5 h-2.5"></i> Disconnect
-                                </button>
-                            </div>
+                        </div>
+                    `;
+                } else {
+                    // NETWORK MODE: Stacked buttons as requested
+                    actionHTML = `
+                        <div class="flex flex-col items-end gap-3">
+                            <button onclick="openChat('${b.id}', '${escapedName}')" class="btn-primary text-xs flex gap-2 items-center px-6 py-2">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i> Chat
+                            </button>
+                            <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1.5 font-medium transition-colors">
+                                <i data-lucide="flag" class="w-3 h-3"></i> Report User
+                            </button>
+                            <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1.5 font-medium transition-colors">
+                                <i data-lucide="user-x" class="w-3 h-3"></i> Disconnect
+                            </button>
                         </div>
                     `;
                 }
-
+              
                 list.innerHTML += `
                 <div class="card p-5 hover:shadow-md transition bg-white">
                     <div class="flex justify-between items-start">
