@@ -318,10 +318,12 @@
 
             <!-- Search Bar -->
     <div class="relative flex-1 min-w-[200px]">
-        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-        <input type="text" id="filter_search" onkeyup="if(event.key === 'Enter') loadConnectHub()" placeholder="Search name or keywords..." 
-               class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
-    </div>
+    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+    <input type="text" id="filter_search" 
+           oninput="debouncedSearch()" 
+           placeholder="Search name or keywords..." 
+           class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
+</div>
 
             <div class="flex gap-4 ml-auto border-l pl-4">
                 <button onclick="loadConnectHub('browse')" id="tab-browse" class="text-sm font-semibold text-orange-600">Explore</button>
@@ -867,33 +869,55 @@
         if(viewName === 'track') loadTracking();
     }
 
+    // Global state for search timing
+    let searchTimeout;
+
+    // The "Live Search" wrapper
+    function debouncedSearch() {
+        // 1. Clear the timer if the user is still typing
+        clearTimeout(searchTimeout);
+        
+        // 2. Set a new timer
+        searchTimeout = setTimeout(() => {
+            // 3. Trigger the existing load function after 400ms pause
+            loadConnectHub(); 
+        }, 400);
+    }
     
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
-        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Searching...</p>';
         
-        // Tab UI
-        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        // Tab UI logic
+        const tabBrowse = document.getElementById('tab-browse');
+        const tabNetwork = document.getElementById('tab-network');
+        if (mode === 'browse') {
+            tabBrowse.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
+            tabNetwork.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        } else {
+            tabNetwork.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
+            tabBrowse.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        }
 
-        // NEW: Get Search Value
+        // Get Search + Filter Values
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
-            // Build URL with Search
+            // Build the URL
             let url = `/api/v1/connect?mode=${mode}`;
             if(search) url += `&search=${encodeURIComponent(search)}`;
             if(type) url += `&type=${encodeURIComponent(type)}`;
             if(loc) url += `&loc=${encodeURIComponent(loc)}`;
 
             const data = await call(url);
+            
+            // Clear current list
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10">No connections found.</p>';
+                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found for "${search}"</p>`;
                 return;
             }
 
@@ -959,6 +983,7 @@
             list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
         }
     }
+    
       function openProfileModal(index, isConnected) {
         // Look up data by index
         const data = currentConnectResults[index];
