@@ -801,6 +801,7 @@
     // ---- GLOBAL STATE ----
     let currentUserType = 'Retailer';
     let currentVerifStatus = 'NOT_SUBMITTED';
+    let currentConnectResults = [];
 
     // ---- API HELPER ----
     async function call(path, method='GET', body=null) {
@@ -886,7 +887,10 @@
                 return;
             }
 
-            data.results.forEach(b => {
+            // --- THE FIX: STORE DATA GLOBALLY ---
+            currentConnectResults = data.results;
+
+            currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
                 const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
                 
@@ -897,7 +901,7 @@
                 }
 
                 let primaryAction = '', secondaryActions = '';
-                const bData = JSON.stringify({ ...b, is_connected: (mode === 'connections') }).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const isConnected = (mode === 'connections');
 
                 if(mode === 'browse') {
                     primaryAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
@@ -915,20 +919,28 @@
                     <div class="flex justify-between items-start gap-4">
                         <div class="min-w-0 flex-1">
                             ${aiBadge}
-                            <h3 onclick="openProfileModal('${bData}')" class="font-bold text-lg text-gray-900 flex items-center leading-tight cursor-pointer hover:text-orange-600">
+                            <!-- PASS THE INDEX TO THE MODAL -->
+                            <h3 onclick="openProfileModal(${index}, ${isConnected})" class="font-bold text-lg text-gray-900 flex items-center leading-tight cursor-pointer hover:text-orange-600 transition-colors">
                                 ${b.name}${verifiedBadge}
                             </h3>
-                            <p class="text-sm text-gray-500 flex items-start gap-1.5 mt-1"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 shrink-0 text-gray-400"></i><span>${b.loc}</span></p>
+                            <p class="text-sm text-gray-500 flex items-start gap-1.5 mt-1">
+                                <i data-lucide="map-pin" class="w-4 h-4 mt-0.5 shrink-0 text-gray-400"></i> 
+                                <span>${b.loc}</span>
+                            </p>
                             <div class="mt-3 flex items-center gap-2">
                                 <span class="pill bg-gray-100 text-gray-600 text-[9px] uppercase font-bold tracking-widest px-2 py-0.5">${b.type}</span>
-                                <button onclick="openProfileModal('${bData}')" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
+                                <button onclick="openProfileModal(${index}, ${isConnected})" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
                             </div>
                         </div>
-                        <div class="shrink-0 w-32 flex flex-col items-center">${primaryAction}<div class="mt-3 flex flex-col items-center gap-2">${secondaryActions}</div></div>
+                        <div class="shrink-0 w-32 flex flex-col items-center">
+                            ${primaryAction}
+                            <div class="mt-3 flex flex-col items-center gap-2">
+                                ${secondaryActions}
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             });
-          
             lucide.createIcons();
             checkNotifications();
 
@@ -937,27 +949,44 @@
             list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
         }
     }
+      function openProfileModal(index, isConnected) {
+        // Look up data by index
+        const data = currentConnectResults[index];
+        if(!data) return;
 
-       function openProfileModal(dataStr) {
-        const data = typeof dataStr === 'string' ? JSON.parse(dataStr) : dataStr;
-        document.getElementById('pd_name').innerText = data.name;
-        document.getElementById('pd_type').innerText = data.type;
-        document.getElementById('pd_loc').innerText = data.loc;
+        currentProfileData = data;
+        
+        // Populate UI
+        document.getElementById('pd_name').innerText = data.name || 'Unknown';
+        document.getElementById('pd_type').innerText = data.type || 'N/A';
+        document.getElementById('pd_loc').innerText = data.loc || 'N/A';
         document.getElementById('pd_score').innerText = data.score || 'N/A';
-        const vBox = document.getElementById('pd_verif_box'), vBadge = document.getElementById('pd_verified');
+        
+        const vBox = document.getElementById('pd_verif_box');
+        const vBadge = document.getElementById('pd_verified');
+        
         if (data.is_verified) {
-            vBox.classList.remove('hidden'); vBadge.classList.remove('hidden');
+            vBox.classList.remove('hidden');
+            vBadge.classList.remove('hidden');
             document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
             document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else { vBox.classList.add('hidden'); vBadge.classList.add('hidden'); }
+        } else {
+            vBox.classList.add('hidden');
+            vBadge.classList.add('hidden');
+        }
+
         const chatBtn = document.getElementById('pd_chat_btn');
-        if (data.is_connected) { chatBtn.classList.remove('hidden'); chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); }; } else { chatBtn.classList.add('hidden'); }
+        if (isConnected) {
+            chatBtn.classList.remove('hidden');
+            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
+            chatBtn.innerText = "Send Message";
+        } else {
+            chatBtn.classList.add('hidden');
+        }
+
         document.getElementById('profile_detail_modal').classList.remove('hidden');
         lucide.createIcons();
     }
-
-    function closeProfileModal() { document.getElementById('profile_detail_modal').classList.add('hidden'); }
-    
     
     // ---- ACTIONS ----
     
@@ -1134,40 +1163,45 @@
     //Business card in connection hub
     let currentProfileData = null;
 
-function openProfileModal(data) {
-    currentProfileData = data;
-    document.getElementById('pd_name').innerText = data.name;
-    document.getElementById('pd_type').innerText = data.type;
-    document.getElementById('pd_loc').innerText = data.loc;
-    document.getElementById('pd_score').innerText = data.score || 'N/A';
+function openProfileModal(index, isConnected) {
+        // Look up the clean data object from our global registry
+        const data = currentConnectResults[index];
+        if(!data) return;
+
+        currentProfileData = data;
+        document.getElementById('pd_name').innerText = data.name || 'Unknown';
+        document.getElementById('pd_type').innerText = data.type || 'N/A';
+        document.getElementById('pd_loc').innerText = data.loc || 'N/A';
+        document.getElementById('pd_score').innerText = data.score || 'N/A';
+        
+        // Show/Hide verification details
+        const vBox = document.getElementById('pd_verif_box');
+        const vBadge = document.getElementById('pd_verified');
+        if (data.is_verified) {
+            vBox.classList.remove('hidden');
+            vBadge.classList.remove('hidden');
+            document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
+            document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
+        } else {
+            vBox.classList.add('hidden');
+            vBadge.classList.add('hidden');
+        }
+
+        // Handle Chat button logic
+        const chatBtn = document.getElementById('pd_chat_btn');
+        if (isConnected) {
+            chatBtn.classList.remove('hidden');
+            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
+            chatBtn.innerText = "Send Message";
+        } else {
+            chatBtn.classList.add('hidden');
+        }
+
+        document.getElementById('profile_detail_modal').classList.remove('hidden');
+        lucide.createIcons();
+    }
+
     
-    // Show/Hide verification box
-    const vBox = document.getElementById('pd_verif_box');
-    const vBadge = document.getElementById('pd_verified');
-    if (data.is_verified) {
-        vBox.classList.remove('hidden');
-        vBadge.classList.remove('hidden');
-        document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
-        document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-    } else {
-        vBox.classList.add('hidden');
-        vBadge.classList.add('hidden');
-    }
-
-    // Connect the Chat button inside the modal
-    const chatBtn = document.getElementById('pd_chat_btn');
-    if (data.is_connected) {
-        chatBtn.classList.remove('hidden');
-        chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
-        chatBtn.innerText = "Send Message";
-    } else {
-        chatBtn.classList.add('hidden');
-    }
-
-    document.getElementById('profile_detail_modal').classList.remove('hidden');
-    lucide.createIcons();
-}
-
 function closeProfileModal() {
     document.getElementById('profile_detail_modal').classList.add('hidden');
 }
