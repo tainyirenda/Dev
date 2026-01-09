@@ -1125,26 +1125,68 @@
         const list = document.getElementById('requests_list');
         panel.classList.toggle('hidden');
         
-        const data = await call('/api/v1/connect?mode=requests');
-        list.innerHTML = '';
-        
-        // Update badge immediately based on fresh data
-        if(data.results.length === 0) {
-            document.getElementById('notif_badge').classList.add('hidden');
-            list.innerHTML = '<p class="text-xs text-gray-500">No pending requests.</p>'; 
-            return; 
-        }
-        
-        data.results.forEach(r => {
-            list.innerHTML += `<div class="flex justify-between items-center bg-white p-2 rounded border"><span class="font-medium text-sm">${r.name}</span><button onclick="acceptRequest('${r.id}', this)" class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">Accept</button></div>`;
-        });
+        try {
+            const data = await call('/api/v1/connect?mode=requests');
+            list.innerHTML = '';
+            
+            if(!data.results || data.results.length === 0) {
+                document.getElementById('notif_badge').classList.add('hidden');
+                list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>'; 
+                return; 
+            }
+            
+            data.results.forEach(r => {
+                list.innerHTML += `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border shadow-sm">
+                    <span class="font-bold text-sm text-gray-900">${r.name}</span>
+                    <div class="flex gap-2">
+                        <button onclick="acceptRequest('${r.id}', this)" class="px-4 py-1.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors">Accept</button>
+                        <button onclick="declineRequest('${r.id}', this)" class="px-4 py-1.5 border border-red-200 text-red-600 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors">Decline</button>
+                    </div>
+                </div>`;
+            });
+        } catch(e) { console.error(e); }
     }
 
+    
     async function acceptRequest(connId, btn) {
         btn.innerText = "...";
         await call('/api/v1/connect', 'POST', { action: 'accept', connection_id: connId });
         btn.parentElement.remove();
         loadConnectHub('connections'); 
+    }
+
+    async function declineRequest(connId, btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "...";
+        btn.disabled = true;
+
+        try {
+            await call('/api/v1/connect', 'POST', { 
+                action: 'decline', 
+                connection_id: connId 
+            });
+            
+            // Remove the card from the UI
+            const card = btn.closest('.flex.justify-between');
+            card.classList.add('opacity-0', 'scale-95', 'transition-all', 'duration-300');
+            setTimeout(() => {
+                card.remove();
+                // Check if list is now empty to hide panel or show "No requests"
+                const list = document.getElementById('requests_list');
+                if (list.children.length === 0) {
+                    list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>';
+                    document.getElementById('notif_badge').classList.add('hidden');
+                }
+            }, 300);
+
+            // Refresh the badge count
+            checkNotifications();
+        } catch(e) {
+            alert("Error declining request: " + e.message);
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
 
     async function checkNotifications() {
