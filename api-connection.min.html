@@ -841,31 +841,42 @@
             }
 
             data.results.forEach(b => {
-                // FIX: Define escapedName here inside the loop so it's defined for every result
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
-                
-                let actionHTML = '';
                 const verifiedBadge = b.is_verified 
-                    ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-100 ml-1 inline-block" title="Verified"></i>` 
+                    ? `<i data-lucide="badge-check" class="w-[18px] h-[18px] text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` 
                     : '';
 
+                // AI Badge Logic: Only show if score is high (indicates Country + Sector match)
+                let aiBadge = '';
+                let cardStyle = 'border-l-transparent';
+                
+                if (mode === 'browse' && b.score >= 15) {
+                    cardStyle = 'border-l-orange-500 bg-orange-50/30'; // Subtle orange tint for top matches
+                    aiBadge = `
+                        <div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-md mb-2 w-fit">
+                            <i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> AI RECOMMENDED
+                        </div>
+                    `;
+                }
+
+                let actionHTML = '';
                 if(mode === 'browse') {
-                    // BROWSE MODE: Show "Connect"
-                    actionHTML = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-blue-50">Connect +</button>`;
+                    actionHTML = `<button onclick="sendConnect('${b.id}', this)" class="btn-outline text-xs text-blue-600 border-blue-200 hover:bg-white">Connect +</button>`;
                 } else {
-                    // NETWORK MODE: Using the escaped name to prevent JS errors with names like "Tai's"
+                    // (Keep your existing Network Mode Chat/Disconnect/Report HTML here)
                     actionHTML = `
                         <div class="flex flex-col items-end gap-2">
                             <button onclick="openChat('${b.id}', '${escapedName}')" class="btn-primary text-xs flex gap-2 items-center w-full justify-center">
                                 <i data-lucide="message-circle" class="w-3 h-3"></i> Chat
                             </button>
-                            <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-xs text-red-500 hover:text-red-700 hover:underline flex items-center gap-1">
-                                <i data-lucide="user-x" class="w-3 h-3"></i> Disconnect
-                            </button>
                             <div class="flex items-center gap-3 mt-1">
-             <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1">
-                <i data-lucide="flag" class="w-2.5 h-2.5"></i> Report
-            </button>
+                                 <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1">
+                                    <i data-lucide="flag" class="w-2.5 h-2.5"></i> Report
+                                </button>
+                                <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1">
+                                    <i data-lucide="user-x" class="w-2.5 h-2.5"></i> Disconnect
+                                </button>
+                            </div>
                         </div>
                     `;
                 }
