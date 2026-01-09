@@ -309,6 +309,13 @@
                 <option value="Fintech">Fintech</option>
                 <option value="Micro-Lender">Micro-Lender</option>
             </select>
+
+            <!-- Search Bar -->
+    <div class="relative flex-1 min-w-[200px]">
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+        <input type="text" id="filter_search" onkeyup="if(event.key === 'Enter') loadConnectHub()" placeholder="Search name or keywords..." 
+               class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
+    </div>
             
             <select id="filter_loc" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500 w-48">
                 <option value="">All Locations</option>
@@ -863,21 +870,23 @@
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
-        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
+        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Searching...</p>';
         
-        // Tab UI Logic
+        // Tab UI
         document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
         document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
+        // NEW: Get Search Value
+        const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
+            // Build URL with Search
             let url = `/api/v1/connect?mode=${mode}`;
-            if(mode === 'browse') {
-                if(type) url += `&type=${encodeURIComponent(type)}`;
-                if(loc) url += `&loc=${encodeURIComponent(loc)}`;
-            }
+            if(search) url += `&search=${encodeURIComponent(search)}`;
+            if(type) url += `&type=${encodeURIComponent(type)}`;
+            if(loc) url += `&loc=${encodeURIComponent(loc)}`;
 
             const data = await call(url);
             list.innerHTML = '';
