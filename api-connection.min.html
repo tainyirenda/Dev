@@ -905,29 +905,36 @@
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
-            const data = await call(url); // your existing call
+            // 2. DEFINE THE URL (This was the missing piece causing your error)
+            let url = `/api/v1/connect?mode=${mode}`;
+            if(search) url += `&search=${encodeURIComponent(search)}`;
+            if(type) url += `&type=${encodeURIComponent(type)}`;
+            if(loc) url += `&loc=${encodeURIComponent(loc)}`;
+
+            // 3. Fetch the data
+            const data = await call(url);
             list.innerHTML = '';
-            if(!data.results || data.results.length === 0) { 
-                list.innerHTML = '<p class="text-gray-400 text-center py-20 italic">No matches found.</p>'; 
-                return; 
+            
+            if(!data.results || data.results.length === 0) {
+                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found.</p>`;
+                return;
             }
 
-            // Store the results globally
+            // 4. Store results globally for the modal to use
             currentConnectResults = data.results;
             const isConnected = (mode === 'connections');
 
-            // Single loop with index
+            // 5. Render cards using the index
             currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
-                const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
-                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse"></span>` : '';
+                const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
+                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse shadow-sm shadow-red-200"></span>` : '';
                 
                 let aiBadge = '', cardClass = 'border-l-transparent';
                 if (mode === 'browse' && b.score >= 10) {
                     cardClass = 'border-l-orange-500 bg-orange-50/20';
                     aiBadge = `<div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mb-2 w-fit"><i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> SMART MATCH</div>`;
                 }
-
 
                 let primaryAction = '', secondaryActions = '';
                 const isConnected = (mode === 'connections');
