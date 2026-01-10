@@ -45,16 +45,11 @@
     .link { text-decoration: underline; text-decoration-color: #d1d5db; text-underline-offset: 3px; cursor: pointer; }
     .link:hover { color: var(--au-accent); text-decoration-color: var(--au-accent); }
     
-    /* View Switching Utilities */
     .view-section { display: none; animation: fadeIn 0.3s ease-out; }
     .view-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* AI Pulse Animation */
-    @keyframes pulse-orange {
-      0%, 100% { color: var(--au-accent); opacity: 1; }
-      50% { opacity: .6; }
-    }
+    @keyframes pulse-orange { 0%, 100% { color: var(--au-accent); opacity: 1; } 50% { opacity: .6; } }
     .animate-ai { animation: pulse-orange 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     
     #google_translate_element { display: none !important; }
@@ -65,7 +60,6 @@
   <!-- Header -->
   <header class="bg-white border-b border-[color:var(--au-line)] sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <!-- Clicking Logo returns to Hub -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
         <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
         <div class="hidden sm:block">
@@ -74,12 +68,10 @@
         </div>
       </div>
       <nav class="flex items-center gap-2">
-        <!-- Language Dropdown -->
         <div class="relative group">
            <button id="lang-btn" class="btn-outline text-xs">
              <i data-lucide="globe" class="w-3 h-3"></i> Language
            </button>
-           <!-- Dropdown Menu -->
            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
              <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
              <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
@@ -95,32 +87,25 @@
              <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
            </div>
         </div>
-        
-        <!-- Home Button -->
         <a href="index.html" class="btn-outline text-xs text-gray-700 hover:text-black">Home</a>
-        
         <button id="logoutBtn" class="btn-outline text-xs text-red-600 border-red-100 hover:bg-red-50">Log out</button>
       </nav>
     </div>
     <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] to-[color:var(--au-ink)]"></div>
   </header>
 
-  <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- ================= VIEW 1: HUB (DEFAULT) ================= -->
+    <!-- VIEW 1: HUB -->
     <section id="view-hub" class="view-section active">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 class="text-3xl font-extrabold text-[color:var(--au-ink)]">Your account</h1>
-          <p class="text-[15px] text-[color:var(--au-stone)]">
-            Welcome back, <span id="welcomeName" class="font-semibold text-[color:var(--au-ink)]">User</span>
-          </p>
+          <p class="text-[15px] text-[color:var(--au-stone)]">Welcome back, <span id="welcomeName" class="font-semibold text-[color:var(--au-ink)]">User</span></p>
         </div>
         <span class="pill bg-green-100 text-green-700" id="status">Signed in</span>
       </div>
 
-      <!-- Identity Card -->
       <div class="card p-4 flex items-center justify-between gap-3 mb-8">
         <div class="flex items-center gap-3">
           <div class="iconwrap"><i data-lucide="user" class="w-5 h-5"></i></div>
@@ -132,173 +117,52 @@
         <button class="btn-outline text-xs" id="copyBtn">Copy</button>
       </div>
 
-      <!-- Module Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        
-        <!-- Dashboard Card (Purple Theme) -->
-        <button onclick="switchView('dashboard')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Dashboard</h3>
-              <p class="mt-1 text-sm text-gray-500">Usage, APIs and performance KPIs.</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Insights Card (Indigo Theme) -->
-        <button onclick="switchView('insights')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"><i data-lucide="line-chart" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Insights</h3>
-              <p class="mt-1 text-sm text-gray-500">Predictive analysis, alerts & recommendations.</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Connect Hub -->
-        <button onclick="switchView('connect')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors"><i data-lucide="messages-square" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Connect Hub</h3>
-              <p class="mt-1 text-sm text-gray-500">Discover partners & AI-assisted matching.</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Verification -->
-        <button onclick="switchView('verification')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-green-100 group-hover:text-green-600 transition-colors"><i data-lucide="badge-check" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Business Verification</h3>
-              <p class="mt-1 text-sm text-gray-500">Confirm your business details.</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Track App (Teal Theme) -->
-        <button onclick="switchView('track')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-teal-100 group-hover:text-teal-600 transition-colors"><i data-lucide="receipt-text" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Track Application</h3>
-              <p class="mt-1 text-sm text-gray-500">See submission and review status.</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Billing -->
-        <button onclick="switchView('billing')" class="card p-6 text-left hover:shadow-md transition-all group w-full">
-          <div class="flex items-start gap-4">
-            <div class="iconwrap group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">Billing & Plans</h3>
-              <p class="mt-1 text-sm text-gray-500">Manage plan, invoices and add-ons.</p>
-            </div>
-          </div>
-        </button>
+        <button onclick="switchView('dashboard')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Dashboard</h3><p class="mt-1 text-sm text-gray-500">Usage, APIs and KPIs.</p></div></div></button>
+        <button onclick="switchView('insights')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"><i data-lucide="line-chart" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Insights</h3><p class="mt-1 text-sm text-gray-500">Analysis & alerts.</p></div></div></button>
+        <button onclick="switchView('connect')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors"><i data-lucide="messages-square" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Connect Hub</h3><p class="mt-1 text-sm text-gray-500">Partners & Smart matching.</p></div></div></button>
+        <button onclick="switchView('verification')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-green-100 group-hover:text-green-600 transition-colors"><i data-lucide="badge-check" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Verification</h3><p class="mt-1 text-sm text-gray-500">Confirm business details.</p></div></div></button>
+        <button onclick="switchView('track')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-teal-100 group-hover:text-teal-600 transition-colors"><i data-lucide="receipt-text" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Track Application</h3><p class="mt-1 text-sm text-gray-500">Review status.</p></div></div></button>
+        <button onclick="switchView('billing')" class="card p-6 text-left hover:shadow-md transition-all group w-full"><div class="flex items-start gap-4"><div class="iconwrap group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><i data-lucide="credit-card" class="w-6 h-6"></i></div><div><h3 class="text-lg font-bold text-gray-900">Billing & Plans</h3><p class="mt-1 text-sm text-gray-500">Manage plans.</p></div></div></button>
       </div>
 
-      <!-- Help Footer -->
       <div class="mt-8 card p-5 bg-gray-50 border-none flex items-start gap-3">
         <i data-lucide="info" class="w-5 h-5 text-gray-400 mt-0.5"></i>
-        <p class="text-sm text-gray-500">Need help? Visit <a class="link" href="#">Docs</a> or email <a class="link" href="mailto:dev@afroubuntutrade.co.uk">dev@afroubuntutrade.co.uk</a>.</p>
+        <p class="text-sm text-gray-500">Need help? Email <a class="link" href="mailto:dev@afroubuntutrade.co.uk">dev@afroubuntutrade.co.uk</a>.</p>
       </div>
     </section>
 
-
-    <!-- ================= VIEW 2: DASHBOARD ================= -->
+    <!-- VIEW 2: DASHBOARD -->
     <section id="view-dashboard" class="view-section">
       <div class="flex items-center gap-4 mb-6">
         <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
         <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Analytics Dashboard</h1>
       </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Revenue -->
-        <div class="card p-6">
-            <h3 class="text-sm font-medium text-gray-500">Total Revenue</h3>
-            <p class="text-4xl font-bold mt-2 text-gray-900" id="disp_revenue">Loading...</p>
-            <div class="h-32 mt-4"><canvas id="revenueChart"></canvas></div>
-        </div>
-        <!-- Credit -->
-        <div class="card p-6 flex flex-col items-center justify-center">
-            <h3 class="text-sm font-medium text-gray-500 w-full text-left">Credit Score</h3>
-            <div class="relative w-40 h-20 overflow-hidden mt-4">
-                <div class="absolute w-40 h-40 rounded-full border-[12px] border-gray-100"></div>
-                <div class="absolute w-40 h-40 rounded-full border-[12px] border-blue-600 border-b-transparent border-r-transparent transform -rotate-45"></div>
-            </div>
-            <span class="text-5xl font-bold text-gray-900 -mt-8" id="disp_credit">--</span>
-            <span class="pill bg-blue-50 text-blue-700 mt-2" id="disp_tier">Checking...</span>
-        </div>
-        <!-- Products -->
-        <div class="card p-0 lg:col-span-1 overflow-hidden">
-            <div class="bg-gray-50 px-6 py-4 border-b"><h3 class="font-semibold text-gray-700">Top Products</h3></div>
-            <table class="w-full text-sm">
-                <thead class="bg-white border-b text-gray-500 text-xs uppercase">
-                    <tr><th class="px-6 py-2 text-left">Item</th><th class="px-6 py-2 text-right">Value</th></tr>
-                </thead>
-                <tbody id="list_top_products" class="divide-y divide-gray-100"></tbody>
-            </table>
-        </div>
-      </div>
+      <div id="portal_content" class="space-y-6"></div>
     </section>
 
-
-    <!-- ================= VIEW 3: INSIGHTS ================= -->
+    <!-- VIEW 3: INSIGHTS -->
     <section id="view-insights" class="view-section">
         <div class="flex items-center gap-4 mb-6">
             <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Insights & Alerts</h1>
+            <h1 class="text-2xl font-bold">Insights & Alerts</h1>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Stock Alerts -->
-            <div class="card p-6 border-l-4 border-red-500">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-red-100 grid place-items-center text-red-600"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
-                    <h3 class="text-lg font-bold text-gray-900">Stock Alerts</h3>
-                </div>
-                <ul id="list_alerts" class="space-y-3 text-sm">
-                    <li class="text-gray-400 italic">No active alerts.</li>
-                </ul>
-            </div>
-
-            <!-- Recommendations -->
-            <div class="card p-6 border-l-4 border-blue-500">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 grid place-items-center text-blue-600"><i data-lucide="sparkles" class="w-4 h-4"></i></div>
-                    <h3 class="text-lg font-bold text-gray-900">AI Recommendations</h3>
-                </div>
-                <p class="text-sm text-gray-600 leading-relaxed">
-                    Based on your sales velocity for <strong>Sugar 1kg</strong>, we recommend restocking by Friday to avoid a stockout during the weekend rush.
-                </p>
-                <div class="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
-                    <strong>Tip:</strong> You can request a micro-loan for this restock in the 'Connect Hub'.
-                </div>
-            </div>
-        </div>
+        <div id="advisory_row" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
     </section>
 
-    <!-- ================= VIEW 4: CONNECT HUB & CHAT ================= -->
+    <!-- VIEW 4: CONNECT HUB -->
     <section id="view-connect" class="view-section relative">
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-4">
                 <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
-                <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Connect Hub</h1>
+                <h1 class="text-2xl font-bold">Connect Hub</h1>
             </div>
-            
-            <!-- Notifications Bell -->
             <div class="relative cursor-pointer" onclick="loadRequests()">
                 <i data-lucide="bell" class="w-6 h-6 text-gray-600"></i>
                 <span id="notif_badge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
             </div>
         </div>
 
-        <!-- FILTERS (NEW) -->
         <div class="flex flex-wrap gap-3 mb-6 bg-white p-3 rounded-xl border shadow-sm">
             <select id="filter_type" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500">
                 <option value="">All Types</option>
@@ -309,624 +173,231 @@
                 <option value="Fintech">Fintech</option>
                 <option value="Micro-Lender">Micro-Lender</option>
             </select>
-
-            
             <select id="filter_loc" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500 w-48">
                 <option value="">All Locations</option>
-                <!-- JS will populate countries -->
             </select>
-
-            <!-- Search Bar -->
-    <div class="relative flex-1 min-w-[200px]">
-    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-    <input type="text" id="filter_search" 
-           oninput="debouncedSearch()" 
-           placeholder="Search name or keywords..." 
-           class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
-</div>
-
+            <div class="relative flex-1 min-w-[200px]">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input type="text" id="filter_search" oninput="debouncedSearch()" placeholder="Search names..." class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
+            </div>
             <div class="flex gap-4 ml-auto border-l pl-4">
                 <button onclick="loadConnectHub('browse')" id="tab-browse" class="text-sm font-semibold text-orange-600">Explore</button>
                 <button onclick="loadConnectHub('connections')" id="tab-network" class="text-sm text-gray-500 hover:text-gray-700">My Network</button>
             </div>
         </div>
 
-        <!-- Requests Panel -->
         <div id="requests_panel" class="hidden mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <h3 class="text-sm font-bold text-yellow-800 mb-3">Pending Requests</h3>
-            <div id="requests_list" class="space-y-2"></div>
+            <div id="requests_list" class="space-y-2 flex flex-col gap-2"></div>
         </div>
 
-        <!-- Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="connect_list">
-            <p class="text-gray-500 italic col-span-3 text-center py-10">Loading...</p>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="connect_list"></div>
         
-        <!-- Chat Modal (Keep existing) -->
-        <div id="chat_modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end sm:items-center justify-center">
-             <!-- (Keep existing chat HTML) -->
-             <div class="bg-white w-full sm:w-[450px] h-[80vh] sm:h-[600px] sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <!-- CHAT MODAL -->
+        <div id="chat_modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end sm:items-center justify-center p-4">
+             <div class="bg-white w-full sm:w-[450px] h-[80vh] sm:h-[600px] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
                 <div class="bg-gray-100 p-4 border-b flex justify-between items-center">
                     <div><h3 class="font-bold text-gray-800" id="chat_partner_name">Name</h3><p class="text-xs text-green-600 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Online</p></div>
                     <button onclick="closeChat()" class="p-2 hover:bg-gray-200 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
                 </div>
-               <div class="bg-amber-50 p-3 text-[10px] text-amber-800 leading-tight border-b border-amber-100">
-    <i data-lucide="shield-alert" class="w-3 h-3 inline-block mr-1"></i>
-    Data/informationand business dealings shared here must be kept confidential to each parties of this chat. We are not liable for any decisions made by, or between, either party. However, We will act accordingly to reported behaviour. Please see our Data Privacy, Terms of Service and Ethical Data & AI policies for more information, or email info@afroubuntutrade.co.uk.
-</div>
+                <div class="bg-amber-50 p-3 text-[9px] text-amber-800 leading-tight border-b border-amber-100">
+                    <i data-lucide="shield-alert" class="w-3 h-3 inline-block mr-1"></i>
+                    Shared information must be kept confidential. We are not liable for decisions between parties but act on reported behavior. See policies for more.
+                </div>
                 <div id="chat_box" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white"></div>
                 <div class="p-3 border-t bg-gray-50 flex gap-2">
-                    <input type="text" id="chat_input" placeholder="Type a message..." class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:border-orange-500">
+                    <input type="text" id="chat_input" placeholder="Type a message..." class="flex-1 border rounded-full px-4 py-2 outline-none focus:border-orange-500">
                     <button onclick="sendMessage()" class="bg-orange-600 text-white p-2 rounded-full hover:bg-orange-700"><i data-lucide="send" class="w-5 h-5"></i></button>
                 </div>
             </div>
         </div>
 
-      <!-- Business Profile Detail Modal -->
-<div id="profile_detail_modal" class="fixed inset-0 z-[70] hidden bg-black/60 flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-        <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
-            <h3 class="font-bold text-gray-900">Business Profile</h3>
-            <button onclick="closeProfileModal()" class="p-1 hover:bg-gray-200 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-        <div class="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
-            <div>
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Business Name</label>
-                <div class="flex items-center gap-2 mt-1">
-                    <h2 id="pd_name" class="text-2xl font-extrabold text-gray-900 leading-tight">--</h2>
-                    <span id="pd_verified" class="hidden"><i data-lucide="badge-check" class="w-6 h-6 text-blue-500 fill-blue-50"></i></span>
+        <!-- PROFILE MODAL -->
+        <div id="profile_detail_modal" class="fixed inset-0 z-[70] hidden bg-black/60 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+                <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-gray-900">Business Profile</h3>
+                    <button onclick="closeProfileModal()" class="p-1 hover:bg-gray-200 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sector</label>
-                    <p id="pd_type" class="font-semibold text-indigo-600 mt-1">--</p>
+                <div class="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Business Name</label>
+                        <div class="flex items-center gap-2 mt-1">
+                            <h2 id="pd_name" class="text-2xl font-extrabold text-gray-900 leading-tight">--</h2>
+                            <span id="pd_verified" class="hidden"><i data-lucide="badge-check" class="w-6 h-6 text-blue-500 fill-blue-50"></i></span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sector</label><p id="pd_type" class="font-semibold text-indigo-600 mt-1">--</p></div>
+                        <div><label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Match Score</label><p id="pd_score" class="font-semibold text-orange-600 mt-1">--</p></div>
+                    </div>
+                    <div><label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Address / Location</label><p id="pd_loc" class="text-gray-700 mt-1 text-base">--</p></div>
+                    <div id="pd_verif_box" class="p-4 bg-blue-50 rounded-xl border border-blue-100 hidden">
+                        <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Verification Details</label>
+                        <div class="mt-2 text-sm text-blue-900 space-y-1">
+                            <p><strong>Registration:</strong> <span id="pd_reg_num">--</span></p>
+                            <p><strong>Tax ID:</strong> <span id="pd_tax_id">--</span></p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Match Score</label>
-                    <p id="pd_score" class="font-semibold text-orange-600 mt-1">--</p>
-                </div>
-            </div>
-            <div>
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Address / Location</label>
-                <p id="pd_loc" class="text-gray-700 mt-1 text-base">--</p>
-            </div>
-            <div id="pd_verif_box" class="p-4 bg-blue-50 rounded-xl border border-blue-100 hidden">
-                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Verification Details</label>
-                <div class="mt-2 text-sm text-blue-900 space-y-1">
-                    <p><strong>Registration:</strong> <span id="pd_reg_num">--</span></p>
-                    <p><strong>Tax ID:</strong> <span id="pd_tax_id">--</span></p>
+                <div class="p-6 bg-gray-50 border-t flex gap-3">
+                     <button id="pd_chat_btn" class="flex-1 btn-primary text-sm py-2.5">Chat Now</button>
+                     <button onclick="closeProfileModal()" class="flex-1 btn-outline text-sm py-2.5">Close</button>
                 </div>
             </div>
         </div>
-        <div class="p-6 bg-gray-50 border-t flex gap-3">
-             <button id="pd_chat_btn" class="flex-1 btn-primary text-sm py-2.5">Chat Now</button>
-             <button onclick="closeProfileModal()" class="flex-1 btn-outline text-sm py-2.5">Close</button>
-        </div>
-    </div>
-</div>
-      
     </section>
 
-    
-
-    
-    <!-- ================= VIEW 5: BUSINESS VERIFICATION ================= -->
+    <!-- VIEW 5: VERIFICATION -->
     <section id="view-verification" class="view-section">
         <div class="flex items-center gap-4 mb-6">
-            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Business Verification</h1>
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+            <h1 class="text-2xl font-bold">Business Verification</h1>
         </div>
-
         <div class="card p-8 max-w-2xl mx-auto">
-            
-            <!-- STATUS BANNER (Dynamic) -->
             <div id="verif_status_card" class="hidden mb-6 p-5 rounded-lg border flex flex-col gap-3">
                 <div class="flex items-center gap-3">
-                    <div id="verif_icon_box" class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100">
-                        <i id="verif_icon" data-lucide="info" class="w-5 h-5 text-gray-600"></i>
+                    <div id="verif_icon_box" class="w-10 h-10 rounded-full flex items-center justify-center">
+                        <i id="verif_icon" data-lucide="info" class="w-5 h-5"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg" id="verif_title">Application Status</h3>
-                        <p class="text-sm" id="verif_desc">Checking...</p>
-                    </div>
+                    <div><h3 class="font-bold text-lg" id="verif_title">Status</h3><p class="text-sm" id="verif_desc">Checking...</p></div>
                 </div>
-                <!-- The Edit Button -->
-                <button id="btn_edit_verif" onclick="enableVerifEdit()" class="btn-outline text-xs self-end hidden">
-                    Edit & Resubmit
-                </button>
+                <button id="btn_edit_verif" onclick="enableVerifEdit()" class="btn-outline text-xs self-end hidden">Edit & Resubmit</button>
             </div>
-
-            <!-- FORM -->
             <form id="verifForm" class="space-y-4">
-                <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6">
-                    <p><strong>Note:</strong> Verification is primarily for Organizations (FMCG, FinTech, NGO etc.). Retailers are verified via transaction history.</p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Business Name</label>
-                    <input type="text" id="v_biz_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" required>
-                </div>
-
+                <div><label class="block text-sm font-medium">Business Name</label><input type="text" id="v_biz_name" class="mt-1 block w-full rounded-md border p-3" required></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Business Location</label>
-                        <!-- Country Dropdown (Populated by JS) -->
-                        <select id="v_biz_loc" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
-                            <option value="">Select Country</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Organization Type</label>
-                        <select id="v_biz_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
-                            <option value="">Select Type</option>
-                            <option value="FMCG">FMCG / Supplier</option>
-                            <option value="Fintech">Fintech / Bank</option>
-                            <option value="Micro-Lender">Micro-Lender</option>
-                            <option value="NGO">NGO / Aid</option>
-                            <option value="Development Partner">Development Partner</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-sm font-medium">Location</label><select id="v_biz_loc" class="mt-1 block w-full rounded-md border p-3 bg-white" required><option value="">Select Country</option></select></div>
+                    <div><label class="block text-sm font-medium">Type</label><select id="v_biz_type" class="mt-1 block w-full rounded-md border p-3 bg-white" required><option value="">Select Type</option><option value="FMCG">FMCG / Supplier</option><option value="Fintech">Fintech / Bank</option><option value="NGO">NGO / Aid</option></select></div>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Business Registration Number</label>
-                    <input type="text" id="v_reg_num" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Tax ID / TIN <span class="text-gray-400 font-normal">(Optional)</span></label>
-                    <input type="text" id="v_tax_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border">
-                </div>
-
+                <div><label class="block text-sm font-medium">Registration Number</label><input type="text" id="v_reg_num" class="mt-1 block w-full rounded-md border p-3" required></div>
+                <div><label class="block text-sm font-medium">Tax ID (Optional)</label><input type="text" id="v_tax_id" class="mt-1 block w-full rounded-md border p-3"></div>
                 <button type="submit" class="w-full btn-primary mt-4">Submit Application</button>
             </form>
         </div>
     </section>
 
-    <!-- ================= VIEW 6: TRACK APPLICATION ================= -->
+    <!-- VIEW 6: TRACK APPLICATION -->
     <section id="view-track" class="view-section">
         <div class="flex items-center gap-4 mb-6">
-            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Application Status</h1>
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+            <h1 class="text-2xl font-bold">Track Status</h1>
         </div>
-
-        <div class="card p-8 max-w-3xl mx-auto">
-            <!-- Header Info -->
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4">
-                    <i data-lucide="file-search" class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Business Verification</h2>
-                <p class="text-gray-500 text-sm mt-1">Tracking ID: <span id="track_id" class="font-mono text-gray-700">--</span></p>
+        <div class="card p-8 max-w-3xl mx-auto text-center">
+            <h2 class="text-xl font-bold mb-4">Application Progress</h2>
+            <div id="track_id" class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Checking...</div>
+            <div class="flex justify-around items-center relative">
+                <div class="absolute w-full h-0.5 bg-gray-200 -z-10"></div>
+                <div id="step1_icon" class="w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white"><i data-lucide="check" class="w-5 h-5"></i></div>
+                <div id="step2_icon" class="w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white"><i data-lucide="loader-2" class="w-5 h-5"></i></div>
+                <div id="step3_icon" class="w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white"><i data-lucide="award" class="w-5 h-5"></i></div>
             </div>
-
-            <!-- Progress Steps -->
-            <div class="relative">
-                <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-                
-                <!-- Step 1 -->
-                <div class="relative flex items-start mb-8 group">
-                    <div class="absolute left-0 w-16 flex justify-center">
-                        <div id="step1_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
-                            <i data-lucide="check" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-                    <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Application Submitted</h3>
-                        <p class="text-sm text-gray-500 mt-1">Your details have been received by our compliance team.</p>
-                        <p id="step1_date" class="text-xs text-gray-400 mt-1">--</p>
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="relative flex items-start mb-8 group">
-                    <div class="absolute left-0 w-16 flex justify-center">
-                        <div id="step2_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
-                            <i data-lucide="loader-2" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-                    <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Under Review</h3>
-                        <p class="text-sm text-gray-500 mt-1">We are verifying your Tax ID and Registration with local authorities.</p>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="relative flex items-start group">
-                    <div class="absolute left-0 w-16 flex justify-center">
-                        <div id="step3_icon" class="w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10">
-                            <i data-lucide="award" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-                    <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Verification Complete</h3>
-                        <p class="text-sm text-gray-500 mt-1">Your business is fully verified. You now have access to platform features.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Area -->
-            <div id="track_action" class="mt-10 p-4 bg-gray-50 rounded-lg text-center hidden">
-                <p class="text-sm text-gray-600 mb-3">Verification failed? You may need to resubmit documents.</p>
-                <button onclick="switchView('verification')" class="btn-outline text-xs">Update Information</button>
-            </div>
+            <div id="track_action" class="mt-10 hidden"><button onclick="switchView('verification')" class="btn-outline text-xs">Update Info</button></div>
         </div>
     </section>
 
-    <!-- ================= VIEW 7: BILLING & PLANS ================= -->
+    <!-- VIEW 7: BILLING -->
     <section id="view-billing" class="view-section">
         <div class="flex items-center gap-4 mb-6">
-            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-            <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Billing & Plans</h1>
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+            <h1 class="text-2xl font-bold">Billing & Plans</h1>
         </div>
-
-        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 text-sm text-gray-600 flex items-start gap-3">
-            <i data-lucide="info" class="w-5 h-5 mt-0.5 shrink-0"></i>
-            <p>All plans include WhatsApp onboarding, secure data handling, and access to our customer success team. Prices are indicative and may vary with scope.</p>
-        </div>
-
         <div class="space-y-10">
-
-            <!-- Retailers & Merchants Table (Free Tier) -->
-<div class="card overflow-hidden">
-    <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-            <i data-lucide="store" class="w-4 h-4"></i>
-        </div>
-        <div>
-            <h3 class="text-lg font-bold text-indigo-800">Retailers, Vendors & Traders</h3>
-            <p class="text-xs text-indigo-600">Supporting local commerce with free digital tools. (To apply, set business type to 'retailers' tier)</p>
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-            <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
-                <tr>
-                    <th class="px-6 py-3 font-medium">Tier</th>
-                    <th class="px-6 py-3 font-medium">Price Range</th>
-                    <th class="px-6 py-3 font-medium">What's Included</th>
-                    <th class="px-6 py-3 text-right">Action</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-bold text-gray-900">Community</td>
-                    <td class="px-6 py-4">
-                        <span class="text-green-600 font-bold">Free Forever</span>
-                    </td>
-                    <td class="px-6 py-4 text-gray-600">
-                        Full analytics dashboard, Connect Hub access, WhatsApp-based inventory-sales tracking & credit profiling, and AI-generated recommendations & stock alerts.
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <!-- We show this as the active plan by default for retailers -->
-                        <span class="pill bg-indigo-100 text-indigo-700">Included</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-            
-            <!-- FMCGs Table -->
             <div class="card overflow-hidden">
-                <div class="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i data-lucide="package" class="w-4 h-4"></i></div>
-                    <h3 class="text-lg font-bold text-green-800">FMCGs (Consumer Goods & Distributors)</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
-                            <tr>
-                                <th class="px-6 py-3 font-medium">Tier</th>
-                                <th class="px-6 py-3 font-medium">Price Range</th>
-                                <th class="px-6 py-3 font-medium">What's Included</th>
-                                <th class="px-6 py-3 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
-                                <td class="px-6 py-4 text-gray-600">$1,500/m <span class="text-xs text-gray-400">(£1,200)</span></td>
-                                <td class="px-6 py-4 text-gray-600">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 bg-gray-50/50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
-                                <td class="px-6 py-4 text-gray-600">$3,500/m <span class="text-xs text-gray-400">(£2,800)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Multi-region, advanced forecasting, competitor insights, API integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
-                                <td class="px-6 py-4 text-gray-600">$75k–$150k/yr <span class="text-xs text-gray-400">(£60k–£120k)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- NGOs Table -->
-            <div class="card overflow-hidden">
-                <div class="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i data-lucide="users" class="w-4 h-4"></i></div>
-                    <h3 class="text-lg font-bold text-orange-800">NGOs & Development Partners</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
-                            <tr>
-                                <th class="px-6 py-3 font-medium">Tier</th>
-                                <th class="px-6 py-3 font-medium">Price Range</th>
-                                <th class="px-6 py-3 font-medium">What's Included</th>
-                                <th class="px-6 py-3 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
-                                <td class="px-6 py-4 text-gray-600">$300/m <span class="text-xs text-gray-400">(£240)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 bg-gray-50/50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
-                                <td class="px-6 py-4 text-gray-600">$1,200/m <span class="text-xs text-gray-400">(£950)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Multi-region, real-time dashboards, grant reporting, alerts</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
-                                <td class="px-6 py-4 text-gray-600">$25k–$100k/yr <span class="text-xs text-gray-400">(£20k–£80k)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Custom program analytics, donor-facing reports, field integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Fintechs Table -->
-            <div class="card overflow-hidden">
-                <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i data-lucide="banknote" class="w-4 h-4"></i></div>
-                    <h3 class="text-lg font-bold text-blue-800">FinTechs (Banks, Microfinance)</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
-                            <tr>
-                                <th class="px-6 py-3 font-medium">Tier</th>
-                                <th class="px-6 py-3 font-medium">Price Range</th>
-                                <th class="px-6 py-3 font-medium">What's Included</th>
-                                <th class="px-6 py-3 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
-                                <td class="px-6 py-4 text-gray-600">$750/m <span class="text-xs text-gray-400">(£600)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 bg-gray-50/50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
-                                <td class="px-6 py-4 text-gray-600">$2,500/m <span class="text-xs text-gray-400">(£2,000)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Expanded API, repayment analysis, portfolio monitoring</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
-                                <td class="px-6 py-4 text-gray-600">$50k–$200k/yr <span class="text-xs text-gray-400">(£40k–£160k) + rev share</span></td>
-                                <td class="px-6 py-4 text-gray-600">Full API, predictive risk engine, dedicated integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i data-lucide="store" class="w-4 h-4"></i></div><div><h3 class="font-bold text-indigo-800">Retailers & Traders</h3><p class="text-xs text-indigo-600">Free forever tools.</p></div></div>
+                <table class="w-full text-sm text-left"><tbody class="divide-y divide-gray-100"><tr><td class="px-6 py-4 font-bold">Community</td><td class="px-6 py-4 text-green-600 font-bold">Free Forever</td><td class="px-6 py-4 text-gray-500">Analytics, Connect Hub, and WhatsApp.</td><td class="px-6 py-4 text-right"><span class="pill bg-indigo-100 text-indigo-700">Included</span></td></tr></tbody></table>
             </div>
         </div>
     </section>
 
-    <!-- ================= VIEW: RESTRICTED ================= -->
+    <!-- RESTRICTED VIEW -->
     <section id="view-restricted" class="view-section text-center py-16">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 text-red-600 mb-6">
-            <i data-lucide="lock" class="w-10 h-10"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">Verification Required</h2>
-        <p class="text-gray-600 mt-2 max-w-md mx-auto">
-            As an Organization (Non-Retailer), you must have an <strong>Approved Business Verification</strong> to access the Dashboard, Insights, and Connect Hub.
-        </p>
-        <div class="mt-8 flex justify-center gap-4">
-            <button onclick="switchView('verification')" class="btn-primary">Go to Verification</button>
-            <button onclick="switchView('track')" class="btn-outline">Track Status</button>
-        </div>
+        <div class="w-20 h-20 rounded-full bg-red-50 text-red-600 mx-auto flex items-center justify-center mb-6"><i data-lucide="lock" class="w-10 h-10"></i></div>
+        <h2 class="text-2xl font-bold">Verification Required</h2>
+        <p class="text-gray-500 mt-2">Approved verification is required for this feature.</p>
+        <div class="mt-8 flex justify-center gap-4"><button onclick="switchView('verification')" class="btn-primary">Go to Verification</button></div>
     </section>
     
   </main>
 
-  <footer class="border-t border-[color:var(--au-line)] mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-[color:var(--au-stone)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-      <p>© <span id="year"></span> Afro Ubuntu TradeNet Ltd</p>
-      <div class="flex items-center gap-4">
-        <button class="link" onclick="openModal('privacyModal')">Privacy</button>
-        <button class="link" onclick="openModal('termsModal')">Terms</button>
-      </div>
-    </div>
-  </footer>
-
   <!-- Modals -->
-  <div id="privacyModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="closeModal('privacyModal')"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-lg font-semibold mb-2">Privacy Policy</h2>
-        <div class="border rounded-lg overflow-hidden h-64"><iframe src="privacy-policy.html" class="w-full h-full"></iframe></div>
-        <button class="btn-outline mt-4 text-xs" onclick="closeModal('privacyModal')">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="termsModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="closeModal('termsModal')"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
-        <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
-        <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
-      </div>
-    </div>
-  </div>
-
   <div id="report_modal" class="fixed inset-0 z-[60] hidden bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-1">Report <span id="report_target_name">User</span></h3>
-        <p class="text-xs text-gray-500 mb-4">Please specify the nature of your report. This will be sent to our specialised departments.</p>
-        
-        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nature of Report</label>
-        <select id="report_category" class="w-full border rounded-lg p-2 text-sm mb-4 bg-gray-50">
-            <option value="ethics">Ethical Behavior / Misconduct</option>
-            <option value="privacy">Privacy / Data Handling Concern</option>
-            <option value="dpo">Data Breach / DPO Inquiry</option>
-            <option value="legal">Legal Dispute / Contractual Issue</option>
-            <option value="dev">Technical Misuse / Bug</option>
-        </select>
-
-        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Details</label>
-        <textarea id="report_details" placeholder="Describe the behavior or incident..." class="w-full border rounded-lg p-2 text-sm h-24 mb-6 focus:ring-1 focus:ring-orange-500 outline-none"></textarea>
-
-        <div class="flex gap-3">
-            <button onclick="closeReportModal()" class="flex-1 btn-outline text-xs">Cancel</button>
-            <button onclick="submitReport()" id="btn_submit_report" class="flex-1 bg-red-600 text-white rounded-lg text-xs font-bold py-2 hover:bg-red-700">Submit Report</button>
-        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-1">Report User</h3>
+        <select id="report_category" class="w-full border rounded-lg p-2 text-sm mb-4 bg-gray-50"><option value="ethics">Ethics/Behavior</option><option value="privacy">Privacy/Data</option><option value="legal">Legal</option></select>
+        <textarea id="report_details" placeholder="Incident details..." class="w-full border rounded-lg p-2 text-sm h-24 mb-6 outline-none focus:ring-1 focus:ring-orange-500"></textarea>
+        <div class="flex gap-3"><button onclick="closeReportModal()" class="flex-1 btn-outline text-xs">Cancel</button><button onclick="submitReport()" id="btn_submit_report" class="flex-1 bg-red-600 text-white rounded-lg text-xs font-bold py-2 hover:bg-red-700">Submit</button></div>
     </div>
-</div>
+  </div>
 
   <script>
-    // ---- CONFIGURATION ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
     const SIGNIN_PAGE = 'api-connection.html';
 
-    // ---- GLOBAL STATE ----
     let currentUserType = 'Retailer';
     let currentVerifStatus = 'NOT_SUBMITTED';
     let currentConnectResults = [];
+    let searchTimeout;
 
-    // ---- API HELPER ----
     async function call(path, method='GET', body=null) {
         const t = localStorage.getItem('token');
         if(!t) throw new Error("No token");
-        
-        const opts = {
-            method,
-            headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' }
-        };
+        const opts = { method, headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } };
         if(body) opts.body = JSON.stringify(body);
-
         const res = await fetch(API_BASE + path, opts);
         const data = await res.json().catch(()=>null);
-        
-        // Return explicit error for access control
         if (res.status === 403) throw new Error("VERIFICATION_REQUIRED");
         if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
-        
         return data;
     }
 
-    // ---- VIEW ROUTER (ACCESS CONTROL FIXED) ----
     async function switchView(viewName) {
-        // 1. ACCESS CONTROL CHECK
         if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-            // Check global state first (Fastest)
-            if (currentUserType !== 'Retailer' && currentVerifStatus !== 'APPROVED') {
-                viewName = 'restricted';
-            } 
-            else {
-                // Double check with API (Secure)
-                try {
-                    await call('/api/v1/analytics/dashboard');
-                } catch (e) {
-                    if (e.message === 'VERIFICATION_REQUIRED' || e.message.includes('403')) {
-                        viewName = 'restricted';
-                    }
-                }
-            }
+            if (currentUserType !== 'Retailer' && currentVerifStatus !== 'APPROVED') { viewName = 'restricted'; } 
+            else { try { await call('/api/v1/analytics/dashboard'); } catch (e) { if (e.message.includes('VERIFICATION_REQUIRED')) viewName = 'restricted'; } }
         }
-
-        // 2. SWITCH UI
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
-        
         lucide.createIcons();
         window.scrollTo(0, 0);
-
-        // 3. LOAD DATA
-        if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'connect') loadConnectHub();
+        if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
     }
 
-    // Global state for search timing
-    let searchTimeout;
-
-    // The "Live Search" wrapper
     function debouncedSearch() {
-        // 1. Clear the timer if the user is still typing
         clearTimeout(searchTimeout);
-        
-        // 2. Set a new timer
-        searchTimeout = setTimeout(() => {
-            // 3. Trigger the existing load function after 400ms pause
-            loadConnectHub(); 
-        }, 400);
+        searchTimeout = setTimeout(() => { loadConnectHub(); }, 400);
     }
-    
-    // ---- LOAD CONNECT HUB ----
+
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
-        
-        // Tab UI logic
-        const tabBrowse = document.getElementById('tab-browse');
-        const tabNetwork = document.getElementById('tab-network');
-        if (mode === 'browse') {
-            tabBrowse.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
-            tabNetwork.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        } else {
-            tabNetwork.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
-            tabBrowse.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        }
+        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
-        // Get Search + Filter Values
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
-            // Build the URL
             let url = `/api/v1/connect?mode=${mode}`;
             if(search) url += `&search=${encodeURIComponent(search)}`;
             if(type) url += `&type=${encodeURIComponent(type)}`;
             if(loc) url += `&loc=${encodeURIComponent(loc)}`;
 
             const data = await call(url);
-            
-            // Clear current list
             list.innerHTML = '';
-            
-            if(!data.results || data.results.length === 0) {
-                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found for "${search}"</p>`;
-                return;
-            }
+            if(!data.results || data.results.length === 0) { list.innerHTML = '<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found.</p>'; return; }
 
-            // --- THE FIX: STORE DATA GLOBALLY ---
             currentConnectResults = data.results;
+            const isConnected = (mode === 'connections');
 
             currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
-                const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
+                const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
+                const unreadDot = b.unread > 0 ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse shadow-sm shadow-red-200"></span>` : '';
                 
                 let aiBadge = '', cardClass = 'border-l-transparent';
                 if (mode === 'browse' && b.score >= 10) {
@@ -935,8 +406,6 @@
                 }
 
                 let primaryAction = '', secondaryActions = '';
-                const isConnected = (mode === 'connections');
-
                 if(mode === 'browse') {
                     primaryAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
                     secondaryActions = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
@@ -948,602 +417,158 @@
                     `;
                 }
 
-              data.results.forEach(b => {
-                // Check if unread count > 0
-                const unreadDot = b.unread > 0 
-                    ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse shadow-sm shadow-red-200"></span>` 
-                    : '';
-
                 list.innerHTML += `
                 <div class="card p-5 hover:shadow-md transition bg-white border-l-4 ${cardClass}">
                     <div class="flex justify-between items-start gap-4">
                         <div class="min-w-0 flex-1">
                             ${aiBadge}
-                            <!-- PASS THE INDEX TO THE MODAL -->
                             <h3 onclick="openProfileModal(${index}, ${isConnected})" class="font-bold text-lg text-gray-900 flex items-center leading-tight cursor-pointer hover:text-orange-600 transition-colors">
                                 ${b.name}${verifiedBadge}${unreadDot}
                             </h3>
-                            <p class="text-sm text-gray-500 flex items-start gap-1.5 mt-1">
-                                <i data-lucide="map-pin" class="w-4 h-4 mt-0.5 shrink-0 text-gray-400"></i> 
-                                <span>${b.loc}</span>
-                            </p>
+                            <p class="text-sm text-gray-500 flex items-start gap-1.5 mt-1"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 shrink-0 text-gray-400"></i><span>${b.loc}</span></p>
                             <div class="mt-3 flex items-center gap-2">
                                 <span class="pill bg-gray-100 text-gray-600 text-[9px] uppercase font-bold tracking-widest px-2 py-0.5">${b.type}</span>
                                 <button onclick="openProfileModal(${index}, ${isConnected})" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
                             </div>
                         </div>
-                        <div class="shrink-0 w-32 flex flex-col items-center">
-                            ${primaryAction}
-                            <div class="mt-3 flex flex-col items-center gap-2">
-                                ${secondaryActions}
-                            </div>
-                        </div>
+                        <div class="shrink-0 w-32 flex flex-col items-center">${primaryAction}<div class="mt-3 flex flex-col items-center gap-2">${secondaryActions}</div></div>
                     </div>
                 </div>`;
             });
             lucide.createIcons();
             checkNotifications();
-
-        } catch(e) { 
-            console.error(e);
-            list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
-        }
+        } catch(e) { list.innerHTML = `<p class="text-red-500 text-center py-10">${e.message}</p>`; }
     }
-    
-      function openProfileModal(index, isConnected) {
-        // Look up data by index
+
+    function openProfileModal(index, isConnected) {
         const data = currentConnectResults[index];
         if(!data) return;
-
-        currentProfileData = data;
-        
-        // Populate UI
         document.getElementById('pd_name').innerText = data.name || 'Unknown';
         document.getElementById('pd_type').innerText = data.type || 'N/A';
         document.getElementById('pd_loc').innerText = data.loc || 'N/A';
         document.getElementById('pd_score').innerText = data.score || 'N/A';
-        
-        const vBox = document.getElementById('pd_verif_box');
-        const vBadge = document.getElementById('pd_verified');
-        
+        const vBox = document.getElementById('pd_verif_box'), vBadge = document.getElementById('pd_verified');
         if (data.is_verified) {
-            vBox.classList.remove('hidden');
-            vBadge.classList.remove('hidden');
+            vBox.classList.remove('hidden'); vBadge.classList.remove('hidden');
             document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
             document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else {
-            vBox.classList.add('hidden');
-            vBadge.classList.add('hidden');
-        }
-
+        } else { vBox.classList.add('hidden'); vBadge.classList.add('hidden'); }
         const chatBtn = document.getElementById('pd_chat_btn');
-        if (isConnected) {
-            chatBtn.classList.remove('hidden');
-            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
-            chatBtn.innerText = "Send Message";
-        } else {
-            chatBtn.classList.add('hidden');
-        }
-
+        if (isConnected) { chatBtn.classList.remove('hidden'); chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); }; } else { chatBtn.classList.add('hidden'); }
         document.getElementById('profile_detail_modal').classList.remove('hidden');
         lucide.createIcons();
     }
-    
-    // ---- ACTIONS ----
-    
-    async function sendConnect(id, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "Sending...";
-        btn.disabled = true;
-        try {
-            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
-            btn.innerText = "Request Sent";
-            btn.className = "px-3 py-2 text-xs rounded bg-green-50 text-green-700 border border-green-200";
-        } catch(e) {
-            alert("Failed to send request.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
-    }
 
-    async function disconnectUser(id, name) {
-        if(!confirm(`Are you sure you want to disconnect from ${name}?`)) return;
-        
-        try {
-            await call('/api/v1/connect', 'POST', { action: 'disconnect', target_id: id });
-            // Refresh list
-            loadConnectHub('connections');
-        } catch(e) {
-            alert("Error disconnecting: " + e.message);
-        }
-    }
+    function closeProfileModal() { document.getElementById('profile_detail_modal').classList.add('hidden'); }
 
-    // ---- ANALYTICS ----
     async function loadAnalytics() {
         try {
             const data = await call('/api/v1/analytics/dashboard');
-            if(!data) return;
-
-            // Revenue
-            const revEl = document.getElementById('disp_revenue');
-            if(revEl) revEl.innerText = '$' + (data.revenue || 0).toLocaleString();
+            const portal = document.getElementById('portal_content');
+            portal.innerHTML = data.type === 'Retailer' ? `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-6"><p class="text-xs font-bold text-gray-400">Total Revenue</p><p class="text-4xl font-bold mt-2">$${data.revenue.toLocaleString()}</p><div class="h-24 mt-4"><canvas id="revChart"></canvas></div></div>
+                    <div class="card p-6 text-center"><p class="text-xs font-bold text-gray-400">Credit Score</p><h1 class="text-6xl font-bold mt-2">1.84</h1><span class="pill bg-green-100 text-green-700">Gold Tier</span></div>
+                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-4 py-2 border-b font-bold text-xs">Top Products</div><table class="w-full text-xs divide-y" id="prodTable"></table></div>
+                </div>` : `<div class="card p-20 text-center text-gray-400 italic">Portal View for ${data.type} loading...</div>`;
             
-            // Credit
-            const credEl = document.getElementById('disp_credit');
-            const tierEl = document.getElementById('disp_tier');
-            if(credEl) credEl.innerText = data.credit.score || 0;
-            if(tierEl) tierEl.innerText = 'TIER: ' + (data.credit.tier || 'Unrated');
-
-            // Table
-            const tBody = document.getElementById('list_top_products');
-            if(tBody) {
-                tBody.innerHTML = '';
-                if(data.top_products) {
-                    data.top_products.forEach(p => {
-                        tBody.innerHTML += `
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-3 text-gray-900 font-medium">${p.item}</td>
-                                <td class="px-6 py-3 text-right text-gray-500">${p.qty}</td>
-                                <td class="px-6 py-3 text-right text-gray-900 font-semibold">$${p.value}</td>
-                            </tr>`;
-                    });
-                }
+            if(data.type === 'Retailer' && data.top_products) {
+                const tb = document.getElementById('prodTable');
+                data.top_products.forEach(p => { tb.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-4 py-2">${p.item}</td><td class="px-4 py-2 text-right font-bold">$${p.value}</td></tr>`; });
+                new Chart(document.getElementById('revChart'), { type: 'line', data: { labels: data.chart_labels, datasets: [{ data: data.chart_values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension:0.4 }] }, options: { plugins: {legend: {display:false}}, scales: {x:{display:false},y:{display:false}}, maintainAspectRatio:false }});
             }
-
-            // Alerts
-            const alertList = document.getElementById('list_alerts');
-            if(alertList) {
-                alertList.innerHTML = '';
-                if(!data.alerts || data.alerts.length === 0) {
-                    alertList.innerHTML = '<li class="text-green-600 text-sm">All clear. No alerts.</li>';
-                } else {
-                    data.alerts.forEach(a => {
-                        if (a.item && a.item.includes("Unconfirmed")) {
-                            alertList.innerHTML += `
-                                <li class="flex items-center gap-2 animate-ai text-orange-600 p-2 text-sm bg-orange-50 rounded mb-2">
-                                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
-                                    <span>AI analyzing new upload...</span>
-                                </li>`;
-                        } else {
-                            alertList.innerHTML += `
-                                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg text-sm mb-2">
-                                    <span class="text-gray-700">${a.item}</span>
-                                    <span class="font-bold text-red-600">${a.stock}</span>
-                                </li>`;
-                        }
-                    });
-                }
-                lucide.createIcons();
-            }
-
-            // Chart
-            const ctx = document.getElementById('revenueChart');
-            if(ctx && data.chart_labels) {
-                if(window.myRevenueChart) window.myRevenueChart.destroy();
-                window.myRevenueChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.chart_labels,
-                        datasets: [{
-                            label: 'Revenue',
-                            data: data.chart_values,
-                            borderColor: '#ea580c',
-                            backgroundColor: 'rgba(234,88,12,0.05)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 3
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x: { display: false }, y: { display: false } } }
-                });
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    // ---- ACTIONS ----
-    async function sendConnect(id, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "Sending...";
-        btn.disabled = true;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-
-        try {
-            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
-            btn.innerText = "Request Sent";
-            btn.classList.remove('text-blue-600', 'border-blue-200');
-            btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
-        } catch(e) {
-            alert("Failed to send request. Please try again.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
+        } catch(e) {}
     }
 
     async function loadRequests() {
         const panel = document.getElementById('requests_panel');
         const list = document.getElementById('requests_list');
         panel.classList.toggle('hidden');
-        
         try {
             const data = await call('/api/v1/connect?mode=requests');
             list.innerHTML = '';
-            
-            if(!data.results || data.results.length === 0) {
-                document.getElementById('notif_badge').classList.add('hidden');
-                list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>'; 
-                return; 
-            }
-            
+            if(!data.results || data.results.length === 0) { document.getElementById('notif_badge').classList.add('hidden'); list.innerHTML = '<p class="text-xs text-gray-500">No requests.</p>'; return; }
             data.results.forEach(r => {
-                list.innerHTML += `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl border shadow-sm">
-                    <span class="font-bold text-sm text-gray-900">${r.name}</span>
-                    <div class="flex gap-2">
-                        <button onclick="acceptRequest('${r.id}', this)" class="px-4 py-1.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors">Accept</button>
-                        <button onclick="declineRequest('${r.id}', this)" class="px-4 py-1.5 border border-red-200 text-red-600 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors">Decline</button>
-                    </div>
-                </div>`;
+                list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-lg border shadow-sm"><span class="font-bold text-sm">${r.name}</span><div class="flex gap-2"><button onclick="acceptRequest('${r.id}', this)" class="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded">Accept</button><button onclick="declineRequest('${r.id}', this)" class="px-3 py-1 border border-red-200 text-red-600 text-xs font-bold rounded">Decline</button></div></div>`;
             });
-        } catch(e) { console.error(e); }
+        } catch(e) {}
     }
 
-    
-    async function acceptRequest(connId, btn) {
-        btn.innerText = "...";
-        await call('/api/v1/connect', 'POST', { action: 'accept', connection_id: connId });
-        btn.parentElement.remove();
-        loadConnectHub('connections'); 
+    async function acceptRequest(id, btn) { btn.innerText = "..."; await call('/api/v1/connect', 'POST', { action:'accept', connection_id: id }); loadConnectHub('connections'); }
+    async function declineRequest(id, btn) { btn.innerText = "..."; await call('/api/v1/connect', 'POST', { action:'decline', connection_id: id }); btn.closest('.flex').remove(); checkNotifications(); }
+    async function checkNotifications() { const data = await call('/api/v1/connect?mode=requests'); const b = document.getElementById('notif_badge'); if(data.results?.length > 0) { b.classList.remove('hidden'); b.innerText = data.results.length; } else { b.classList.add('hidden'); } }
+    async function sendConnect(id, btn) { btn.innerText = "Sending..."; await call('/api/v1/connect', 'POST', { action:'request', target_id:id }); btn.innerText = "Sent"; btn.className = "pill bg-green-100 text-green-700 text-xs"; }
+    async function disconnectUser(id, name) { if(confirm(`Disconnect from ${name}?`)) { await call('/api/v1/connect', 'POST', { action:'disconnect', target_id:id }); loadConnectHub('connections'); } }
+
+    let currentChatPartner = null, chatInterval = null;
+    async function openChat(id, name) {
+        currentChatPartner = id; document.getElementById('chat_partner_name').innerText = name; document.getElementById('chat_modal').classList.remove('hidden');
+        try { await call(`/api/v1/chat/read?partner_id=${id}`, 'POST'); } catch(e) {}
+        loadMessages(); chatInterval = setInterval(loadMessages, 3000);
     }
-
-    async function declineRequest(connId, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "...";
-        btn.disabled = true;
-
-        try {
-            await call('/api/v1/connect', 'POST', { 
-                action: 'decline', 
-                connection_id: connId 
-            });
-            
-            // Remove the card from the UI
-            const card = btn.closest('.flex.justify-between');
-            card.classList.add('opacity-0', 'scale-95', 'transition-all', 'duration-300');
-            setTimeout(() => {
-                card.remove();
-                // Check if list is now empty to hide panel or show "No requests"
-                const list = document.getElementById('requests_list');
-                if (list.children.length === 0) {
-                    list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>';
-                    document.getElementById('notif_badge').classList.add('hidden');
-                }
-            }, 300);
-
-            // Refresh the badge count
-            checkNotifications();
-        } catch(e) {
-            alert("Error declining request: " + e.message);
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
-    }
-
-    async function checkNotifications() {
-        const data = await call('/api/v1/connect?mode=requests');
-        const badge = document.getElementById('notif_badge');
-        
-        if(data.results && data.results.length > 0) {
-            badge.classList.remove('hidden');
-            badge.innerText = data.results.length; // Optional: Show count
-        } else {
-            // FIX: Explicitly hide if 0
-            badge.classList.add('hidden');
-        }
-    }
-
-    //Business card in connection hub
-    let currentProfileData = null;
-
-function openProfileModal(index, isConnected) {
-        // Look up the clean data object from our global registry
-        const data = currentConnectResults[index];
-        if(!data) return;
-
-        currentProfileData = data;
-        document.getElementById('pd_name').innerText = data.name || 'Unknown';
-        document.getElementById('pd_type').innerText = data.type || 'N/A';
-        document.getElementById('pd_loc').innerText = data.loc || 'N/A';
-        document.getElementById('pd_score').innerText = data.score || 'N/A';
-        
-        // Show/Hide verification details
-        const vBox = document.getElementById('pd_verif_box');
-        const vBadge = document.getElementById('pd_verified');
-        if (data.is_verified) {
-            vBox.classList.remove('hidden');
-            vBadge.classList.remove('hidden');
-            document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
-            document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else {
-            vBox.classList.add('hidden');
-            vBadge.classList.add('hidden');
-        }
-
-        // Handle Chat button logic
-        const chatBtn = document.getElementById('pd_chat_btn');
-        if (isConnected) {
-            chatBtn.classList.remove('hidden');
-            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
-            chatBtn.innerText = "Send Message";
-        } else {
-            chatBtn.classList.add('hidden');
-        }
-
-        document.getElementById('profile_detail_modal').classList.remove('hidden');
-        lucide.createIcons();
-    }
-
-    
-function closeProfileModal() {
-    document.getElementById('profile_detail_modal').classList.add('hidden');
-}
-    // ---- CHAT SYSTEM ----
-    let currentChatPartner = null;
-    let chatInterval = null;
-
-    async function openChat(partnerId, partnerName) {
-    currentChatPartner = partnerId;
-    document.getElementById('chat_partner_name').innerText = partnerName;
-    document.getElementById('chat_modal').classList.remove('hidden');
-    
-    // NEW: Notify backend that messages are being read
-    try {
-        await call(`/api/v1/chat/read?partner_id=${partnerId}`, 'POST');
-    } catch(e) { console.warn("Failed to mark as read"); }
-
-    loadMessages();
-    chatInterval = setInterval(loadMessages, 3000);
-}
-
-    function closeChat() {
-        document.getElementById('chat_modal').classList.add('hidden');
-        clearInterval(chatInterval);
-        currentChatPartner = null;
-    }
-
+    function closeChat() { document.getElementById('chat_modal').classList.add('hidden'); clearInterval(chatInterval); }
     async function loadMessages() {
         if(!currentChatPartner) return;
-        const box = document.getElementById('chat_box');
-        const data = await call(`/api/v1/chat?partner_id=${currentChatPartner}`);
-        const isAtBottom = box.scrollHeight - box.scrollTop === box.clientHeight;
-        box.innerHTML = '';
-        data.messages.forEach(m => {
-            const align = m.is_me ? "self-end bg-orange-600 text-white" : "self-start bg-gray-200 text-gray-800";
-            box.innerHTML += `
-            <div class="flex flex-col ${m.is_me ? 'items-end' : 'items-start'}">
-                <div class="px-4 py-2 rounded-2xl max-w-[80%] text-sm ${align}">
-                    ${m.text}
-                </div>
-                <span class="text-[10px] text-gray-400 mt-1">${m.time}</span>
-            </div>`;
-        });
-        if(isAtBottom) box.scrollTop = box.scrollHeight;
+        const box = document.getElementById('chat_box'), data = await call(`/api/v1/chat?partner_id=${currentChatPartner}`);
+        const atBottom = box.scrollHeight - box.scrollTop === box.clientHeight; box.innerHTML = '';
+        data.messages.forEach(m => { const al = m.is_me ? "self-end bg-orange-600 text-white" : "self-start bg-gray-200 text-gray-800"; box.innerHTML += `<div class="flex flex-col ${m.is_me ? 'items-end' : 'items-start'}"><div class="px-4 py-2 rounded-2xl max-w-[80%] text-sm ${al}">${m.text}</div><span class="text-[9px] text-gray-400 mt-1">${m.time}</span></div>`; });
+        if(atBottom) box.scrollTop = box.scrollHeight;
     }
+    async function sendMessage() { const i = document.getElementById('chat_input'), t = i.value.trim(); if(!t) return; i.value = ''; await call('/api/v1/chat', 'POST', { partner_id:currentChatPartner, content:t }); loadMessages(); }
+    document.getElementById('chat_input')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
 
-    async function sendMessage() {
-        const input = document.getElementById('chat_input');
-        const text = input.value.trim();
-        if(!text) return;
-        input.value = ''; 
-        await call('/api/v1/chat', 'POST', { partner_id: currentChatPartner, content: text });
-        loadMessages(); 
-    }
-    document.getElementById('chat_input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
-    
-    //report modal
     let currentReportTarget = null;
-
-function openReportModal(id, name) {
-    currentReportTarget = id;
-    document.getElementById('report_target_name').innerText = name;
-    document.getElementById('report_modal').classList.remove('hidden');
-}
-
-function closeReportModal() {
-    document.getElementById('report_modal').classList.add('hidden');
-    document.getElementById('report_details').value = '';
-}
-
-async function submitReport() {
-    const category = document.getElementById('report_category').value;
-    const details = document.getElementById('report_details').value;
-    const btn = document.getElementById('btn_submit_report');
-
-    if(!details.trim()) return alert("Please provide details.");
-
-    btn.disabled = true; btn.innerText = "Sending...";
-    try {
-        await call('/api/v1/report', 'POST', {
-            target_id: currentReportTarget,
-            category: category,
-            details: details
-        });
-        alert("Report submitted. Our team will review this and take the appropriate action. We may reach out to you for more information or feedback.");
-        closeReportModal();
-    } catch(e) {
-        alert("Failed to send report: " + e.message);
-    } finally {
-        btn.disabled = false; btn.innerText = "Submit Report";
+    function openReportModal(id, name) { currentReportTarget = id; document.getElementById('report_modal').classList.remove('hidden'); }
+    function closeReportModal() { document.getElementById('report_modal').classList.add('hidden'); }
+    async function submitReport() {
+        const c = document.getElementById('report_category').value, d = document.getElementById('report_details').value, b = document.getElementById('btn_submit_report');
+        if(!d.trim()) return; b.disabled = true; b.innerText = "...";
+        try { await call('/api/v1/report', 'POST', { target_id: currentReportTarget, category: c, details: d }); alert("Reported."); closeReportModal(); } catch(e) {} finally { b.disabled = false; b.innerText = "Submit"; }
     }
-}
-    
-    // ---- VERIFICATION ----
-    async function loadVerification() {
-        const form = document.getElementById('verifForm');
-        const statusCard = document.getElementById('verif_status_card');
-        const editBtn = document.getElementById('btn_edit_verif');
 
+    async function loadVerification() {
         try {
             const data = await call('/api/v1/verification');
-            
             if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
             if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
-            
-            editBtn.classList.remove('hidden'); 
-
-            if (data.status === "NOT_SUBMITTED") {
-                statusCard.classList.add('hidden'); form.classList.remove('hidden');
-            } 
-            else if (data.status === "PENDING") {
-                form.classList.add('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
-                document.getElementById('verif_title').innerText = "Application Under Review";
-                document.getElementById('verif_desc').innerText = "You can update your details if needed.";
-            }
-            else if (data.status === "APPROVED") {
-                form.classList.add('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
-                document.getElementById('verif_title').innerText = "Business Verified";
-                document.getElementById('verif_desc').innerText = "Your business is verified. Click edit to update details.";
-            }
-            else if (data.status === "REJECTED") {
-                form.classList.remove('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
-                document.getElementById('verif_title').innerText = "Action Required";
-                document.getElementById('verif_desc').innerText = "Please correct your details and resubmit.";
-                editBtn.classList.add('hidden');
-            }
-            lucide.createIcons();
-        } catch(e) { console.error(e); }
-    }
-
-    window.enableVerifEdit = function() {
-        document.getElementById('verifForm').classList.remove('hidden');
-        document.getElementById('verif_status_card').classList.add('hidden');
-    }
-
-    document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const payload = {
-            business_name: document.getElementById('v_biz_name').value,
-            business_location: document.getElementById('v_biz_loc').value,
-            business_type: document.getElementById('v_biz_type').value,
-            registration_number: document.getElementById('v_reg_num').value,
-            tax_id: document.getElementById('v_tax_id').value || null
-        };
-        const btn = e.target.querySelector('button');
-        const oldText = btn.innerText;
-        btn.innerText = "Submitting..."; btn.disabled = true;
-        try {
-            await call('/api/v1/verification', 'POST', payload);
-            alert("Application Submitted! Your status is now Pending.");
-            await loadVerification();
-            if(document.getElementById('view-track').classList.contains('active')) loadTracking();
-            const me = await call('/api/v1/me');
-            currentUserType = me?.user?.type || 'Retailer';
-            currentVerifStatus = me?.user?.status || 'PENDING';
-        } catch(err) { alert("Error: " + err.message); } 
-        finally { btn.innerText = oldText; btn.disabled = false; }
-    });
-
-    async function loadTracking() {
-        try {
-            const data = await call('/api/v1/verification');
-            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon');
-            const actionDiv = document.getElementById('track_action');
-            if (data.status === 'REJECTED') actionDiv.classList.remove('hidden'); else actionDiv.classList.add('hidden');
-            
-            [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
-
-            if (data.status !== "NOT_SUBMITTED") {
-                s1.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                document.getElementById('track_id').innerText = "VER-" + Math.floor(Math.random()*10000);
-            }
-            if (data.status === "PENDING") {
-                s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
-            } else if (data.status === "APPROVED") {
-                s2.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                s3.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-            } else if (data.status === "REJECTED") {
-                 s2.className = "w-8 h-8 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                 s2.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
+            const sc = document.getElementById('verif_status_card'), f = document.getElementById('verifForm'), eb = document.getElementById('btn_edit_verif');
+            if (data.status === "NOT_SUBMITTED") { sc.classList.add('hidden'); f.classList.remove('hidden'); }
+            else {
+                f.classList.add('hidden'); sc.classList.remove('hidden'); eb.classList.remove('hidden');
+                document.getElementById('verif_title').innerText = data.status;
+                document.getElementById('verif_desc').innerText = data.status === 'APPROVED' ? "Fully verified." : "Under review.";
+                const iconBox = document.getElementById('verif_icon_box'), icon = document.getElementById('verif_icon');
+                if (data.status === 'APPROVED') { iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-green-600"; icon.setAttribute('data-lucide', 'check'); }
+                else { iconBox.className = "w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-blue-600 animate-spin"; icon.setAttribute('data-lucide', 'loader-2'); }
             }
             lucide.createIcons();
         } catch(e) {}
     }
+    function enableVerifEdit() { document.getElementById('verifForm').classList.remove('hidden'); document.getElementById('verif_status_card').classList.add('hidden'); }
 
-    // ---- INIT ----
     async function init() {
         lucide.createIcons();
         try {
             const me = await call('/api/v1/me');
-            const name = me?.user?.name || '';
-            const email = me?.user?.email || 'Unknown';
-            
-            // Save GLOBAL State
             currentUserType = me?.user?.type || 'Retailer';
             currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
-
-            let display = name ? name : (email.split('@')[0]);
-            document.getElementById('welcomeName').innerText = display;
-            document.getElementById('email').innerText = email;
-            document.getElementById('status').innerText = 'Signed in';
-        } catch(e) {
-            window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
-        }
+            document.getElementById('welcomeName').innerText = me?.user?.name || 'User';
+            document.getElementById('email').innerText = me?.user?.email || '—';
+        } catch(e) { window.location.href = SIGNIN_PAGE; }
     }
 
-    // ---- MISC LISTENERS ----
     const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (DRC)","Congo (Republic)","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea (North)","Korea (South)","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+    function initCountries(id) { const s = document.getElementById(id); if(!s) return; allCountries.forEach(c => { const o = document.createElement('option'); o.value = c; o.innerText = c; s.appendChild(o); }); }
     
-    function initCountries(selectId) {
-        const select = document.getElementById(selectId);
-        if(!select) return;
-        select.innerHTML = '<option value="">Select Country</option>';
-        allCountries.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c; opt.innerText = c;
-            select.appendChild(opt);
-        });
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
-        initCountries('v_biz_loc');
-        initCountries('filter_loc'); // Populate the Filter dropdown too!
-        
-        const langBtn = document.getElementById("lang-btn");
-        const langMenu = document.getElementById("lang-menu");
-        if(langBtn && langMenu) {
-            langBtn.addEventListener("click", (e) => { e.stopPropagation(); langMenu.classList.toggle("hidden"); });
-            document.addEventListener("click", (e) => { if(!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add("hidden"); });
-        }
+        initCountries('v_biz_loc'); initCountries('filter_loc');
+        const lb = document.getElementById("lang-btn"), lm = document.getElementById("lang-menu");
+        lb?.addEventListener("click", (e) => { e.stopPropagation(); lm.classList.toggle("hidden"); });
+        document.addEventListener("click", () => lm?.classList.add("hidden"));
     });
 
-    document.getElementById('copyBtn')?.addEventListener('click', async () => {
-      const email = document.getElementById('email')?.innerText?.trim();
-      if (!email || email === '—') return;
-      try { await navigator.clipboard.writeText(email); const btn = document.getElementById('copyBtn'); const old = btn.innerText; btn.innerText = 'Copied'; setTimeout(()=> btn.innerText = old, 1200); } catch {}
-    });
-
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        window.location.href = SIGNIN_PAGE;
-    });
-
-    const y = document.getElementById('year');
-    if (y) y.textContent = new Date().getFullYear();
-
+    document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem('token'); window.location.href = SIGNIN_PAGE; });
     document.addEventListener('DOMContentLoaded', init);
-
-  
   </script>
 </body>
 </html>
