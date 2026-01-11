@@ -840,30 +840,31 @@
 
     // ---- VIEW ROUTER (ACCESS CONTROL FIXED) ----
     async function switchView(viewName) {
-    // 1. Fetch current status
-    let me;
-    try { 
-        me = await call('/api/v1/me'); 
-        currentUserType = me.user.type;
-        currentVerifStatus = me.user.status;
-    } catch(e) { /* redirect to signin */ }
+        // 1. Fetch fresh status from the API
+        let me;
+        try {
+            me = await call('/api/v1/me');
+            currentUserType = me.user.type;
+            currentVerifStatus = me.user.status;
+            // IMPORTANT: Store the payment status globally or use it here
+            const currentPaymentStatus = me.user.payment_status;
 
-    // 2. ACCESS CONTROL LOGIC
-    if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-    if (currentUserType !== 'Retailer') {
-        if (currentVerifStatus !== 'APPROVED') {
-            viewName = 'restricted'; // Still waiting for admin approval
-        } 
-        else if (me.user.payment_status !== 'ACTIVE') {
-            // IF APPROVED BUT NOT PAID: Force them to Billing
-            viewName = 'billing'; 
-            // Only alert if they tried to click a restricted feature
-            if (['dashboard', 'insights', 'connect'].includes(arguments[0])) {
-                alert("Account Approved! Please select a plan to activate your features.");
+            // 2. ACCESS CONTROL CHECK
+            if (['dashboard', 'insights', 'connect'].includes(viewName)) {
+                if (currentUserType !== 'Retailer') {
+                    if (currentVerifStatus !== 'APPROVED') {
+                        viewName = 'restricted';
+                    } 
+                    else if (currentPaymentStatus !== 'ACTIVE') {
+                        // This is where you were getting stuck!
+                        viewName = 'billing';
+                        alert("Account Verified! Please select a plan to activate your dashboard.");
+                    }
+                }
             }
+        } catch(e) {
+            console.error("Auth check failed", e);
         }
-    }
-}
 
         // 3. SWITCH UI
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
