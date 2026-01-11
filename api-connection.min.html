@@ -298,39 +298,41 @@
             </div>
         </div>
 
-        <!-- FILTERS (NEW) -->
-        <div class="flex flex-wrap gap-3 mb-6 bg-white p-3 rounded-xl border shadow-sm">
-            <select id="filter_type" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500">
-                <option value="">All Types</option>
-                <option value="Retailer">Retailer</option>
-                <option value="FMCG">FMCG</option>
-                <option value="NGO">NGO</option>
-                <option value="Development Partner">Development Partner</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Micro-Lender">Micro-Lender</option>
-            </select>
+        <!-- FILTERS -->
+        <div class="flex flex-wrap items-center gap-3 mb-6 bg-white p-3 rounded-xl border shadow-sm">
+    
+    <!-- Wrapper for elements we want to hide/show -->
+    <div id="filter_controls_wrapper" class="flex flex-wrap items-center gap-3 flex-1">
 
-            
-            <select id="filter_loc" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500 w-48">
-                <option value="">All Locations</option>
-                <!-- JS will populate countries -->
-            </select>
+        <!-- Type Filter -->
+        <select id="filter_type" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500">
+            <option value="">All Types</option>
+            <option value="Retailer">Retailer</option>
+            <option value="FMCG">FMCG</option>
+            <option value="NGO">NGO</option>
+            <option value="Development Partner">Development Partner</option>
+            <option value="Fintech">Fintech</option>
+        </select>
 
-            <!-- Search Bar -->
-    <div class="relative flex-1 min-w-[200px]">
-    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-    <input type="text" id="filter_search" 
-           oninput="debouncedSearch()" 
-           placeholder="Search name or keywords..." 
-           class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
-</div>
+        <!-- Location Filter -->
+        <select id="filter_loc" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500 w-44">
+            <option value="">All Locations</option>
+        </select>
 
-            <div class="flex gap-4 ml-auto border-l pl-4">
-                <button onclick="loadConnectHub('browse')" id="tab-browse" class="text-sm font-semibold text-orange-600">Explore</button>
-                <button onclick="loadConnectHub('connections')" id="tab-network" class="text-sm text-gray-500 hover:text-gray-700">My Network</button>
-            </div>
+      <!-- Search Bar -->
+        <div class="relative flex-1 min-w-[200px]">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <input type="text" id="filter_search" oninput="debouncedSearch()" placeholder="Search names..." 
+                   class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all">
         </div>
+    </div>
 
+    <!-- The Tabs stay visible -->
+    <div class="flex gap-4 ml-auto border-l pl-4">
+        <button onclick="loadConnectHub('browse')" id="tab-browse" class="text-sm font-semibold text-orange-600">Explore</button>
+        <button onclick="loadConnectHub('connections')" id="tab-network" class="text-sm text-gray-500 hover:text-gray-700">My Network</button>
+    </div>
+</div>
         <!-- Requests Panel -->
         <div id="requests_panel" class="hidden mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <h3 class="text-sm font-bold text-yellow-800 mb-3">Pending Requests</h3>
@@ -975,11 +977,19 @@
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
+        const filterWrapper = document.getElementById('filter_controls_wrapper');
         list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
         
         // Tab UI logic
         document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
         document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+
+        // --- NEW: HIDE/SHOW FILTERS ---
+        if (mode === 'connections') {
+            filterWrapper.classList.add('hidden');
+        } else {
+            filterWrapper.classList.remove('hidden');
+        }
 
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
@@ -987,15 +997,19 @@
 
         try {
             let url = `/api/v1/connect?mode=${mode}`;
-            if(search) url += `&search=${encodeURIComponent(search)}`;
-            if(type) url += `&type=${encodeURIComponent(type)}`;
-            if(loc) url += `&loc=${encodeURIComponent(loc)}`;
+            // Only attach filters if we are in 'browse' mode
+            if (mode === 'browse') {
+                if(search) url += `&search=${encodeURIComponent(search)}`;
+                if(type) url += `&type=${encodeURIComponent(type)}`;
+                if(loc) url += `&loc=${encodeURIComponent(loc)}`;
+            }
 
             const data = await call(url);
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found.</p>`;
+                const msg = mode === 'browse' ? `No matches found for "${search}"` : "You haven't connected with any businesses yet.";
+                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">${msg}</p>`;
                 return;
             }
 
