@@ -849,18 +849,20 @@
 
     // 2. ACCESS CONTROL LOGIC
     if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-        if (currentUserType !== 'Retailer') {
-            // Check Verification first
-            if (currentVerifStatus !== 'APPROVED') {
-                viewName = 'restricted';
-            } 
-            // Check Payment second
-            else if (me.user.payment_status !== 'ACTIVE') {
-                viewName = 'billing';
-                alert("Your application is approved! Please select a plan to activate these features.");
+    if (currentUserType !== 'Retailer') {
+        if (currentVerifStatus !== 'APPROVED') {
+            viewName = 'restricted'; // Still waiting for admin approval
+        } 
+        else if (me.user.payment_status !== 'ACTIVE') {
+            // IF APPROVED BUT NOT PAID: Force them to Billing
+            viewName = 'billing'; 
+            // Only alert if they tried to click a restricted feature
+            if (['dashboard', 'insights', 'connect'].includes(arguments[0])) {
+                alert("Account Approved! Please select a plan to activate your features.");
             }
         }
     }
+}
 
         // 3. SWITCH UI
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
