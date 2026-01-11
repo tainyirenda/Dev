@@ -1601,8 +1601,8 @@ async function submitReport() {
                 
                 if (data.reviewed_at) {
                     const reviewDate = new Date(data.reviewed_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-                    if(d2) d2.innerText = (data.type === 'Retailer' ? "Validated on " : "Approved on ") + reviewDate;
-                    if(d3) d3.innerText = "Finalized on " + reviewDate;
+                    if(d2) d2.innerText = (data.type === 'Retailer' ? "Validated on " : "Reviewed on ") + reviewDate;
+                    if(d3) d3.innerText = "Approved on " + reviewDate;
                 }
             }
             else if (data.status === "REJECTED") {
