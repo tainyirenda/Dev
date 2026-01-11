@@ -530,8 +530,9 @@
                         </div>
                     </div>
                     <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Under Review</h3>
-                        <p class="text-sm text-gray-500 mt-1">We are verifying your registration details with local authorities.</p>
+                        <h3 id="step2_title" class="font-bold text-gray-900">Under Review</h3>
+                        <p id="step2_desc" class="text-sm text-gray-500 mt-1">We are verifying your registration details with local authorities.</p>
+                        <p id="step2_date" class="text-xs text-gray-400 mt-1">--</p>
                     </div>
                 </div>
 
@@ -543,8 +544,7 @@
                         </div>
                     </div>
                     <div class="ml-20">
-    <h3 class="font-bold text-gray-900">Verification Complete</h3>
-    <p class="text-sm text-gray-500 mt-1">...</p>
+    <h3 id="step3_title" class="font-bold text-gray-900">Verification Approved</h3>
     <p id="step3_date" class="text-xs text-gray-400 mt-1">--</p>
 </div>
                 </div>
@@ -1554,6 +1554,7 @@ async function submitReport() {
             // UI Elements
             const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon');
             const d1=document.getElementById('step1_date'), d2=document.getElementById('step2_date'), d3=document.getElementById('step3_date');
+            const t2=document.getElementById('step2_title'), t3=document.getElementById('step3_title'), desc2=document.getElementById('step2_desc');
             
             // Labels for dynamic names
             const step2_title = document.querySelector('#view-track h3:nth-of-type(2)') || { innerText: "" };
@@ -1578,24 +1579,25 @@ async function submitReport() {
             [s1, s2, s3].forEach(el => el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10");
 
             if (data.status !== "NOT_SUBMITTED") {
-                // STEP 1: Always Green if submitted
-                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                if (data.submitted_at) d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB');
-
+            // Step 1 Complete
+            s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+            if (data.submitted_at) {
+                d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            }
                 // STEP 2: Logic for Review/Validation
                 if (data.status === "PENDING") {
-                    // Currently in Stage 2
-                    s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10";
-                    s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
-                } 
+                s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10";
+                s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+            } 
+                  
                 else if (data.status === "APPROVED") {
-                    // Passed Stage 2
-                    s2.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                    if (data.reviewed_at) d2.innerText = "Validated on " + new Date(data.reviewed_at).toLocaleDateString('en-GB');
-
-                    // STEP 3: Final Completion
-                    s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                    if (data.reviewed_at) d3.innerText = "Finalized on " + new Date(data.reviewed_at).toLocaleDateString('en-GB');
+                s2.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                
+                if (data.reviewed_at) {
+                    const reviewDate = new Date(data.reviewed_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+                    if(d2) d2.innerText = "Validated on " + reviewDate;
+                    if(d3) d3.innerText = "Finalized on " + reviewDate;
                 }
                 else if (data.status === "REJECTED") {
                     s2.className = "w-10 h-10 rounded-full bg-red-500 border-4 border-white flex items-center justify-center text-white z-10";
