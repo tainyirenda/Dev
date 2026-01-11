@@ -1484,16 +1484,16 @@ async function submitReport() {
         const oldText = btn.innerText;
         btn.innerText = "Submitting..."; btn.disabled = true;
         try {
-            await call('/api/v1/verification', 'POST', payload);
+            const res = await call('/api/v1/verification', 'POST', payload);
+        if (res.auto_approved) {
+            alert("Success! Your Retailer account has been auto-verified for the Free Community Tier. You now have full access.");
+        } else {
             alert("Application Submitted! Your status is now Pending.");
+        };
             await loadVerification();
-            if(document.getElementById('view-track').classList.contains('active')) loadTracking();
-            const me = await call('/api/v1/me');
-            currentUserType = me?.user?.type || 'Retailer';
-            currentVerifStatus = me?.user?.status || 'PENDING';
-        } catch(err) { alert("Error: " + err.message); } 
-        finally { btn.innerText = oldText; btn.disabled = false; }
-    });
+            if (res.auto_approved) switchView('dashboard');
+    } catch(err) { alert("Error: " + err.message); }
+});
 
     async function loadTracking() {
         try {
