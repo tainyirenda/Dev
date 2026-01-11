@@ -866,7 +866,6 @@
 
         // 3. SWITCH UI VISIBILITY
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        const displayName = tierName.replace('_', ' ');
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
 
@@ -1545,9 +1544,24 @@ async function submitReport() {
             [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
 
             if (data.status !== "NOT_SUBMITTED") {
-                s1.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
+                // Step 1: Active
+                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white";
                 document.getElementById('track_id').innerText = "VER-" + Math.floor(Math.random()*10000);
+                
+                // --- FORMAT AND DISPLAY DATE ---
+                if (data.submitted_at) {
+                    const d = new Date(data.submitted_at);
+                    const formattedDate = d.toLocaleDateString('en-GB', { 
+                        day: 'numeric', 
+                        month: 'short', 
+                        year: 'numeric' 
+                    });
+                    dateEl.innerText = "Submitted on " + formattedDate;
+                } else {
+                    dateEl.innerText = "--";
+                }
             }
+
             if (data.status === "PENDING") {
                 s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
                 s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
