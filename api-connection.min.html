@@ -196,7 +196,7 @@
             <div class="iconwrap group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
             <div>
               <h3 class="text-lg font-bold text-gray-900">Billing & Plans</h3>
-              <p class="mt-1 text-sm text-gray-500">Manage plan, invoices and add-ons.</p>
+              <p class="mt-1 text-sm text-gray-500">Manage plan, billing and add-ons.</p>
             </div>
           </div>
         </button>
@@ -602,10 +602,7 @@
                         Full analytics dashboard, Connect Hub access, WhatsApp-based inventory-sales tracking & credit profiling, and AI-generated recommendations & stock alerts.
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <!-- We show this as the active plan by default for retailers -->
-                        <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
-                            </tr>
+                        <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_STARTER')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                     </td>
                 </tr>
             </tbody>
@@ -634,13 +631,13 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$1,500/m <span class="text-xs text-gray-400">(£1,200)</span></td>
                                 <td class="px-6 py-4 text-gray-600">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_STARTER')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$3,500/m <span class="text-xs text-gray-400">(£2,800)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Multi-region, advanced forecasting, competitor insights, API integration</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_GROWTH')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
@@ -674,13 +671,13 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$300/m <span class="text-xs text-gray-400">(£240)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_STARTER')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$1,200/m <span class="text-xs text-gray-400">(£950)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Multi-region, real-time dashboards, grant reporting, alerts</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_GROWTH')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
@@ -714,13 +711,13 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$750/m <span class="text-xs text-gray-400">(£600)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_STARTER')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$2,500/m <span class="text-xs text-gray-400">(£2,000)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Expanded API, repayment analysis, portfolio monitoring</td>
-                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_GROWTH')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
