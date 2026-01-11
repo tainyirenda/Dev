@@ -906,16 +906,42 @@
     }
 }
 
-    async function contactSales(tierName) {
-    if(!confirm(`Would you like to request a consultation for the ${tierName} plan? Our sales team will contact you via your registered email.`)) return;
-
-    try {
-        await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
-        alert("Inquiry Sent! A specialist from the Afro Ubuntu TradeNet team will reach out to you shortly.");
-    } catch(e) {
-        alert("Failed to send inquiry: " + e.message);
+    async function selectPlanTest(tierName) {
+        // Fix: Replace underscores with spaces for the message
+        const displayName = tierName.replace('_', ' ');
+        
+        if(!confirm(`Activate ${displayName} plan for access?`)) return;
+        
+        try {
+            // Ensure the route matches what you added to your router
+            await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
+            
+            alert("Success! Package activated. You now have full access to the TradeNet ecosystem.");
+            
+            // Hard refresh to ensure all global states (payment_status) are updated
+            window.location.reload(); 
+        } catch(e) {
+            alert("Activation failed: " + e.message);
+        }
     }
-}
+
+    // CONTACT SALES WITH REDIRECT
+    async function contactSales(tierName) {
+        const displayName = tierName.replace('_', ' ');
+        
+        if(!confirm(`Would you like to request a consultation for the ${displayName} plan?`)) return;
+
+        try {
+            await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
+            alert("Inquiry Sent! A specialist from our team will reach out to you shortly.");
+            
+            // Fix: Redirect back to the Hub (Main Page) after inquiry
+            switchView('hub'); 
+        } catch(e) {
+            alert("Failed to send inquiry: " + e.message);
+        }
+    }
+
     
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
