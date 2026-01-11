@@ -838,7 +838,7 @@
         return data;
     }
 
-    // ---- VIEW ROUTER (ACCESS CONTROL FIXED) ----
+    // ---- VIEW ROUTER ----
     async function switchView(viewName) {
         // 1. Fetch fresh status from the API
         let me;
@@ -846,7 +846,6 @@
             me = await call('/api/v1/me');
             currentUserType = me.user.type;
             currentVerifStatus = me.user.status;
-            // IMPORTANT: Store the payment status globally or use it here
             const currentPaymentStatus = me.user.payment_status;
 
             // 2. ACCESS CONTROL CHECK
@@ -856,9 +855,8 @@
                         viewName = 'restricted';
                     } 
                     else if (currentPaymentStatus !== 'ACTIVE') {
-                        // This is where you were getting stuck!
                         viewName = 'billing';
-                        alert("Account Verified! Please select a plan to activate your dashboard.");
+                        alert("Account Approved! Please select a package to activate your portal.");
                     }
                 }
             }
@@ -866,10 +864,32 @@
             console.error("Auth check failed", e);
         }
 
-        // 3. SWITCH UI
+        // 3. SWITCH UI VISIBILITY
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
+
+        // --- BILLING UX CONSTRAINTS ---
+        if (viewName === 'billing') {
+            const planButtons = document.querySelectorAll('button[onclick^="selectPlanTest"]');
+            
+            planButtons.forEach(btn => {
+                if (currentUserType === 'Retailer') {
+                    // Hide buttons for retailers as they are on the free tier
+                    btn.classList.add('hidden');
+                } 
+                else if (currentVerifStatus !== 'APPROVED') {
+                    // Gray out buttons for non-approved organizations (No text change)
+                    btn.disabled = true;
+                    btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
+                } 
+                else {
+                    // Reset to normal for approved organizations
+                    btn.disabled = false;
+                    btn.classList.remove('hidden', 'grayscale', 'opacity-50', 'cursor-not-allowed');
+                }
+            });
+        }
         
         lucide.createIcons();
         window.scrollTo(0, 0);
@@ -880,11 +900,10 @@
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
     }
-
     // Global state for search timing
     let searchTimeout;
 
-    // The "Live Search" wrapper
+    // "Live Search" wrapper
     function debouncedSearch() {
         // 1. Clear the timer if the user is still typing
         clearTimeout(searchTimeout);
@@ -898,31 +917,23 @@
 
     // ---- PAYMENT HUB ----
     async function selectPlanTest(tierName) {
-    if(!confirm(`Activate ${tierName} plan for acess?`)) return;
-    
-    try {
-        await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
-        alert("Success! Package activated. You now have access to platform features.");
-        // Refresh the page to update the 'me' state
-        location.reload(); 
-    } catch(e) {
-        alert("Activation failed: " + e.message);
-    }
-}
+        // 1. Logic Check
+        if (currentUserType === 'Retailer') {
+            alert("As a Retailer/Vendor/Trader, you already have full access via the Free Community Tier. No further activation is required.");
+            return;
+        }
 
-    async function selectPlanTest(tierName) {
-        // Fix: Replace underscores with spaces for the message
+        if (currentVerifStatus !== 'APPROVED') {
+            alert("Your account must be approved before selecting a plan.");
+            return;
+        }
+
         const displayName = tierName.replace('_', ' ');
-        
-        if(!confirm(`Activate ${displayName} plan for access?`)) return;
+        if(!confirm(`Confirm selection of ${displayName} plan?`)) return;
         
         try {
-            // Ensure the route matches what you added to your router
-            await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
-            
-            alert("Success! Package activated. You now have full access to the TradeNet ecosystem.");
-            
-            // Hard refresh to ensure all global states (payment_status) are updated
+            const res = await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
+            alert("Success! Package activated. You now have full access.");
             window.location.reload(); 
         } catch(e) {
             alert("Activation failed: " + e.message);
@@ -939,7 +950,7 @@
             await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
             alert("Inquiry Sent! A specialist from our team will reach out to you shortly.");
             
-            // Fix: Redirect back to the Hub (Main Page) after inquiry
+            // Redirect back to the Hub (Main Page) after inquiry
             switchView('hub'); 
         } catch(e) {
             alert("Failed to send inquiry: " + e.message);
@@ -968,7 +979,7 @@
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
-            // 2. DEFINE THE URL (This was the missing piece causing your error)
+            // 2. DEFINE THE URL
             let url = `/api/v1/connect?mode=${mode}`;
             if(search) url += `&search=${encodeURIComponent(search)}`;
             if(type) url += `&type=${encodeURIComponent(type)}`;
@@ -1292,7 +1303,7 @@
             badge.classList.remove('hidden');
             badge.innerText = data.results.length; // Optional: Show count
         } else {
-            // FIX: Explicitly hide if 0
+            // Explicitly hide if 0
             badge.classList.add('hidden');
         }
     }
@@ -1366,7 +1377,7 @@ function closeProfileModal() {
 
     document.getElementById('chat_modal').classList.remove('hidden');
     
-    // NEW: Notify backend that messages are being read
+    // Notify backend that messages are being read
     try {
         await call(`/api/v1/chat/read?partner_id=${partnerId}`, 'POST');
     } catch(e) { console.warn("Failed to mark as read"); }
