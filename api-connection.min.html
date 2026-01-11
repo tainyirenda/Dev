@@ -1535,7 +1535,13 @@ async function submitReport() {
             await loadVerification();
             if (res.auto_approved) switchView('dashboard');
     } catch(err) { alert("Error: " + err.message); }
-});
+      finally {
+            // THE FIX: Reset the button state NO MATTER WHAT happens
+            btn.innerText = oldText; 
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    });
 
     async function loadTracking() {
     try {
