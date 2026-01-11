@@ -530,9 +530,10 @@
                         </div>
                     </div>
                     <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Under Review</h3>
-                        <p class="text-sm text-gray-500 mt-1">We are verifying your registration details with local authorities.</p>
-                    </div>
+    <h3 class="font-bold text-gray-900">Compliance Review</h3>
+    <p class="text-sm text-gray-500 mt-1">...</p>
+    <p id="step2_date" class="text-xs text-gray-400 mt-1">--</p>
+</div>
                 </div>
 
                 <!-- Step 3 -->
@@ -543,9 +544,10 @@
                         </div>
                     </div>
                     <div class="ml-20">
-                        <h3 class="font-bold text-gray-900">Verification Complete</h3>
-                        <p class="text-sm text-gray-500 mt-1">Your business is fully verified. You now have access to platform features.</p>
-                    </div>
+    <h3 class="font-bold text-gray-900">Verification Complete</h3>
+    <p class="text-sm text-gray-500 mt-1">...</p>
+    <p id="step3_date" class="text-xs text-gray-400 mt-1">--</p>
+</div>
                 </div>
             </div>
 
@@ -1537,45 +1539,65 @@ async function submitReport() {
     async function loadTracking() {
         try {
             const data = await call('/api/v1/verification');
-            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon');
-            const actionDiv = document.getElementById('track_action');
-            if (data.status === 'REJECTED') actionDiv.classList.remove('hidden'); else actionDiv.classList.add('hidden');
             
-            [s1, s2, s3].forEach(el => el.className = "w-8 h-8 bg-gray-200 rounded-full border-4 border-white flex items-center justify-center text-white z-10");
+            // UI Elements
+            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon');
+            const d1=document.getElementById('step1_date'), d2=document.getElementById('step2_date'), d3=document.getElementById('step3_date');
+            
+            // Labels for dynamic names
+            const step2_title = document.querySelector('#view-track h3:nth-of-type(2)') || { innerText: "" };
+            const step2_desc = document.querySelector('#view-track p:nth-of-type(2)') || { innerText: "" };
+            const step3_title = document.querySelector('#view-track h3:nth-of-type(3)') || { innerText: "" };
+
+            // 1. DYNAMIC LABELS BASED ON USER TYPE
+            const isRetailer = (data.type === 'Retailer');
+            if (isRetailer) {
+                // Retailer labels: Focus on validation/completion
+                if(step2_title) step2_title.innerText = "Secondary Validation";
+                if(step2_desc) step2_desc.innerText = "Automated system checks and community tier alignment.";
+                if(step3_title) step3_title.innerText = "Access Completed";
+            } else {
+                // Business labels: Focus on manual compliance
+                if(step2_title) step2_title.innerText = "Compliance Review";
+                if(step2_desc) step2_desc.innerText = "Our team is verifying your registration and tax credentials.";
+                if(step3_title) step3_title.innerText = "Verification Approved";
+            }
+
+            // Reset all icons to grey
+            [s1, s2, s3].forEach(el => el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10");
 
             if (data.status !== "NOT_SUBMITTED") {
-                // Step 1: Active
-                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white";
-                document.getElementById('track_id').innerText = "VER-" + Math.floor(Math.random()*10000);
-                
-                // --- FORMAT AND DISPLAY DATE ---
-                if (data.submitted_at) {
-                    const d = new Date(data.submitted_at);
-                    const formattedDate = d.toLocaleDateString('en-GB', { 
-                        day: 'numeric', 
-                        month: 'short', 
-                        year: 'numeric' 
-                    });
-                    dateEl.innerText = "Submitted on " + formattedDate;
-                } else {
-                    dateEl.innerText = "--";
+                // STEP 1: Always Green if submitted
+                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                if (data.submitted_at) d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB');
+
+                // STEP 2: Logic for Review/Validation
+                if (data.status === "PENDING") {
+                    // Currently in Stage 2
+                    s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10";
+                    s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+                } 
+                else if (data.status === "APPROVED") {
+                    // Passed Stage 2
+                    s2.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                    if (data.reviewed_at) d2.innerText = "Validated on " + new Date(data.reviewed_at).toLocaleDateString('en-GB');
+
+                    // STEP 3: Final Completion
+                    s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                    if (data.reviewed_at) d3.innerText = "Finalized on " + new Date(data.reviewed_at).toLocaleDateString('en-GB');
+                }
+                else if (data.status === "REJECTED") {
+                    s2.className = "w-10 h-10 rounded-full bg-red-500 border-4 border-white flex items-center justify-center text-white z-10";
+                    s2.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
                 }
             }
-
-            if (data.status === "PENDING") {
-                s2.className = "w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                s2.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
-            } else if (data.status === "APPROVED") {
-                s2.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                s3.className = "w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-            } else if (data.status === "REJECTED") {
-                 s2.className = "w-8 h-8 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-white z-10";
-                 s2.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
-            }
+            
+            document.getElementById('track_id').innerText = data.reg_num || "VER-NEW";
             lucide.createIcons();
-        } catch(e) {}
+        } catch(e) { console.error(e); }
     }
 
+    
     // ---- INIT ----
     async function init() {
         lucide.createIcons();
