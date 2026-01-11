@@ -615,7 +615,7 @@
 </div>
             
             <!-- FMCGs Table -->
-            <div class="card overflow-hidden">
+            <div id="billing_fmcg_section" class="card overflow-hidden">
                 <div class="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i data-lucide="package" class="w-4 h-4"></i></div>
                     <h3 class="text-lg font-bold text-green-800">FMCGs (Consumer Goods & Distributors)</h3>
@@ -655,7 +655,7 @@
             </div>
 
             <!-- NGOs Table -->
-            <div class="card overflow-hidden">
+            <div id="billing_ngo_section" class="card overflow-hidden">
                 <div class="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i data-lucide="users" class="w-4 h-4"></i></div>
                     <h3 class="text-lg font-bold text-orange-800">NGOs & Development Partners</h3>
@@ -695,7 +695,7 @@
             </div>
 
             <!-- Fintechs Table -->
-            <div class="card overflow-hidden">
+            <div id="billing_fintech_section" class="card overflow-hidden">
                 <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i data-lucide="banknote" class="w-4 h-4"></i></div>
                     <h3 class="text-lg font-bold text-blue-800">FinTechs (Banks, Microfinance)</h3>
@@ -791,7 +791,7 @@
     <div class="absolute inset-0 bg-black/40" onclick="closeModal('ethicsModal')"></div>
     <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
       <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h2 class="text-lg font-semibold mb-2">Ethical Data & AI Use Policy</h2>
+        <h2 class="text-lg font-semibold mb-2">Ethical Data/AI Use Policy</h2>
         <div class="border rounded-lg overflow-hidden h-64"><iframe src="ethical-ai-policy.html" class="w-full h-full"></iframe></div>
         <button class="btn-outline mt-4 text-xs" onclick="closeModal('ethicsModal')">Close</button>
       </div>
@@ -883,6 +883,11 @@
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
+      
+        // --- THE TRIGGER: Run constraints if on the billing page ---
+        if (viewName === 'billing') {
+            applyBillingConstraints();
+        }
 
         // --- BILLING UX CONSTRAINTS ---
         if (viewName === 'billing') {
@@ -929,6 +934,42 @@
             // 3. Trigger the existing load function after 400ms pause
             loadConnectHub(); 
         }, 400);
+    }
+
+    function applyBillingConstraints() {
+        const fmcgSec = document.getElementById('billing_fmcg_section');
+        const ngoSec = document.getElementById('billing_ngo_section');
+        const fintechSec = document.getElementById('billing_fintech_section');
+
+        // 1. Sector Isolation: Hide irrelevant tables entirely
+        if (fmcgSec) fmcgSec.classList.add('hidden');
+        if (ngoSec) ngoSec.classList.add('hidden');
+        if (fintechSec) fintechSec.classList.add('hidden');
+
+        if (currentUserType === 'FMCG') {
+            if (fmcgSec) fmcgSec.classList.remove('hidden');
+        } else if (currentUserType === 'NGO' || currentUserType === 'Development Partner') {
+            if (ngoSec) ngoSec.classList.remove('hidden');
+        } else if (currentUserType === 'Fintech' || currentUserType === 'Micro-Lender') {
+            if (fintechSec) fintechSec.classList.remove('hidden');
+        }
+
+        // 2. Button Visuals (Grayscale for non-approved users)
+        const billingButtons = document.querySelectorAll('button[onclick^="selectPlanTest"], button[onclick^="contactSales"]');
+        
+        billingButtons.forEach(btn => {
+            if (currentUserType === 'Retailer') {
+                btn.classList.add('hidden'); // Retailers see nothing in paid tables
+            } 
+            else if (currentVerifStatus !== 'APPROVED') {
+                btn.disabled = true;
+                btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
+            } 
+            else {
+                btn.disabled = false;
+                btn.classList.remove('hidden', 'grayscale', 'opacity-50', 'cursor-not-allowed');
+            }
+        });
     }
 
     // ---- PAYMENT HUB ----
@@ -984,7 +1025,7 @@
         document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
         document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
-        // --- NEW: HIDE/SHOW FILTERS ---
+        // --- HIDE/SHOW FILTERS ---
         if (mode === 'connections') {
             filterWrapper.classList.add('hidden');
         } else {
