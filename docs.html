@@ -2,79 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Documentation • Afro Ubuntu TradeNet</title>
+  <title>TradeNet Docs • Afro Ubuntu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- 1. REUSED GOOGLE TRANSLATE LOGIC -->
+  <script type="text/javascript">
+    function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
+    function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
+    window.setLanguage = function(lang) { 
+      function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
+      if (apply()) return; 
+      const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
+      obs.observe(document.body, { childList: true, subtree: true }); 
+      setGoogleTransCookie(lang); 
+      setTimeout(() => window.location.reload(), 300); 
+    };
+    function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  
   <style>
-    :root{ --au-ink:#111827; --au-accent:#ea580c; }
-    body{ font-family: 'Inter', sans-serif; color: var(--au-ink); background: #f9fafb; }
-    .sidebar-link { display: block; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; color: #4b5563; transition: all 0.2s; }
+    :root{ --au-ink:#111827; --au-stone:#6b7280; --au-accent:#ea580c; }
+    body{ font-family: 'Inter', sans-serif; color: var(--au-ink); background: #fff; }
+    #google_translate_element { display: none !important; }
+    .sidebar-link { display: block; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.875rem; color: #4b5563; transition: all 0.2s; }
     .sidebar-link:hover { background: #f3f4f6; color: var(--au-accent); }
-    .sidebar-link.active { font-weight: 700; color: var(--au-ink); background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    pre { background: #1f2937; color: #f3f4f6; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+    .sidebar-link.active { font-weight: 700; color: var(--au-ink); background: #f9fafb; border: 1px solid #e5e7eb; }
+    code { font-family: monospace; background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #e11d48; }
   </style>
 </head>
-<body class="flex min-h-screen">
+<body class="bg-gray-50">
 
-  <!-- Sidebar Nav -->
-  <aside class="w-64 border-r bg-gray-50 p-6 hidden md:block">
-    <div class="flex items-center gap-2 mb-8 cursor-pointer" onclick="window.location.href='index.html'">
-        <div class="w-8 h-8 rounded bg-[color:var(--au-ink)] text-white text-[10px] font-bold grid place-items-center">AUTN</div>
-        <span class="font-bold text-sm uppercase tracking-tighter">TradeNet Docs</span>
-    </div>
-    
-    <nav class="space-y-1">
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3">Getting Started</p>
-        <a href="#welcome" class="sidebar-link active">Introduction</a>
-        <a href="#onboarding" class="sidebar-link">WhatsApp Onboarding</a>
-        
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">Business Portals</p>
-        <a href="#retailers" class="sidebar-link">Retailer Guides</a>
-        <a href="#compliance" class="sidebar-link">Corporate Verification</a>
-        
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">API Reference</p>
-        <a href="#endpoints" class="sidebar-link">Credit Scoring API</a>
-    </nav>
-  </aside>
-
-  <!-- Content Area -->
-  <main class="flex-1 p-8 md:p-16 max-w-4xl">
-    <section id="welcome" class="mb-16">
-        <h1 class="text-4xl font-black mb-4">Documentation</h1>
-        <p class="text-lg text-gray-500">Everything you need to integrate with the Afro Ubuntu TradeNet ecosystem.</p>
-    </section>
-
-    <!-- Content Block -->
-    <section id="retailers" class="mb-16">
-        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-            <i data-lucide="store" class="w-6 h-6 text-orange-600"></i> Merchant Guides
-        </h2>
-        <div class="prose text-gray-600 space-y-4">
-            <p>Retailers participate in the ecosystem via our WhatsApp-native interface. To get started:</p>
-            <ol class="list-decimal pl-5 space-y-2">
-                <li>Register your phone number via the <strong>Web Portal</strong>.</li>
-                <li>Send "Hi" to our verified WhatsApp number.</li>
-                <li>Upload a photo of your recent inventory or sales log.</li>
-            </ol>
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-blue-800 text-sm">
-                <strong>Tip:</strong> Ensure images are clear and well-lit for optimal AI recognition.
-            </div>
+  <!-- 2. CONSISTENT HEADER -->
+  <header class="bg-white border-b sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='api-connection.html'">
+        <div class="w-8 h-8 rounded bg-gray-900 text-white text-[10px] font-bold grid place-items-center">AUTN</div>
+        <span class="font-bold text-sm tracking-tight hidden sm:block">TradeNet Documentation</span>
+      </div>
+      
+      <nav class="flex items-center gap-2">
+        <div class="relative group">
+           <button id="lang-btn" class="border rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-2 hover:bg-gray-50">
+             <i data-lucide="globe" class="w-3.5 h-3.5"></i> Language
+           </button>
+           <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border rounded-xl shadow-xl hidden p-1 z-50">
+             <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
+             <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
+             <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
+             <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
+             <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
+             <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
+           </div>
         </div>
-    </section>
+        <a href="api-connection.html" class="border rounded-lg px-3 py-1.5 text-xs font-medium bg-gray-900 text-white">Back to Portal</a>
+      </nav>
+    </div>
+  </header>
 
-    <!-- API Block (For High-end feel) -->
-    <section id="endpoints" class="mb-16">
-        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-            <i data-lucide="code-2" class="w-6 h-6 text-blue-600"></i> API Integration
-        </h2>
-        <p class="text-gray-600 mb-4">Fintech partners can pull real-time credit metrics using our authenticated endpoints.</p>
-        <p class="text-xs font-bold text-gray-400 uppercase mb-2">Request Example</p>
-        <pre>GET /api/v1/analytics/credit-score?target_id={business_id}
-Authorization: Bearer YOUR_API_TOKEN</pre>
-    </section>
+  <div class="max-w-7xl mx-auto flex">
+    <!-- SIDEBAR -->
+    <aside class="w-64 sticky top-16 h-[calc(100vh-64px)] p-6 overflow-y-auto hidden lg:block border-r">
+        <nav class="space-y-6">
+            <div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Merchant Guides</p>
+                <a href="#whatsapp" class="sidebar-link active">WhatsApp Flows</a>
+                <a href="#inventory" class="sidebar-link">Inventory Uploads</a>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Corporate Integration</p>
+                <a href="#api" class="sidebar-link">API Reference</a>
+                <a href="#compliance" class="sidebar-link">Compliance Checks</a>
+            </div>
+        </nav>
+    </aside>
 
-  </main>
+    <!-- CONTENT -->
+    <main class="flex-1 p-6 md:p-12 bg-white min-h-screen">
+        <article class="max-w-3xl prose prose-slate">
+            <h1 class="text-4xl font-black text-gray-900 mb-6">Introduction</h1>
+            <p class="text-gray-600 text-lg leading-relaxed">
+                Welcome to the Afro Ubuntu TradeNet ecosystem. Our platform connects informal retailers with global suppliers, NGOs, and Fintech partners using AI-driven insights and WhatsApp-native automation.
+            </p>
 
-  <script>lucide.createIcons();</script>
+            <h2 id="whatsapp" class="text-2xl font-bold mt-12 mb-4">WhatsApp Integration</h2>
+            <p>Retailers interact with the TradeNet via WhatsApp. To perform an inventory check, simply send an image of your stock sheet or a list of items to our verified number.</p>
+            
+            <!-- API SECTION: USE "notranslate" for code blocks -->
+            <h2 id="api" class="text-2xl font-bold mt-12 mb-4">Credit Scoring API</h2>
+            <p>Fintech partners can access normalized credit tiers for merchants via the following endpoint:</p>
+            <div class="notranslate">
+                <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm">GET /api/v1/analytics/credit-score?id={user_id}</pre>
+            </div>
+        </article>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    // Dropdown toggle logic
+    const btn = document.getElementById("lang-btn");
+    const menu = document.getElementById("lang-menu");
+    btn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle("hidden"); };
+    document.onclick = () => menu.classList.add("hidden");
+  </script>
 </body>
 </html>
