@@ -2,131 +2,194 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>TradeNet Docs • Afro Ubuntu</title>
+  <title>Documentation • Afro Ubuntu TradeNet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- 1. REUSED GOOGLE TRANSLATE LOGIC -->
+  <!-- Google Translate Logic -->
   <script type="text/javascript">
-    function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
-    function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
-    window.setLanguage = function(lang) { 
-      function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
-      if (apply()) return; 
-      const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
-      obs.observe(document.body, { childList: true, subtree: true }); 
-      setGoogleTransCookie(lang); 
-      setTimeout(() => window.location.reload(), 300); 
-    };
-    function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
+  function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
+  function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
+  window.setLanguage = function(lang) { 
+    function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
+    if (apply()) return; 
+    const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
+    obs.observe(document.body, { childList: true, subtree: true }); 
+    setGoogleTransCookie(lang); 
+    setTimeout(() => window.location.reload(), 300); 
+  };
+  function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
-  
+
   <style>
-    :root{ --au-ink:#111827; --au-stone:#6b7280; --au-accent:#ea580c; }
-    body{ font-family: 'Inter', sans-serif; color: var(--au-ink); background: #fff; }
-    #google_translate_element { display: none !important; }
-    .sidebar-link { display: block; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.875rem; color: #4b5563; transition: all 0.2s; }
+    :root{ --au-ink:#111827; --au-accent:#ea580c; --au-line:#e5e7eb; }
+    body{ font-family: 'Inter', sans-serif; color: var(--au-ink); background: #f9fafb; scroll-behavior: smooth; }
+    .sidebar-link { display: block; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; color: #4b5563; transition: all 0.2s; }
     .sidebar-link:hover { background: #f3f4f6; color: var(--au-accent); }
-    .sidebar-link.active { font-weight: 700; color: var(--au-ink); background: #f9fafb; border: 1px solid #e5e7eb; }
-    code { font-family: monospace; background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #e11d48; }
+    .sidebar-link.active { font-weight: 700; color: var(--au-ink); background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    pre { background: #1f2937; color: #f3f4f6; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+    .notranslate { font-family: monospace !important; }
+    #google_translate_element { display: none !important; }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="flex min-h-screen">
 
-  <!-- 2. CONSISTENT HEADER -->
-  <header class="bg-white border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      
-      <!-- Logo returns to Portal -->
-      <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='api-connection.html'">
-        <div class="w-9 h-9 rounded-lg bg-gray-900 text-white text-[11px] font-bold grid place-items-center transition-transform group-hover:scale-105">AUTN</div>
-        <div class="hidden sm:block">
-          <p class="text-sm font-bold text-gray-900 leading-tight">TradeNet Docs</p>
-          <p class="text-[10px] text-gray-400 uppercase tracking-tighter">Afro Ubuntu Ecosystem</p>
-        </div>
-      </div>
-      
-      <nav class="flex items-center gap-3">
-        <!-- Language Switcher -->
-        <div class="relative group">
-           <button id="lang-btn" class="border border-gray-200 rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-2 hover:bg-gray-50 transition-all">
-             <i data-lucide="globe" class="w-3.5 h-3.5 text-gray-400"></i> Language
-           </button>
-           <div id="lang-menu" class="absolute right-0 mt-2 w-44 bg-white border border-gray-100 rounded-2xl shadow-2xl hidden p-1 z-50 animate-fadeIn">
-             <button onclick="window.setLanguage('en')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">English</button>
-             <button onclick="window.setLanguage('sw')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Swahili</button>
-             <button onclick="window.setLanguage('fr')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">French</button>
-             <button onclick="window.setLanguage('ha')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Hausa</button>
-             <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Pidgin</button>
-             <button onclick="window.setLanguage('nd')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Ndebele</button>
-             <button onclick="window.setLanguage('yo')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Yoruba</button>
-             <button onclick="window.setLanguage('zu')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Zulu</button>
-             <button onclick="window.setLanguage('xh')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Xhosa</button>
-             <button onclick="window.setLanguage('sn')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Shona</button>
-             <button onclick="window.setLanguage('ny')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Nyanja</button>
-             <button onclick="window.setLanguage('af')" class="block w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 rounded-xl transition-colors">Afrikaans</button>
-           </div>
-        </div>
-
-        <!-- Back to Portal Button -->
-        <a href="api-connection.html" class="flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-black transition-all shadow-sm shadow-gray-200">
-            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-            <span>Back to Portal</span>
-        </a>
-      </nav>
+  <!-- Sidebar Nav -->
+  <aside class="w-72 border-r bg-gray-50 p-6 hidden md:block sticky top-0 h-screen">
+    <div class="flex items-center gap-2 mb-8 cursor-pointer" onclick="window.location.href='api-connection.html'">
+        <div class="w-8 h-8 rounded bg-[color:var(--au-ink)] text-white text-[10px] font-bold grid place-items-center">AUTN</div>
+        <span class="font-bold text-sm uppercase tracking-tighter">TradeNet Docs</span>
     </div>
-  </header>
-  
-  <div class="max-w-7xl mx-auto flex">
-    <!-- SIDEBAR -->
-    <aside class="w-64 sticky top-16 h-[calc(100vh-64px)] p-6 overflow-y-auto hidden lg:block border-r">
-        <nav class="space-y-6">
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Merchant Guides</p>
-                <a href="#whatsapp" class="sidebar-link active">WhatsApp Flows</a>
-                <a href="#inventory" class="sidebar-link">Inventory Uploads</a>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Corporate Integration</p>
-                <a href="#api" class="sidebar-link">API Reference</a>
-                <a href="#compliance" class="sidebar-link">Compliance Checks</a>
-            </div>
-        </nav>
-    </aside>
+    
+    <nav class="space-y-1">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3">Getting Started</p>
+        <a href="#welcome" class="sidebar-link active">Introduction</a>
+        <a href="#onboarding" class="sidebar-link">WhatsApp Onboarding</a>
+        
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">Business Portals</p>
+        <a href="#retailers" class="sidebar-link">Retailer Guides</a>
+        <a href="#compliance" class="sidebar-link">Corporate Verification</a>
+        
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">API Reference</p>
+        <a href="#endpoints" class="sidebar-link">Credit Scoring API</a>
+    </nav>
 
-    <!-- CONTENT -->
-    <main class="flex-1 p-6 md:p-12 bg-white min-h-screen">
-        <article class="max-w-3xl prose prose-slate">
-            <h1 class="text-4xl font-black text-gray-900 mb-6">Introduction</h1>
-            <p class="text-gray-600 text-lg leading-relaxed">
-                Welcome to the Afro Ubuntu TradeNet ecosystem. Our platform connects informal retailers with global suppliers, NGOs, and Fintech partners using AI-driven insights and WhatsApp-native automation.
+    <!-- Language Selector in Sidebar -->
+    <div class="absolute bottom-6 left-6 right-6">
+        <div class="relative group">
+            <button id="lang-btn" class="w-full flex items-center justify-between border rounded-lg px-3 py-2 text-xs bg-white hover:bg-gray-50 transition-all">
+                <span class="flex items-center gap-2"><i data-lucide="globe" class="w-3.5 h-3.5"></i> Language</span>
+                <i data-lucide="chevron-up" class="w-3 h-3"></i>
+            </button>
+            <div id="lang-menu" class="absolute bottom-full mb-2 left-0 right-0 bg-white border rounded-xl shadow-xl hidden p-1 z-50 max-h-48 overflow-y-auto">
+                <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">English</button>
+                <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Swahili</button>
+                <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">French</button>
+                <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Hausa</button>
+                <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Pidgin</button>
+                <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Ndebele</button>
+                <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Yoruba</button>
+                <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Zulu</button>
+                <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Xhosa</button>
+                <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Shona</button>
+                <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Nyanja</button>
+                <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded-xl transition-colors">Afrikaans</button>
+            </div>
+        </div>
+    </div>
+  </aside>
+
+  <!-- Content Area -->
+  <main class="flex-1 bg-white">
+    <!-- Top Utility Bar -->
+    <div class="h-16 border-b flex items-center justify-between px-8 md:px-16 sticky top-0 bg-white/80 backdrop-blur-md z-40">
+        <div class="md:hidden flex items-center gap-2">
+            <div class="w-7 h-7 rounded bg-black text-white text-[9px] font-bold grid place-items-center">AU</div>
+        </div>
+        <div class="flex-1"></div>
+        <a href="api-connection.html" class="flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-black transition-colors">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            Back to Portal
+        </a>
+    </div>
+
+    <div class="p-8 md:p-16 max-w-4xl">
+        <section id="welcome" class="mb-20">
+            <h1 class="text-5xl font-black mb-6 tracking-tight">Introduction</h1>
+            <p class="text-xl text-gray-500 leading-relaxed">
+                The Afro Ubuntu TradeNet is a unified digital ecosystem designed to bridge the gap between informal micro-retailers and formal financial and supply chain sectors.
             </p>
+        </section>
 
-            <h2 id="whatsapp" class="text-2xl font-bold mt-12 mb-4">WhatsApp Integration</h2>
-            <p>Retailers interact with the TradeNet via WhatsApp. To perform an inventory check, simply send an image of your stock sheet or a list of items to our verified number.</p>
+        <section id="onboarding" class="mb-20">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i data-lucide="message-circle" class="w-8 h-8 text-green-600"></i> WhatsApp Onboarding
+            </h2>
+            <div class="prose text-gray-600 space-y-4 max-w-none">
+                <p>Retailers start by registering their WhatsApp-linked phone number in the portal. Once registered, the AI assistant guides them through inventory captures using simple photo uploads.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="p-4 bg-gray-50 rounded-xl border">
+                        <p class="font-bold text-gray-900 mb-1">Step 1</p>
+                        <p class="text-sm">Register phone number in the Account Portal.</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl border">
+                        <p class="font-bold text-gray-900 mb-1">Step 2</p>
+                        <p class="text-sm">Send "Menu" to the verified WhatsApp line.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="retailers" class="mb-20">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i data-lucide="store" class="w-8 h-8 text-orange-600"></i> Merchant Guides
+            </h2>
+            <p class="text-gray-600 mb-6 leading-relaxed">Merchants can access their real-time performance via the "Free Community Tier." This includes sales trends, stock alerts, and an AI-generated credit profile.</p>
+            <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-blue-900 text-sm italic">
+                <i data-lucide="info" class="w-5 h-5 mb-2"></i>
+                <p>Note: Always ensure that inventory photos are taken in good lighting to ensure the AI Worker can accurately parse SKU counts and pricing.</p>
+            </div>
+        </section>
+
+        <section id="endpoints" class="mb-20">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i data-lucide="code-2" class="w-8 h-8 text-blue-600"></i> API Integration
+            </h2>
+            <p class="text-gray-600 mb-6">For Fintech and Bank partners, the following endpoint provides access to the normalized credit tiers of connected retailers.</p>
             
-            <!-- API SECTION -->
-            <h2 id="api" class="text-2xl font-bold mt-12 mb-4">Credit Scoring API</h2>
-            <p>Fintech partners can access normalized credit tiers for merchants via the following endpoint:</p>
+            <p class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-widest">GET Request</p>
             <div class="notranslate">
-                <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm">GET /api/analytics/afro-ubuntu?target_id={business_id}
+                <pre>GET /api/v1/analytics/credit-score?target_id={business_id}
 Authorization: Bearer YOUR_API_TOKEN</pre>
             </div>
-        </article>
-    </main>
-  </div>
+        </section>
+    </div>
+
+    <!-- Footer within main area -->
+    <footer class="px-8 md:px-16 py-10 border-t bg-gray-50 text-[10px] text-gray-400 uppercase tracking-widest flex justify-between">
+        <p>© 2026 Afro Ubuntu TradeNet Ltd</p>
+        <p>Built for the Last Mile</p>
+    </footer>
+  </main>
 
   <script>
+    // Initialize Icons
     lucide.createIcons();
-    // Dropdown toggle logic
-    const btn = document.getElementById("lang-btn");
-    const menu = document.getElementById("lang-menu");
-    btn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle("hidden"); };
-    document.onclick = () => menu.classList.add("hidden");
+
+    // Language Dropdown Logic
+    const langBtn = document.getElementById("lang-btn");
+    const langMenu = document.getElementById("lang-menu");
+    langBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        langMenu.classList.toggle("hidden");
+    });
+    document.addEventListener("click", () => langMenu.classList.add("hidden"));
+
+    // Smooth Active Link State logic
+    const links = document.querySelectorAll('.sidebar-link');
+    window.addEventListener('scroll', () => {
+        let current = "";
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute('id');
+            }
+        });
+        links.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
   </script>
+
+  <!-- Standard hidden div for Google -->
+  <div id="google_translate_element"></div>
 </body>
 </html>
