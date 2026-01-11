@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Documentation • Afro Ubuntu TradeNet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{ --au-ink:#111827; --au-accent:#ea580c; }
+    body{ font-family: 'Inter', sans-serif; color: var(--au-ink); background: #f9fafb; }
+    .sidebar-link { display: block; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; color: #4b5563; transition: all 0.2s; }
+    .sidebar-link:hover { background: #f3f4f6; color: var(--au-accent); }
+    .sidebar-link.active { font-weight: 700; color: var(--au-ink); background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    pre { background: #1f2937; color: #f3f4f6; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+  </style>
+</head>
+<body class="flex min-h-screen">
+
+  <!-- Sidebar Nav -->
+  <aside class="w-64 border-r bg-gray-50 p-6 hidden md:block">
+    <div class="flex items-center gap-2 mb-8 cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="w-8 h-8 rounded bg-[color:var(--au-ink)] text-white text-[10px] font-bold grid place-items-center">AUTN</div>
+        <span class="font-bold text-sm uppercase tracking-tighter">TradeNet Docs</span>
+    </div>
+    
+    <nav class="space-y-1">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3">Getting Started</p>
+        <a href="#welcome" class="sidebar-link active">Introduction</a>
+        <a href="#onboarding" class="sidebar-link">WhatsApp Onboarding</a>
+        
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">Business Portals</p>
+        <a href="#retailers" class="sidebar-link">Retailer Guides</a>
+        <a href="#compliance" class="sidebar-link">Corporate Verification</a>
+        
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">API Reference</p>
+        <a href="#endpoints" class="sidebar-link">Credit Scoring API</a>
+    </nav>
+  </aside>
+
+  <!-- Content Area -->
+  <main class="flex-1 p-8 md:p-16 max-w-4xl">
+    <section id="welcome" class="mb-16">
+        <h1 class="text-4xl font-black mb-4">Documentation</h1>
+        <p class="text-lg text-gray-500">Everything you need to integrate with the Afro Ubuntu TradeNet ecosystem.</p>
+    </section>
+
+    <!-- Content Block -->
+    <section id="retailers" class="mb-16">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+            <i data-lucide="store" class="w-6 h-6 text-orange-600"></i> Merchant Guides
+        </h2>
+        <div class="prose text-gray-600 space-y-4">
+            <p>Retailers participate in the ecosystem via our WhatsApp-native interface. To get started:</p>
+            <ol class="list-decimal pl-5 space-y-2">
+                <li>Register your phone number via the <strong>Web Portal</strong>.</li>
+                <li>Send "Hi" to our verified WhatsApp number.</li>
+                <li>Upload a photo of your recent inventory or sales log.</li>
+            </ol>
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-blue-800 text-sm">
+                <strong>Tip:</strong> Ensure images are clear and well-lit for optimal AI recognition.
+            </div>
+        </div>
+    </section>
+
+    <!-- API Block (For High-end feel) -->
+    <section id="endpoints" class="mb-16">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+            <i data-lucide="code-2" class="w-6 h-6 text-blue-600"></i> API Integration
+        </h2>
+        <p class="text-gray-600 mb-4">Fintech partners can pull real-time credit metrics using our authenticated endpoints.</p>
+        <p class="text-xs font-bold text-gray-400 uppercase mb-2">Request Example</p>
+        <pre>GET /api/v1/analytics/credit-score?target_id={business_id}
+Authorization: Bearer YOUR_API_TOKEN</pre>
+    </section>
+
+  </main>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
