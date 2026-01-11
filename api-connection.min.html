@@ -1008,7 +1008,7 @@
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                const msg = mode === 'browse' ? `No matches found for "${search}"` : "You haven't connected with any businesses yet.";
+                const msg = mode === 'browse' ? `No matches found.` : "You haven't connected with any businesses yet.";
                 list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">${msg}</p>`;
                 return;
             }
