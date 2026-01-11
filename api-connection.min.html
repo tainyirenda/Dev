@@ -757,6 +757,7 @@
       <div class="flex items-center gap-4">
         <button class="link" onclick="openModal('privacyModal')">Privacy</button>
         <button class="link" onclick="openModal('termsModal')">Terms</button>
+        <button class="link" onclick="openModal('ethicsModal')">Ethics</button>
       </div>
     </div>
   </footer>
@@ -780,6 +781,17 @@
         <h2 class="text-lg font-semibold mb-2">Terms of Service</h2>
         <div class="border rounded-lg overflow-hidden h-64"><iframe src="terms-of-service.html" class="w-full h-full"></iframe></div>
         <button class="btn-outline mt-4 text-xs" onclick="closeModal('termsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ethicsModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('ethicsModal')"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-2">Ethical Data & AI Use Policy</h2>
+        <div class="border rounded-lg overflow-hidden h-64"><iframe src="ethical-ai-policy.html" class="w-full h-full"></iframe></div>
+        <button class="btn-outline mt-4 text-xs" onclick="closeModal('ethicsModal')">Close</button>
       </div>
     </div>
   </div>
