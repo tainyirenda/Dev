@@ -633,19 +633,19 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$1,500/m <span class="text-xs text-gray-400">(£1,200)</span></td>
                                 <td class="px-6 py-4 text-gray-600">1 region, inventory + sales dashboards, basic forecasts, limited API</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$3,500/m <span class="text-xs text-gray-400">(£2,800)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Multi-region, advanced forecasting, competitor insights, API integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FMCG_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
                                 <td class="px-6 py-4 text-gray-600">$75k–$150k/yr <span class="text-xs text-gray-400">(£60k–£120k)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Unlimited coverage, custom analytics, white-label dashboards, SLAs</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="contactSales('FMCG_ENTERPRISE')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Contact</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -673,19 +673,19 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$300/m <span class="text-xs text-gray-400">(£240)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Basic data for 1 region, monitoring dashboards, CSV/Excel export</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$1,200/m <span class="text-xs text-gray-400">(£950)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Multi-region, real-time dashboards, grant reporting, alerts</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('NGO_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
                                 <td class="px-6 py-4 text-gray-600">$25k–$100k/yr <span class="text-xs text-gray-400">(£20k–£80k)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Custom program analytics, donor-facing reports, field integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="contactSales('NGO_ENTERPRISE')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Contact</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -713,19 +713,19 @@
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$750/m <span class="text-xs text-gray-400">(£600)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_STARTER')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Growth</td>
                                 <td class="px-6 py-4 text-gray-600">$2,500/m <span class="text-xs text-gray-400">(£2,000)</span></td>
                                 <td class="px-6 py-4 text-gray-600">Expanded API, repayment analysis, portfolio monitoring</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Select</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_GROWTH')" class="btn-primary text-xs">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Enterprise</td>
                                 <td class="px-6 py-4 text-gray-600">$50k–$200k/yr <span class="text-xs text-gray-400">(£40k–£160k) + rev share</span></td>
                                 <td class="px-6 py-4 text-gray-600">Full API, predictive risk engine, dedicated integration</td>
-                                <td class="px-6 py-4 text-right"><button class="btn-outline text-xs">Contact</button></td>
+                                <td class="px-6 py-4 text-right"><button onclick="contactSales('FINTECH_ENTERPRISE')" class="btn-outline text-xs border-orange-200 text-orange-600 hover:bg-orange-50">Contact</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -893,6 +893,31 @@
             loadConnectHub(); 
         }, 400);
     }
+
+    // ---- PAYMENT HUB ----
+    async function selectPlanTest(tierName) {
+    if(!confirm(`Activate ${tierName} plan for acess?`)) return;
+    
+    try {
+        await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
+        alert("Success! Package activated. You now have access to platform features.");
+        // Refresh the page to update the 'me' state
+        location.reload(); 
+    } catch(e) {
+        alert("Activation failed: " + e.message);
+    }
+}
+
+    async function contactSales(tierName) {
+    if(!confirm(`Would you like to request a consultation for the ${tierName} plan? Our sales team will contact you via your registered email.`)) return;
+
+    try {
+        await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
+        alert("Inquiry Sent! A specialist from the Afro Ubuntu TradeNet team will reach out to you shortly.");
+    } catch(e) {
+        alert("Failed to send inquiry: " + e.message);
+    }
+}
     
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
