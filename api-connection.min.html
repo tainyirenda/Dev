@@ -841,25 +841,30 @@
 
     // ---- VIEW ROUTER (ACCESS CONTROL FIXED) ----
     async function switchView(viewName) {
-        // 1. ACCESS CONTROL CHECK
-        if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-            // Check global state first (Fastest)
-            if (currentUserType !== 'Retailer' && currentVerifStatus !== 'APPROVED') {
+    // 1. Fetch current status
+    let me;
+    try { 
+        me = await call('/api/v1/me'); 
+        currentUserType = me.user.type;
+        currentVerifStatus = me.user.status;
+    } catch(e) { /* redirect to signin */ }
+
+    // 2. ACCESS CONTROL LOGIC
+    if (['dashboard', 'insights', 'connect'].includes(viewName)) {
+        if (currentUserType !== 'Retailer') {
+            // Check Verification first
+            if (currentVerifStatus !== 'APPROVED') {
                 viewName = 'restricted';
             } 
-            else {
-                // Double check with API (Secure)
-                try {
-                    await call('/api/v1/analytics/dashboard');
-                } catch (e) {
-                    if (e.message === 'VERIFICATION_REQUIRED' || e.message.includes('403')) {
-                        viewName = 'restricted';
-                    }
-                }
+            // Check Payment second
+            else if (me.user.payment_status !== 'ACTIVE') {
+                viewName = 'billing';
+                alert("Your application is approved! Please select a plan to activate these features.");
             }
         }
+    }
 
-        // 2. SWITCH UI
+        // 3. SWITCH UI
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
@@ -867,7 +872,7 @@
         lucide.createIcons();
         window.scrollTo(0, 0);
 
-        // 3. LOAD DATA
+        // 4. LOAD DATA
         if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'connect') loadConnectHub();
         if(viewName === 'verification') loadVerification();
