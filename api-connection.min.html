@@ -840,6 +840,7 @@
 
     // ---- VIEW ROUTER ----
     async function switchView(viewName) {
+        const displayName = tierName.replace('_', ' ');
         // 1. Fetch fresh status from the API
         let me;
         try {
@@ -871,26 +872,27 @@
 
         // --- BILLING UX CONSTRAINTS ---
         if (viewName === 'billing') {
-            const planButtons = document.querySelectorAll('button[onclick^="selectPlanTest"]');
+            // Targets buttons for BOTH plan selection and contact sales
+            const billingButtons = document.querySelectorAll('button[onclick^="selectPlanTest"], button[onclick^="contactSales"]');
             
-            planButtons.forEach(btn => {
+            billingButtons.forEach(btn => {
                 if (currentUserType === 'Retailer') {
-                    // Hide buttons for retailers as they are on the free tier
+                    // 1. Hide ALL billing buttons for retailers (they use the free tier)
                     btn.classList.add('hidden');
                 } 
                 else if (currentVerifStatus !== 'APPROVED') {
-                    // Gray out buttons for non-approved organizations (No text change)
+                    // 2. Gray out buttons for non-approved organizations
                     btn.disabled = true;
                     btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
                 } 
                 else {
-                    // Reset to normal for approved organizations
+                    // 3. Ensure buttons are normal for approved organizations
                     btn.disabled = false;
                     btn.classList.remove('hidden', 'grayscale', 'opacity-50', 'cursor-not-allowed');
                 }
             });
         }
-        
+      
         lucide.createIcons();
         window.scrollTo(0, 0);
 
