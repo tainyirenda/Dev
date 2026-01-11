@@ -840,7 +840,6 @@
 
     // ---- VIEW ROUTER ----
     async function switchView(viewName) {
-        const displayName = tierName.replace('_', ' ');
         // 1. Fetch fresh status from the API
         let me;
         try {
@@ -867,6 +866,7 @@
 
         // 3. SWITCH UI VISIBILITY
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        const displayName = tierName.replace('_', ' ');
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
 
