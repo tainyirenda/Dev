@@ -1516,6 +1516,33 @@ async function submitReport() {
         btn.disabled = false; btn.innerText = "Submit Report";
     }
 }
+
+    // ---- MODAL CONTROLS ----
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('hidden');
+            // Restore body scrolling
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Close modals if user clicks the dark background
+    window.onclick = function(event) {
+        if (event.target.classList.contains('fixed') && event.target.classList.contains('inset-0')) {
+            event.target.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    };
     
     // ---- VERIFICATION ----
     async function loadVerification() {
@@ -1591,7 +1618,7 @@ async function submitReport() {
             if (res.auto_approved) switchView('dashboard');
     } catch(err) { alert("Error: " + err.message); }
       finally {
-            // THE FIX: Reset the button state NO MATTER WHAT happens
+            // Reset the button state NO MATTER WHAT happens
             btn.innerText = oldText; 
             btn.disabled = false;
             btn.classList.remove('opacity-50', 'cursor-not-allowed');
