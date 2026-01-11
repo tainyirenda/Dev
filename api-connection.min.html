@@ -975,44 +975,33 @@
     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
+        list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
         
         // Tab UI logic
-        const tabBrowse = document.getElementById('tab-browse');
-        const tabNetwork = document.getElementById('tab-network');
-        if (mode === 'browse') {
-            tabBrowse.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
-            tabNetwork.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        } else {
-            tabNetwork.className = "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2";
-            tabBrowse.className = "text-sm text-gray-500 hover:text-gray-700 pb-2";
-        }
+        document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
+        document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
-        // Get Search + Filter Values
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
         const loc = document.getElementById('filter_loc')?.value || '';
 
         try {
-            // 2. DEFINE THE URL
             let url = `/api/v1/connect?mode=${mode}`;
             if(search) url += `&search=${encodeURIComponent(search)}`;
             if(type) url += `&type=${encodeURIComponent(type)}`;
             if(loc) url += `&loc=${encodeURIComponent(loc)}`;
 
-            // 3. Fetch the data
             const data = await call(url);
             list.innerHTML = '';
             
             if(!data.results || data.results.length === 0) {
-                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found.</p>`;
+                list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">No matches found for "${search}"</p>`;
                 return;
             }
 
-            // 4. Store results globally for the modal to use
             currentConnectResults = data.results;
             const isConnected = (mode === 'connections');
 
-            // 5. Render cards using the index
             currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
                 const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
@@ -1021,16 +1010,15 @@
                 let aiBadge = '', cardClass = 'border-l-transparent';
                 if (mode === 'browse' && b.score >= 10) {
                     cardClass = 'border-l-orange-500 bg-orange-50/20';
-                    aiBadge = `<div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mb-2 w-fit"><i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> SMART MATCH</div>`;
+                    aiBadge = `<div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mb-2 w-fit tracking-wider"><i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> SMART MATCH</div>`;
                 }
 
                 let primaryAction = '', secondaryActions = '';
-                const isConnected = (mode === 'connections');
-
                 if(mode === 'browse') {
                     primaryAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
                     secondaryActions = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
                 } else {
+                    // Pass is_online status to openChat
                     primaryAction = `<button onclick="openChat('${b.id}', '${escapedName}', ${b.is_online})" class="btn-primary text-xs w-full py-2">Chat Now</button>`;
                     secondaryActions = `
                         <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1"><i data-lucide="user-x" class="w-3 h-3"></i> Disconnect</button>
@@ -1043,31 +1031,33 @@
                     <div class="flex justify-between items-start gap-4">
                         <div class="min-w-0 flex-1">
                             ${aiBadge}
-                            <!-- FIX 3: Pass index instead of complex JSON string -->
-                            <h3 onclick="openProfileModal(${index}, ${isConnected})" class="font-bold text-lg text-gray-900 flex items-center cursor-pointer hover:text-orange-600 transition-colors">
+                            <h3 onclick="openProfileModal(${index}, ${isConnected})" class="font-bold text-lg text-gray-900 flex items-center leading-tight cursor-pointer hover:text-orange-600 transition-colors">
                                 ${b.name}${verifiedBadge}${unreadDot}
                             </h3>
-                            <p class="text-sm text-gray-500 mt-1"><span>${b.loc}</span></p>
+                            <p class="text-sm text-gray-500 flex items-start gap-1.5 mt-1"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 shrink-0 text-gray-400"></i><span>${b.loc}</span></p>
                             <div class="mt-3 flex items-center gap-2">
-                                <span class="pill bg-gray-100 text-gray-600 text-[9px] uppercase font-bold px-2 py-0.5">${b.type}</span>
+                                <span class="pill bg-gray-100 text-gray-600 text-[9px] uppercase font-bold tracking-widest px-2 py-0.5">${b.type}</span>
                                 <button onclick="openProfileModal(${index}, ${isConnected})" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
                             </div>
                         </div>
                         <div class="shrink-0 w-32 flex flex-col items-center">
                             ${primaryAction}
-                            <div class="mt-3 flex flex-col items-center gap-2">${secondaryActions}</div>
+                            <div class="mt-3 flex flex-col items-center gap-2">
+                                ${secondaryActions}
+                            </div>
                         </div>
                     </div>
                 </div>`;
             });
+
             lucide.createIcons();
             checkNotifications();
-
         } catch(e) { 
             console.error(e);
             list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
         }
     }
+
     
       function openProfileModal(index, isConnected) {
         // Look up data by index
