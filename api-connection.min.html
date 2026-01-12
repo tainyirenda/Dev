@@ -1299,72 +1299,61 @@
         }
     }
 
-    function generateOrgGrid(type, d, country) {
-        if (type === 'Fintech' || type === 'Micro-Lender') {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-6 text-center flex flex-col justify-center"><p class="kpi-label mb-2">Portfolio Score</p><h1 class="text-5xl font-black text-gray-900">1.84</h1></div>
-                    <div class="card p-6 text-center flex flex-col justify-center"><p class="kpi-label mb-2">Portfolio Tier</p><h1 class="text-5xl font-black text-orange-600">Gold</h1></div>
-                    <div class="card p-6 col-span-2 h-48"><p class="kpi-label mb-2">Aggregated Retailer Revenue</p><canvas id="finLine"></canvas></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-6 h-96"><p class="kpi-label mb-6 uppercase">Risk Scatter: Consistency vs Pending Debt</p><canvas id="riskScatter"></canvas></div>
-                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500">Merchant Risk Profiles</div>
-                        <table class="w-full text-xs"><tbody>${d.risk_profiles.map(m => `<tr><td class="p-4 font-bold text-gray-800">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status.includes('High') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">${m.status}</span></td></tr>`).join('')}</tbody></table>
-                    </div>
-                </div>
-            `;
-        }
         
+        function generateOrgGrid(type, d, country) {
         if (type === 'NGO' || type === 'Development Partner') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 col-span-2 h-96"><p class="kpi-label mb-4 uppercase tracking-widest text-center">Regional Price Volatility Map [${country}]</p><div class="h-[300px] bg-gray-50 rounded-2xl border-2 border-dashed flex items-center justify-center text-gray-300 italic">Volatility Heatmap Implementation Area</div></div>
-                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500">Volatility Matrix</div>
-                        <table class="w-full text-xs"><tbody>${d.volatility.map(v => `<tr class="border-b"><td class="p-4 font-bold">${v.loc}</td><td class="p-4">${v.item}</td><td class="p-4 text-right font-black text-red-600">${v.index}</td></tr>`).join('')}</tbody></table>
+                    <div class="card p-4 col-span-2 h-96"><p class="kpi-label mb-4 uppercase text-center">African Regional Price Volatility Map [${country}]</p><div class="h-[300px] bg-gray-50 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center text-gray-300 italic"><i data-lucide="map" class="w-8 h-8 mb-2"></i> Nairobi, Lagos & Joburg Price Heatmap Visual</div></div>
+                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] uppercase">Volatility Matrix (Staples)</div>
+                        <table class="w-full text-xs divide-y"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400">${v.item}</p></td><td class="p-4 text-right font-black text-red-600">${v.index}</td></tr>`).join('')}</tbody></table>
                     </div>
                 </div>
-                <div class="card p-6 h-80 mt-6 shadow-sm"><p class="kpi-label mb-6 uppercase tracking-widest">Market Resilience: Regional Price Shocks</p><canvas id="resilienceLine"></canvas></div>
+                <div class="card p-8 h-80 mt-6 shadow-sm"><p class="kpi-label mb-6 uppercase tracking-widest">Market Resilience: Regional Price Shocks (Maize focus)</p><canvas id="resilienceLine"></canvas></div>
             `;
         }
-
         if (type === 'FMCG') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500"><div class="bg-red-50 px-4 py-2 border-b border-red-100 font-bold text-[10px] text-red-600">Stock Out Flags</div><table class="w-full text-xs">${d.stockouts.map(s => `<tr class="border-b"><td class="p-4 font-bold">${s.loc}</td><td class="p-4 text-right font-black text-red-600">${s.flags}</td></tr>`).join('')}</table></div>
-                    <div class="card p-4 col-span-2 h-80"><p class="kpi-label mb-2 uppercase text-center">Regional Demand Heatmap</p><div class="h-64 bg-blue-50/50 rounded-2xl flex items-center justify-center italic text-blue-400 font-bold text-xs">Geo-Revenue Intensity [${country}]</div></div>
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500"><div class="bg-orange-50 px-4 py-2 border-b border-orange-100 font-bold text-[10px] text-orange-600">Low Stock Alerts</div><table class="w-full text-xs"><tbody>${d.low_stock.map(l => `<tr><td class="p-4 font-bold">${l.item}</td><td class="p-4 text-right font-black">${l.qty}</td></tr>`).join('')}</tbody></table></div>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500"><div class="bg-red-50 p-3 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div><table class="w-full text-xs">${d.stockouts.map(s => `<tr class="border-b"><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table></div>
+                    <div class="card p-4 col-span-2 h-80 bg-white"><p class="kpi-label text-center mb-2 uppercase">African Last-Mile Demand Heatmap [${country}]</p><div class="h-64 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-center italic text-blue-400 font-bold text-xs"><i data-lucide="map-pin" class="w-6 h-6 mr-2"></i> Geo-Revenue Intensity: Lagos/Nairobi Focus</div></div>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500"><div class="bg-orange-50 p-3 font-bold text-[10px] text-orange-600 uppercase">Low Stock Alerts</div><table class="w-full text-xs divide-y"><tbody>${d.low_stock.map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600">${l.qty}</td></tr>`).join('')}</tbody></table></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-6 h-80"><p class="kpi-label mb-4 uppercase">Demand Forecast per SKU</p><canvas id="skuChart"></canvas></div>
-                    <div class="card p-6 h-80"><p class="kpi-label mb-4 uppercase">Uplift in Sales: Promotion ROI</p><canvas id="upliftBar"></canvas></div>
+                    <div class="card p-8 h-80 shadow-sm"><p class="kpi-label mb-6 uppercase">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
+                    <div class="card p-8 h-80 shadow-sm"><p class="kpi-label mb-6 uppercase">Uplift in Sales: Promotion ROI (Retailer Aggregate)</p><canvas id="upliftBar"></canvas></div>
                 </div>
             `;
         }
+        return '';
     }
 
     function initPortalVisuals(type, data) {
-        const chartsToDestroy = ["gaugeChart", "retailLine", "retailBar", "riskScatter", "resilienceLine", "skuChart", "upliftBar", "finLine"];
+        const chartsToDestroy = ["gaugeChart", "retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "finLine"];
         chartsToDestroy.forEach(id => Chart.getChart(id)?.destroy());
 
         if (type === 'Retailer') {
             new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit.score, Math.max(0, 100 - data.credit.score)], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.labels, datasets: [{ data: data.values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_chart.labels, datasets: [{ data: data.bar_chart.values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+            new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels, datasets: [{ data: data.line_values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+            new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
         
-        if (type === 'Fintech' || type === 'Micro-Lender') {
-            new Chart(document.getElementById('riskScatter'), { type: 'scatter', data: { datasets: [{ label: 'Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed', pointRadius: 6 }] }, options: { scales: { x: { title: { display: true, text: 'Consistency' } }, y: { title: { display: true, text: 'Pending Debt' } } }, plugins:{legend:{display:false}} } });
-            new Chart(document.getElementById('finLine'), { type: 'line', data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Market Rev', data: [1500, 1850, 2100, 2400], borderColor: '#3b82f6', tension: 0.3 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
-
-        if (type.includes('NGO') || type.includes('Partner')) {
-            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Maize Index', data: [4.2, 5.8, 8.4, 6.1], borderColor: '#ef4444', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+        if (type === 'NGO' || type === 'Development Partner') {
+            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: data.resilience_chart.labels, datasets: [{ label: 'Price Shock Index', data: data.resilience_chart.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
 
         if (type === 'FMCG') {
-            new Chart(document.getElementById('skuChart'), { type: 'line', data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Sugar Forecast', data: [45, 52, 48, 65], borderColor: '#ea580c', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('upliftBar'), { type: 'bar', data: { labels: ['Sugar','Soap','Maize'], datasets: [{ label: 'Pre', data: [100, 80, 200], backgroundColor: '#e2e8f0' }, { label: 'Promo', data: [180, 130, 280], backgroundColor: '#16a34a' }] }, options: { maintainAspectRatio: false } });
+            const colors = ['#ea580c', '#3b82f6', '#7c3aed'];
+            new Chart(document.getElementById('skuChart'), { 
+                type: 'line', 
+                data: { labels: data.forecast.labels, datasets: data.forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4 })) },
+                options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }, maintainAspectRatio: false }
+            });
+            new Chart(document.getElementById('upliftBar'), { 
+                type: 'bar', 
+                data: { labels: data.uplift_chart.labels, datasets: [{ label: 'Promo Volume', data: data.uplift_chart.values, backgroundColor: '#16a34a', borderRadius: 8 }] }, 
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
         }
     }
 
