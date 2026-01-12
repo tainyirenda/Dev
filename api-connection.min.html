@@ -1301,33 +1301,51 @@
 
         
         function generateOrgGrid(type, d, country) {
+        // --- NGO VIEW ---
         if (type === 'NGO' || type === 'Development Partner') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 col-span-2 h-96"><p class="kpi-label mb-4 uppercase text-center">African Regional Price Volatility Map [${country}]</p><div class="h-[300px] bg-gray-50 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center text-gray-300 italic"><i data-lucide="map" class="w-8 h-8 mb-2"></i> Nairobi, Lagos & Joburg Price Heatmap Visual</div></div>
-                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] uppercase">Volatility Matrix (Staples)</div>
-                        <table class="w-full text-xs divide-y"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400">${v.item}</p></td><td class="p-4 text-right font-black text-red-600">${v.index}</td></tr>`).join('')}</tbody></table>
+                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 z-10 relative">Price Volatility Map: Regional Shock Intensity</p>
+                        <!-- Visual Heatmap Simulation -->
+                        <div class="absolute inset-0 opacity-20 pointer-events-none"><i data-lucide="map" class="w-full h-full p-10"></i></div>
+                        <div class="relative flex items-center justify-center h-[300px] gap-8">
+                            ${d.volatility.slice(0,4).map(v => `<div class="flex flex-col items-center group"><div class="w-16 h-16 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-red-500">${v.index}</div><p class="text-[9px] mt-2 font-bold">${v.loc}</p></div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-4 py-2 border-b font-bold text-[10px] text-gray-500 uppercase">Volatility Matrix</div>
+                        <table class="w-full text-xs"><tbody>${d.volatility.map(v => `<tr class="border-b"><td class="p-4 font-bold text-gray-800">${v.loc}</td><td class="p-4">${v.item}</td><td class="p-4 text-right font-black text-red-600">${v.index}</td></tr>`).join('')}</tbody></table>
                     </div>
                 </div>
-                <div class="card p-8 h-80 mt-6 shadow-sm"><p class="kpi-label mb-6 uppercase tracking-widest">Market Resilience: Regional Price Shocks (Maize focus)</p><canvas id="resilienceLine"></canvas></div>
+                <div class="card p-8 h-80 mt-6"><p class="kpi-label mb-6 uppercase">Market Resilience: Price Shocks (Maize Basket)</p><canvas id="resilienceLine"></canvas></div>
             `;
         }
+
+        // --- FMCG VIEW ---
         if (type === 'FMCG') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500"><div class="bg-red-50 p-3 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div><table class="w-full text-xs">${d.stockouts.map(s => `<tr class="border-b"><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table></div>
-                    <div class="card p-4 col-span-2 h-80 bg-white"><p class="kpi-label text-center mb-2 uppercase">African Last-Mile Demand Heatmap [${country}]</p><div class="h-64 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-center italic text-blue-400 font-bold text-xs"><i data-lucide="map-pin" class="w-6 h-6 mr-2"></i> Geo-Revenue Intensity: Lagos/Nairobi Focus</div></div>
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500"><div class="bg-orange-50 p-3 font-bold text-[10px] text-orange-600 uppercase">Low Stock Alerts</div><table class="w-full text-xs divide-y"><tbody>${d.low_stock.map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600">${l.qty}</td></tr>`).join('')}</tbody></table></div>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500"><div class="bg-red-50 p-3 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div><table class="w-full text-xs">${d.stockouts.map(s => `<tr class="border-b"><td class="p-4 font-bold text-gray-800">${s.loc}</td><td class="p-4 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table></div>
+                    
+                    <!-- Last Mile Demand Heatmap Visual -->
+                    <div class="card p-4 col-span-2 h-80 bg-gray-50 relative overflow-hidden">
+                        <p class="kpi-label text-center mb-2 uppercase">Last-Mile Demand Heatmap [${country}]</p>
+                        <div class="flex items-center justify-around h-full pt-10">
+                             ${d.map_hotspots.map(h => `<div class="flex flex-col items-center"><div class="rounded-full bg-blue-500/20 border border-blue-500 flex items-center justify-center font-bold text-blue-700" style="width: ${Math.min(100, h.value/10)}px; height: ${Math.min(100, h.value/10)}px">$${Math.round(h.value)}</div><p class="text-[8px] mt-1 uppercase font-black">${h.label}</p></div>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500"><div class="bg-orange-50 p-3 font-bold text-[10px] text-orange-600 uppercase">Low Stock (Shelf Velocity)</div><table class="w-full text-xs"><tbody><tr><td class="p-4 font-bold">Bar Soap</td><td class="p-4 text-right font-black">50 units</td></tr></tbody></table></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-8 h-80 shadow-sm"><p class="kpi-label mb-6 uppercase">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
-                    <div class="card p-8 h-80 shadow-sm"><p class="kpi-label mb-6 uppercase">Uplift in Sales: Promotion ROI (Retailer Aggregate)</p><canvas id="upliftBar"></canvas></div>
+                    <div class="card p-8 h-80"><p class="kpi-label mb-6 uppercase">Multi-SKU Demand Forecast</p><canvas id="skuChart"></canvas></div>
+                    <div class="card p-8 h-80"><p class="kpi-label mb-6 uppercase">Promotion Uplift: Sales Volume ROI</p><canvas id="upliftBar"></canvas></div>
                 </div>
             `;
         }
-        return '';
     }
 
+    
     function initPortalVisuals(type, data) {
         const chartsToDestroy = ["gaugeChart", "retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "finLine"];
         chartsToDestroy.forEach(id => Chart.getChart(id)?.destroy());
@@ -1338,21 +1356,26 @@
             new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
         
-        if (type === 'NGO' || type === 'Development Partner') {
-            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: data.resilience_chart.labels, datasets: [{ label: 'Price Shock Index', data: data.resilience_chart.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
-
-        if (type === 'FMCG') {
+        if (type === 'FMCG' && data.forecast) {
             const colors = ['#ea580c', '#3b82f6', '#7c3aed'];
             new Chart(document.getElementById('skuChart'), { 
                 type: 'line', 
                 data: { labels: data.forecast.labels, datasets: data.forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4 })) },
                 options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }, maintainAspectRatio: false }
             });
+
             new Chart(document.getElementById('upliftBar'), { 
                 type: 'bar', 
-                data: { labels: data.uplift_chart.labels, datasets: [{ label: 'Promo Volume', data: data.uplift_chart.values, backgroundColor: '#16a34a', borderRadius: 8 }] }, 
-                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
+                data: { labels: data.uplift.labels, datasets: [{ label: 'Pre-Promo', data: [120, 100, 150], backgroundColor: '#e2e8f0' }, { label: 'Promo Volume', data: data.uplift.values, backgroundColor: '#16a34a' }] }, 
+                options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false }
+            });
+        }
+
+        if (type.includes('NGO') || type.includes('Partner')) {
+            new Chart(document.getElementById('resilienceLine'), { 
+                type: 'line', 
+                data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Maize Index', data: [4.2, 5.8, 8.4, 6.1], borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4 }] }, 
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } 
             });
         }
     }
