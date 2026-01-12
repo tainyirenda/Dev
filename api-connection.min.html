@@ -1183,7 +1183,7 @@
         }
     }
 
-    // ---- ANALYTICS PORTAL ENGINE ----
+    // ---- MASTER ANALYTICS ENGINE ----
     async function loadAnalytics() {
         try {
             const res = await call('/api/v1/analytics/dashboard');
@@ -1195,7 +1195,7 @@
             const d = res.data;    
             titleDisplay.innerText = `${type} Portal`;
 
-            // 1. GENERATE POWER BI STYLE SLICERS
+            // 1. POWER BI SLICERS
             let slicerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-xl border shadow-sm">
                     <div>
@@ -1211,28 +1211,28 @@
                             ${['Apr 2025','May 2025','Jun 2025','Jul 2025'].map(m => `<label class="flex items-center gap-2 text-xs py-1"><input type="checkbox"> <span>${m}</span></label>`).join('')}
                         </div>
                     </div>
-                    <div class="flex items-end"><button class="btn-primary text-xs w-full py-2" onclick="loadAnalytics()">Refresh Data</button></div>
+                    <div class="flex items-end"><button class="btn-primary text-xs w-full py-2" onclick="loadAnalytics()">Apply Interactivity</button></div>
                 </div>
             `;
 
-            // 2. GENERATE ROLE-SPECIFIC GRID
+            // 2. DYNAMIC GRID LOGIC
             let gridHTML = "";
 
             if (type === 'Retailer') {
                 gridHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="card p-6 flex flex-col items-center">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-4 text-left w-full">Credit Score (Gauge)</p>
+                            <p class="kpi-label mb-4 text-left w-full">Credit Score (Gauge)</p>
                             <div class="relative h-32 w-full flex justify-center items-end">
                                 <canvas id="gaugeChart"></canvas>
                                 <div class="absolute bottom-2 text-5xl font-black text-gray-900">${d.credit.score}</div>
                             </div>
-                            <span class="pill bg-blue-100 text-blue-700 mt-4 font-bold tracking-widest uppercase">Tier: ${d.credit.tier}</span>
+                            <span class="pill bg-blue-100 text-blue-700 mt-4 uppercase font-bold tracking-widest">Tier: ${d.credit.tier}</span>
                         </div>
                         <div class="card p-0 overflow-hidden col-span-2">
-                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div>
+                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase">Top Selling Products (DAX Ranked)</div>
                             <table class="w-full text-sm">
-                                ${d.top_products.map(p => `<tr class="border-b hover:bg-gray-50"><td class="px-6 py-3">${p.item}</td><td class="px-6 py-3 text-right font-black">$${p.val.toLocaleString()}</td></tr>`).join('')}
+                                ${d.top_products.length ? d.top_products.map(p => `<tr class="border-b hover:bg-gray-50"><td class="px-6 py-3">${p.item}</td><td class="px-6 py-3 text-right font-black">$${p.val.toLocaleString()}</td></tr>`).join('') : '<tr><td class="p-10 text-center text-gray-400">No data found</td></tr>'}
                             </table>
                         </div>
                     </div>
@@ -1240,12 +1240,18 @@
             } 
             else if (type === 'Fintech') {
                 gridHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Risk Scatter: CoV vs Pending</p><canvas id="riskScatter"></canvas></div>
-                        <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Merchant Risk likelihood</div>
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div class="card p-6 flex flex-col items-center"><p class="kpi-label mb-2">Portfolio Score</p><h1 class="text-5xl font-black">1.84</h1></div>
+                        <div class="card p-6 flex flex-col items-center"><p class="kpi-label mb-2">Credit Tier</p><h1 class="text-5xl font-black text-orange-600">Gold</h1></div>
+                        <div class="card p-6 col-span-2 h-48"><p class="kpi-label mb-2">Revenue Growth</p><canvas id="finLine"></canvas></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        <div class="card p-6 h-80"><p class="kpi-label mb-4">Risk Scatter: Sales CoV vs Pending</p><canvas id="riskScatter"></canvas></div>
+                        <div class="card p-0 overflow-hidden">
+                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500">MERCHANT RISK PROFILES</div>
                             <table class="w-full text-xs">
                                 <thead class="bg-gray-100 font-bold text-gray-400"><tr><th class="p-4 text-left">BUSINESS</th><th class="p-4 text-center">CoV INDEX</th><th class="p-4 text-right">RISK</th></tr></thead>
-                                <tbody>${d.risk_profiles.map(m => `<tr><td class="p-4 font-bold">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status === 'High Risk' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${m.status}</span></td></tr>`).join('')}</tbody>
+                                <tbody>${d.risk_profiles.map(m => `<tr class="border-b"><td class="p-4 font-bold text-gray-900">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status === 'High Risk' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${m.status}</span></td></tr>`).join('')}</tbody>
                             </table>
                         </div>
                     </div>
@@ -1254,23 +1260,25 @@
             else if (type === 'NGO' || type === 'Development Partner') {
                 gridHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card p-4 col-span-2 h-96"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Map: Price Volatility [${res.country}]</p><div class="h-full bg-gray-50 rounded flex items-center justify-center italic text-gray-300 border-2 border-dashed">Geospatial Heatmap Placeholder</div></div>
-                        <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div>
+                        <div class="card p-4 col-span-2 h-80"><p class="kpi-label mb-4">Map: Price Volatility [${res.country}]</p><div class="h-64 bg-gray-50 rounded flex items-center justify-center italic text-gray-300 border-2 border-dashed">Geospatial Volatility Visual Placeholder</div></div>
+                        <div class="card p-0 overflow-hidden">
+                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500">VOLATILITY MATRIX</div>
                             <table class="w-full text-xs">
-                                ${d.volatility.map(v => `<tr class="border-b"><td class="px-4 py-3">${v.loc}</td><td class="px-4 py-3 italic">${v.item}</td><td class="px-4 py-3 text-right font-mono text-red-600 font-bold">${v.index}</td></tr>`).join('')}
+                                ${d.volatility.length ? d.volatility.map(v => `<tr class="border-b"><td class="px-4 py-3 font-semibold">${v.loc}</td><td class="px-4 py-3 italic">${v.item}</td><td class="px-4 py-3 text-right font-mono text-red-600 font-bold">${v.index}</td></tr>`).join('') : '<tr><td class="p-10 text-center text-gray-400">Stable Market Data</td></tr>'}
                             </table>
                         </div>
                     </div>
+                    <div class="card p-6 mt-6 h-64"><p class="kpi-label mb-4">Market Resilience Indicators (Price Shocks)</p><canvas id="resilienceChart"></canvas></div>
                 `;
             }
             else if (type === 'FMCG') {
                 gridHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="card p-0 overflow-hidden"><div class="bg-red-50 px-4 py-2 border-b border-red-100 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div>
+                        <div class="card p-0 overflow-hidden"><div class="bg-red-50 px-4 py-2 border-b border-red-100 font-bold text-[10px] text-red-600">STOCK OUT FLAGS</div>
                             <table class="w-full text-xs">${d.stockouts.map(s => `<tr><td class="p-3 font-semibold">${s.loc}</td><td class="p-3 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table>
                         </div>
-                        <div class="card p-4 col-span-2 h-64"><p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Regional Demand Heatmap</p><div class="h-full bg-gray-50 border rounded-xl flex items-center justify-center italic text-gray-300">Geo-Revenue Density [${res.country}]</div></div>
-                        <div class="card p-6 h-64"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Demand Forecast SKU</p><canvas id="skuChart"></canvas></div>
+                        <div class="card p-4 col-span-2 h-64"><p class="kpi-label mb-2">Regional Demand Heatmap</p><div class="h-full bg-gray-50 border rounded-xl flex items-center justify-center italic text-gray-300">Geo-Revenue Density [${res.country}]</div></div>
+                        <div class="card p-6 h-64"><p class="kpi-label mb-4">Demand Forecast SKU</p><canvas id="skuChart"></canvas></div>
                     </div>
                 `;
             }
@@ -1281,35 +1289,52 @@
 
         } catch(e) { 
             console.error("Portal Engine Error:", e);
-            document.getElementById('portal_dynamic_container').innerHTML = `<div class="card p-10 text-center text-red-500">Error loading ${type} portal views: ${e.message}</div>`;
+            document.getElementById('portal_dynamic_container').innerHTML = `<div class="card p-20 text-center text-red-500 font-bold">Failed to render dashboard visuals. Ensure data tables are populated.</div>`;
         }
     }
 
-    // CHART JS INITIALISERS
+    // --- CHART JS INITIALIZERS ---
     function initPortalVisuals(type, data) {
-        if (type === 'Retailer') {
-            new Chart(document.getElementById('gaugeChart'), {
+        // Retailer Gauge
+        const gaugeEl = document.getElementById('gaugeChart');
+        if (gaugeEl) {
+            new Chart(gaugeEl, {
                 type: 'doughnut',
                 data: { datasets: [{ data: [75, 25], backgroundColor: ['#3b82f6', '#f3f4f6'], circumference: 180, rotation: 270, cutout: '85%' }] },
                 options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
             });
         }
-        if (type === 'Fintech') {
-            new Chart(document.getElementById('riskScatter'), {
+
+        // Fintech Risk Scatter
+        const scatterEl = document.getElementById('riskScatter');
+        if (scatterEl && data.risk_profiles) {
+            new Chart(scatterEl, {
                 type: 'scatter',
                 data: { datasets: [{ label: 'Merchant Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#ea580c', pointRadius: 6 }] },
-                options: { scales: { x: { title: { display: true, text: 'Consistency (CoV)' } }, y: { title: { display: true, text: 'Pending Payments ($)' } } } }
+                options: { scales: { x: { title: { display: true, text: 'Sales Consistency (CoV)', font:{size:10} } }, y: { title: { display: true, text: 'Pending Payments ($)', font:{size:10} } } }, plugins:{legend:{display:false}} }
             });
         }
-        if (type === 'FMCG') {
-            new Chart(document.getElementById('skuChart'), {
+
+        // NGO Resilience Chart
+        const resilienceEl = document.getElementById('resilienceChart');
+        if (resilienceEl) {
+            new Chart(resilienceEl, {
+                type: 'line',
+                data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Avg Price', data: [5.2, 5.4, 8.0, 5.6], borderColor: '#3b82f6', tension: 0.4 }] },
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } }
+            });
+        }
+
+        // FMCG SKU Chart
+        const skuEl = document.getElementById('skuChart');
+        if (skuEl) {
+            new Chart(skuEl, {
                 type: 'line',
                 data: { labels: ['Apr', 'May', 'Jun', 'Jul'], datasets: [{ data: [45, 52, 48, 65], borderColor: '#ea580c', tension: 0.4, fill: false }] },
                 options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
             });
         }
     }
-
     
     
     // ---- ACTIONS ----
