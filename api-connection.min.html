@@ -1186,110 +1186,85 @@
     async function loadAnalytics() {
     try {
         const res = await call('/api/v1/analytics/dashboard');
-        const container = document.getElementById('portal_content'); // Ensure you have this ID in your dashboard section
-        if (!container) return;
-
+        const content = document.getElementById('portal_content');
         const type = res.type;
-        const w = res.widgets;
-
-        // --- RENDER BY TYPE ---
+        const d = res.data;
 
         if (type === 'Retailer') {
-            container.innerHTML = `
+            content.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-6">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Revenue Trend</p>
-                        <p class="text-3xl font-black mt-2 text-orange-600">$${res.revenue || '5,700'}</p>
-                        <div class="h-32 mt-4"><canvas id="mainChart"></canvas></div>
-                    </div>
                     <div class="card p-6 text-center">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Credit Score</p>
-                        <h1 class="text-7xl font-black text-gray-900 mt-4">${w.score}</h1>
-                        <span class="pill bg-green-100 text-green-700 mt-4 inline-block">TIER: GOLD</span>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase">Credit Score</p>
+                        <h1 class="text-6xl font-black mt-4 text-blue-600">${d.credit.score}</h1>
+                        <p class="pill bg-blue-50 text-blue-700 mt-2 inline-block">TIER: ${d.credit.tier}</p>
                     </div>
-                    <div class="card p-0 overflow-hidden">
-                        <div class="bg-gray-50 px-4 py-2 border-b font-bold text-xs">TOP PRODUCTS</div>
+                    <div class="card p-0 overflow-hidden col-span-2">
+                        <div class="bg-gray-50 px-6 py-3 border-b font-bold text-xs text-gray-500">TOP PRODUCTS</div>
                         <table class="w-full text-sm">
-                            ${w.table.map(p => `<tr class="border-b">
-                                <td class="p-3">${p.item}</td>
-                                <td class="p-3 text-right font-bold">$${p.value}</td>
-                            </tr>`).join('')}
+                            ${d.top_products.map(p => `<tr class="border-b"><td class="px-6 py-3">${p.item}</td><td class="px-6 py-3 text-right font-bold">$${p.value.toLocaleString()}</td></tr>`).join('')}
                         </table>
                     </div>
                 </div>
             `;
-            renderChart('mainChart', w.main_chart.labels, w.main_chart.values);
-        }
-
-        else if (type === 'FMCG') {
-            container.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6 h-96">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Demand Heatmap [${res.country || 'Regional'}]</p>
-                        <div class="mt-4 bg-gray-100 rounded-xl h-64 flex items-center justify-center italic text-gray-400">
-                            Geospatial Visualization Area (Kenya/Nigeria Focus)
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Stockout Frequency</p>
-                        <div class="space-y-4 mt-6">
-                            ${w.stockouts.map(s => `
-                                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                                    <span class="font-bold">${s.item}</span>
-                                    <span class="text-red-600 font-black">${s.freq} Stockout</span>
-                                </div>
+        } 
+        
+        else if (type === 'Fintech') {
+            content.innerHTML = `
+                <div class="card p-6">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-4">Risk Scatter: Sales Consistency vs Pending Payments</p>
+                    <div class="h-64"><canvas id="riskScatter"></canvas></div>
+                </div>
+                <div class="card p-0 mt-6 overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-[10px] text-gray-400"><tr><th class="p-4 text-left">MERCHANT</th><th class="p-4 text-center">CoV INDEX</th><th class="p-4 text-right">RISK STATUS</th></tr></thead>
+                        <tbody>
+                            ${d.merchant_risk.map(m => `
+                                <tr class="border-b">
+                                    <td class="p-4 font-bold">${m.name}</td>
+                                    <td class="p-4 text-center font-mono">${m.cov}</td>
+                                    <td class="p-4 text-right"><span class="pill ${m.risk === 'High Risk' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${m.risk}</span></td>
+                                </tr>
                             `).join('')}
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             `;
+            renderRiskScatter(d.merchant_risk);
         }
 
         else if (type === 'NGO') {
-            container.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-6 col-span-2">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Price Volatility Index (Staple Foods)</p>
-                        <div class="h-64 mt-4"><canvas id="volatilityChart"></canvas></div>
-                    </div>
-                    <div class="card p-6">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Trade Disparity Alerts</p>
-                        <div class="mt-6 space-y-3">
-                            <p class="text-sm text-gray-600">Regional Disparity detected in <strong>Cardiff Region</strong>. Maize supply is 14% below expected threshold.</p>
-                        </div>
+            content.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card p-6 h-96"><p class="text-[10px] font-bold text-gray-400 uppercase">Map of Price Volatility</p><div class="h-full w-full bg-gray-50 rounded mt-4 flex items-center justify-center italic text-gray-300">Geo-Heatmap Implementation</div></div>
+                    <div class="card p-0 overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-3 border-b font-bold text-xs">PRICE VOLATILITY BY LOCATION</div>
+                        <table class="w-full text-sm">
+                            ${d.volatility_metrics.map(v => `<tr class="border-b"><td class="px-6 py-3">${v.loc}</td><td class="px-6 py-3">${v.item}</td><td class="px-6 py-3 text-right font-mono text-red-600 font-bold">${v.index}</td></tr>`).join('')}
+                        </table>
                     </div>
                 </div>
             `;
         }
-
-        else if (type === 'Fintech') {
-            container.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-6 text-center">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Eligible Retailers</p>
-                        <h1 class="text-5xl font-black text-blue-600 mt-4">${w.eligibility}</h1>
-                    </div>
-                    <div class="card p-6 col-span-3">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Merchant Risk Tier Distribution</p>
-                        <div class="h-48 mt-4"><canvas id="riskChart"></canvas></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Render Actionable Alerts (Common to all, but typed)
-        const advisory = document.getElementById('advisory_row');
-        advisory.innerHTML = res.alerts.map(a => `
-            <div class="card p-4 border-l-4 ${a.cat === 'STOCK' ? 'border-red-500' : 'border-blue-500'} flex items-center gap-4">
-                <i data-lucide="info" class="w-5 h-5 text-gray-400"></i>
-                <p class="text-sm font-bold text-gray-700">${a.msg}</p>
-            </div>
-        `).join('');
 
         lucide.createIcons();
     } catch(e) { console.error(e); }
 }
 
+// Visual Helper for Fintech Scatter Plot
+function renderRiskScatter(data) {
+    const ctx = document.getElementById('riskScatter');
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Merchants',
+                data: data.map(m => ({ x: m.cov, y: m.pending })),
+                backgroundColor: '#ea580c'
+            }]
+        },
+        options: { scales: { x: { title: { display: true, text: 'Sales CoV (Inconsistency)' } }, y: { title: { display: true, text: 'Pending Payments ($)' } } } }
+    });
+}
     
     // ---- ACTIONS ----
     async function sendConnect(id, btn) {
