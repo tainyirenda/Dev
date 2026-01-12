@@ -212,41 +212,25 @@
 
     <!-- ================= VIEW 2: DASHBOARD ================= -->
     <section id="view-dashboard" class="view-section">
-      <div class="flex items-center gap-4 mb-6">
-        <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub</button>
-        <h1 class="text-2xl font-bold text-[color:var(--au-ink)]">Analytics Dashboard</h1>
+      <!-- Portal Toolbar -->
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <button onclick="switchView('hub')" class="btn-outline flex items-center gap-2 text-sm text-gray-600">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub
+            </button>
+            <h1 class="text-2xl font-extrabold text-[color:var(--au-ink)]" id="portal_title_display">Analytics Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date Range:</span>
+            <span class="text-xs font-semibold px-3 py-1 bg-gray-100 rounded-lg">April — July 2025</span>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Revenue -->
-        <div class="card p-6">
-            <h3 class="text-sm font-medium text-gray-500">Total Revenue</h3>
-            <p class="text-4xl font-bold mt-2 text-gray-900" id="disp_revenue">Loading...</p>
-            <div class="h-32 mt-4"><canvas id="revenueChart"></canvas></div>
-        </div>
-        <!-- Credit -->
-        <div class="card p-6 flex flex-col items-center justify-center">
-            <h3 class="text-sm font-medium text-gray-500 w-full text-left">Credit Score</h3>
-            <div class="relative w-40 h-20 overflow-hidden mt-4">
-                <div class="absolute w-40 h-40 rounded-full border-[12px] border-gray-100"></div>
-                <div class="absolute w-40 h-40 rounded-full border-[12px] border-blue-600 border-b-transparent border-r-transparent transform -rotate-45"></div>
-            </div>
-            <span class="text-5xl font-bold text-gray-900 -mt-8" id="disp_credit">--</span>
-            <span class="pill bg-blue-50 text-blue-700 mt-2" id="disp_tier">Checking...</span>
-        </div>
-        <!-- Products -->
-        <div class="card p-0 lg:col-span-1 overflow-hidden">
-            <div class="bg-gray-50 px-6 py-4 border-b"><h3 class="font-semibold text-gray-700">Top Products</h3></div>
-            <table class="w-full text-sm">
-                <thead class="bg-white border-b text-gray-500 text-xs uppercase">
-                    <tr><th class="px-6 py-2 text-left">Item</th><th class="px-6 py-2 text-right">Value</th></tr>
-                </thead>
-                <tbody id="list_top_products" class="divide-y divide-gray-100"></tbody>
-            </table>
-        </div>
+      <!-- THE TARGET CONTAINER: All portal layouts get injected here -->
+      <div id="portal_dynamic_container" class="space-y-8">
+          <p class="text-gray-400 text-center py-20 italic">Initialising portal engine...</p>
       </div>
     </section>
-
 
     <!-- ================= VIEW 3: INSIGHTS ================= -->
     <section id="view-insights" class="view-section">
