@@ -1190,165 +1190,106 @@
         if (!container) return;
 
         try {
-            // 1. COLLECT SLICER SELECTIONS (If they exist in DOM)
-            const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value).join(',');
+            // 1. COLLECT MONTH FILTER SELECTIONS
+            const selectedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value).join(',');
             
-            // 2. FETCH ROLE-SPECIFIC DATA
-            const res = await call(`/api/v1/analytics/dashboard?biz=${encodeURIComponent(selectedRetailers)}`);
-            const type = res.type; 
-            const d = res.data;    
-            
+            const res = await call(`/api/v1/analytics/dashboard?months=${encodeURIComponent(selectedMonths)}`);
+            const type = res.type;
+            const d = res.data;
             titleDisplay.innerText = `${type} Portal`;
 
-            // 3. GENERATE DYNAMIC TOP BAR (KPIs for Retailers, Slicers for Orgs)
-            let topBarHTML = "";
-
             if (type === 'Retailer') {
-                topBarHTML = `
+                container.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <!-- Total Revenue KPI Card -->
-                        <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
-                            <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
-                            <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i> Updated Live</p>
+                        <div class="card p-6 bg-gray-900 text-white shadow-xl">
+                            <p class="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Total Lifetime Revenue</p>
+                            <h2 class="text-4xl font-black mt-2 leading-none">$${d.revenue.toLocaleString()}</h2>
                         </div>
-                        <!-- Date Display Card -->
-                        <div class="card p-6 bg-white border flex flex-col justify-center">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Viewing Period</p>
-                            <div class="flex flex-wrap gap-2">
-                                ${['Apr','May','Jun','Jul'].map(m => `<span class="px-3 py-1 bg-gray-100 rounded-lg text-[10px] font-bold text-gray-600 border border-gray-200">${m} 2025</span>`).join('')}
+                        
+                        <div class="card p-6 bg-white border">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Slicer: Viewing Period</p>
+                            <div class="grid grid-cols-2 gap-2 max-h-24 overflow-y-auto custom-scrollbar" id="slicer_dates">
+                                ${res.available_months.map(m => `
+                                    <label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                                        <input type="checkbox" value="${m}" ${selectedMonths.includes(m) || !selectedMonths ? 'checked' : ''} onchange="loadAnalytics()"> 
+                                        ${m}
+                                    </label>
+                                `).join('')}
                             </div>
                         </div>
+
                         <div class="flex items-center justify-end">
-                            <button class="btn-outline text-xs px-10 py-3 shadow-sm" onclick="loadAnalytics()"><i data-lucide="refresh-cw" class="w-3 h-3 mr-2"></i> Refresh My Data</button>
+                            <button class="btn-outline text-xs px-10 py-3" onclick="loadAnalytics()">
+                                <i data-lucide="refresh-cw" class="w-3 h-3 mr-2"></i> Sync Data
+                            </button>
                         </div>
                     </div>
-                `;
-            } else {
-                topBarHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border border-gray-200">
-                        <div class="col-span-1">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Retailer Entity</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
-                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 hover:bg-gray-50 px-2 rounded cursor-pointer transition-colors"><input type="checkbox" value="${b}"> <span>${b}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="col-span-1">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Date Selection</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white">
-                                ${['Apr 2025','May 2025','Jun 2025','Jul 2025'].map(m => `<label class="flex items-center gap-2 text-[10px] py-1 hover:bg-gray-50 px-2 rounded cursor-pointer"><input type="checkbox" checked> <span>${m}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="col-span-1">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Scope</p>
-                            <div class="p-3 border rounded-xl bg-gray-100 text-[10px] font-bold text-gray-400 italic">Ecosystem Aggregate (Retail Only)</div>
-                        </div>
-                        <div class="flex items-end">
-                            <button class="btn-primary text-xs w-full py-3 shadow-lg shadow-gray-200" onclick="loadAnalytics()">Apply Interactivity</button>
-                        </div>
-                    </div>
-                `;
-            }
 
-            // 4. GENERATE CONTENT GRID
-            let gridHTML = "";
-
-            if (type === 'Retailer') {
-                gridHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left w-full">Credit Score (Gauge)</p>
+                        <div class="card p-6 flex flex-col items-center min-h-[320px] justify-between">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest w-full">Credit Score (100 Point Scale)</p>
                             <div class="relative h-40 w-full flex justify-center items-end">
                                 <canvas id="gaugeChart"></canvas>
-                                <div class="absolute bottom-4 text-6xl font-black text-gray-900">${d.credit?.score || '0'}</div>
+                                <div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div>
                             </div>
-                            <span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase tracking-tighter">Tier: ${d.credit?.tier || 'Bronze'}</span>
+                            <span class="pill bg-blue-100 text-blue-700 font-black px-8 py-2 rounded-full uppercase text-xs">TIER: ${d.credit.tier}</span>
                         </div>
                         <div class="card p-0 overflow-hidden col-span-2">
                             <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products (DAX Ranked)</div>
                             <table class="w-full text-sm">
                                 <tbody class="divide-y divide-gray-100">
-                                    ${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${p.val.toLocaleString()}</td></tr>`).join('')}
+                                    ${d.top_products.length ? d.top_products.map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${p.val.toLocaleString()}</td></tr>`).join('') : '<tr><td class="p-10 text-center text-gray-400">No data for selected period</td></tr>'}
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Total Revenue per Month</p><canvas id="retailLine"></canvas></div>
+                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Revenue Per Month (Filtered)</p><canvas id="retailLine"></canvas></div>
                         <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Quantity Sold by Category</p><canvas id="retailBar"></canvas></div>
                     </div>
                 `;
-            } 
-            else if (type === 'Fintech' || type === 'Micro-Lender') {
-                gridHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="card p-6 text-center flex flex-col justify-center"><p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Portfolio Score</p><h1 class="text-5xl font-black text-gray-900">1.84</h1></div>
-                        <div class="card p-6 text-center flex flex-col justify-center"><p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Portfolio Tier</p><h1 class="text-5xl font-black text-orange-600">Gold</h1></div>
-                        <div class="card p-6 col-span-2 h-48"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregated Retailer Revenue</p><canvas id="finLine"></canvas></div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="card p-6 h-96"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Risk Scatter: Sales Consistency vs Pending Payments</p><canvas id="riskScatter"></canvas></div>
-                        <div class="card p-0 overflow-hidden">
-                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Merchant Risk Profiles</div>
-                            <table class="w-full text-xs divide-y divide-gray-100">
-                                <thead><tr class="bg-gray-50/50"><th class="px-4 py-3 text-left">BUSINESS</th><th class="px-4 py-3 text-center">CoV INDEX</th><th class="px-4 py-3 text-right">RISK LEVEL</th></tr></thead>
-                                <tbody>
-                                    ${(d.risk_profiles || []).map(m => `<tr><td class="p-4 font-bold text-gray-800">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status.includes('High') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">${m.status}</span></td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
+                renderRetailerVisuals(d);
+            } else {
+                // (Placeholder logic for Fintech/NGO/FMCG views)
+                container.innerHTML = `<div class="card p-20 text-center italic text-gray-400">${type} Portal data engine loading...</div>`;
             }
-            else if (type === 'NGO' || type === 'Development Partner') {
-                gridHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card p-4 col-span-2 h-96"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Regional Price Volatility Map [${res.country}]</p><div class="h-[300px] bg-gray-50 rounded-2xl flex items-center justify-center italic text-gray-300 border-2 border-dashed">Interactive Map visual: Staples & Grains Focus</div></div>
-                        <div class="card p-0 overflow-hidden">
-                            <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div>
-                            <table class="w-full text-xs">
-                                <tbody>
-                                    ${(d.volatility || []).map(v => `<tr class="border-b"><td class="p-4 font-bold">${v.loc}</td><td class="p-4">${v.item}</td><td class="p-4 text-right font-black text-red-600">${v.index}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card p-6 h-80 mt-6"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Market Resilience: Regional Price Shocks</p><canvas id="resilienceLine"></canvas></div>
-                `;
-            }
-            else if (type === 'FMCG') {
-                gridHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="card p-0 overflow-hidden">
-                            <div class="bg-red-50 px-4 py-2 border-b border-red-100 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div>
-                            <table class="w-full text-xs">${(d.stockouts || []).map(s => `<tr class="border-b"><td class="p-4 font-bold">${s.loc}</td><td class="p-4 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table>
-                        </div>
-                        <div class="card p-4 col-span-2 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase text-center mb-2">Regional Demand Heatmap</p><div class="h-64 bg-blue-50/50 border border-blue-100 rounded-2xl flex items-center justify-center italic text-blue-400">Geo-Revenue Intensity [${res.country}]</div></div>
-                        <div class="card p-0 overflow-hidden">
-                            <div class="bg-orange-50 px-4 py-2 border-b border-orange-100 font-bold text-[10px] text-orange-600 uppercase">Low Stock Alerts</div>
-                            <table class="w-full text-xs"><tbody><tr><td class="p-4 font-bold">Bar Soap</td><td class="p-4 text-right font-black">50 units</td></tr></tbody></table>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Demand Forecast per SKU</p><canvas id="skuChart"></canvas></div>
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Uplift in Sales: Promotion ROI</p><canvas id="upliftBar"></canvas></div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = topBarHTML + gridHTML;
-            
-            // 5. INITIALIZE THE VISUALS
-            initPortalVisuals(type, d);
             lucide.createIcons();
-
-        } catch(e) { 
-            console.error("Dashboard Render Failure:", e);
-            container.innerHTML = `<div class="p-20 text-center text-red-500 bg-red-50 rounded-2xl border-2 border-red-100"><p class="font-black text-xl">Sync Error</p><p class="text-sm mt-2">${e.message}</p></div>`;
-        }
+        } catch(e) { console.error(e); }
     }
 
+    function renderRetailerVisuals(d) {
+        // 1. GAUGE CHART (Doughnut with 100 max)
+        const gaugeCtx = document.getElementById('gaugeChart');
+        if (gaugeCtx) {
+            new Chart(gaugeCtx, {
+                type: 'doughnut',
+                data: { datasets: [{ data: [d.credit.score, Math.max(0, 100 - d.credit.score)], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] },
+                options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
+            });
+        }
+
+        // 2. REVENUE LINE CHART
+        const lineCtx = document.getElementById('retailLine');
+        if (lineCtx) {
+            new Chart(lineCtx, {
+                type: 'line',
+                data: { labels: d.line_chart.labels, datasets: [{ data: d.line_chart.values, borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] },
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] } } } }
+            });
+        }
+
+        // 3. CATEGORY BAR CHART
+        const barCtx = document.getElementById('retailBar');
+        if (barCtx) {
+            new Chart(barCtx, {
+                type: 'bar',
+                data: { labels: d.bar_chart.labels, datasets: [{ data: d.bar_chart.values, backgroundColor: '#3b82f6', borderRadius: 6 }] },
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true } } }
+            });
+        }
+    }
+    
     // ---- CHART JS PORTAL CONFIGURATOR ----
     function initPortalVisuals(type, data) {
         // A. Gauge Helper
