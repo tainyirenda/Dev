@@ -1182,7 +1182,23 @@
             alert("Error disconnecting: " + e.message);
         }
     }
+    
 
+    function resetFilters() {
+        // 1. Uncheck all boxes in both slicers
+        document.querySelectorAll('#slicer_dates input, #slicer_biz input').forEach(el => {
+            el.checked = false;
+        });
+
+        // 2. Clear the search bar if it has text
+        const searchInput = document.getElementById('filter_search');
+        if (searchInput) searchInput.value = '';
+
+        // 3. Reload analytics (the backend logic will default to "All" when lists are empty)
+        loadAnalytics();
+    }
+
+    
     // ---- MASTER ANALYTICS PORTAL ENGINE ----
     async function loadAnalytics() {
         const container = document.getElementById('portal_dynamic_container');
@@ -1225,7 +1241,8 @@
                                 ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || !checkedMonths.length ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
                             </div>
                         </div>
-                        <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="loadAnalytics()"><i data-lucide="refresh-cw" class="w-3 h-3 mr-2"></i> Sync All Visuals</button></div>
+                        <div class="flex items-center justify-end"><button class="btn-primary text-xs w-full py-3 shadow-lg font-bold" onclick="resetFilters()">
+                                <i data-lucide="layout-grid" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh My Data</button></div>
                     </div>
                 `;
             } else {
