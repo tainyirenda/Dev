@@ -1347,8 +1347,8 @@
 
     
     function initPortalVisuals(type, data) {
-        const chartsToDestroy = ["gaugeChart", "retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "finLine"];
-        chartsToDestroy.forEach(id => Chart.getChart(id)?.destroy());
+        ["gaugeChart", "retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar"].forEach(id => Chart.getChart(id)?.destroy());
+;
 
         if (type === 'Retailer') {
             new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit.score, Math.max(0, 100 - data.credit.score)], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
@@ -1356,30 +1356,34 @@
             new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
         
-        if (type === 'FMCG' && data.forecast) {
+        if (type.includes('NGO') || type.includes('Partner')) {
+            // Price Shocks: Focuses on avg of all staples in scope
+            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: data.labels, datasets: [{ label: 'Price Index', data: data.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } });
+        }
+
+        if (type === 'FMCG') {
+            // 1. Multi-SKU Demand Forecast (Brand Performance)
             const colors = ['#ea580c', '#3b82f6', '#7c3aed'];
             new Chart(document.getElementById('skuChart'), { 
                 type: 'line', 
-                data: { labels: data.forecast.labels, datasets: data.forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4 })) },
+                data: { labels: data.labels, datasets: data.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 4 })) },
                 options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }, maintainAspectRatio: false }
             });
 
+            // 2. Promotion Uplift: Sales Volume ROI (Grouped Bar Chart)
             new Chart(document.getElementById('upliftBar'), { 
                 type: 'bar', 
-                data: { labels: data.uplift.labels, datasets: [{ label: 'Pre-Promo', data: [120, 100, 150], backgroundColor: '#e2e8f0' }, { label: 'Promo Volume', data: data.uplift.values, backgroundColor: '#16a34a' }] }, 
-                options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false }
-            });
-        }
-
-        if (type.includes('NGO') || type.includes('Partner')) {
-            new Chart(document.getElementById('resilienceLine'), { 
-                type: 'line', 
-                data: { labels: ['Apr','May','Jun','Jul'], datasets: [{ label: 'Maize Index', data: [4.2, 5.8, 8.4, 6.1], borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4 }] }, 
-                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } 
+                data: { 
+                    labels: data.uplift.labels, 
+                    datasets: [
+                        { label: 'Pre', data: data.uplift.pre, backgroundColor: '#e2e8f0', borderRadius: 4 },
+                        { label: 'Promo', data: data.uplift.promo, backgroundColor: '#16a34a', borderRadius: 4 }
+                    ] 
+                }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
         }
     }
-
     
     
     // ---- ACTIONS ----
