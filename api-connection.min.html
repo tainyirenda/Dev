@@ -1290,8 +1290,10 @@
                 gridHTML = generateOrgGrid(type, d, res.country);
             }
 
-            container.innerHTML = topBarHTML + gridHTML;
-            initPortalVisuals(type, d); 
+            container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
+            
+            // 3. INITIALIZE CHARTS
+            initPortalVisuals(type, {...d, ...res.charts});
             lucide.createIcons();
 
         } catch(e) { 
@@ -1300,47 +1302,43 @@
     }
 
         
-        function generateOrgGrid(type, d, country) {
-        if (type === 'NGO' || type === 'Development Partner') {
+        function renderPortalGrid(type, d, country) {
+        if (type === 'Retailer') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- AFRICAN VOLATILITY MAP -->
-                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl ring-1 ring-white/10">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map: African Markets</p>
+                    <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]"><p class="kpi-label w-full">Credit Score (100pt)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit.tier}</span></div>
+                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products (DAX Ranked)</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${d.top_products.map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${p.val.toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <div class="card p-6 h-80"><p class="kpi-label mb-6">Total Revenue History</p><canvas id="retailLine"></canvas></div>
+                    <div class="card p-6 h-80"><p class="kpi-label mb-6">Quantity Sold by Category</p><canvas id="retailBar"></canvas></div>
+                </div>
+            `;
+        }
+        if (type.includes('NGO') || type.includes('Partner')) {
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">African Regional Price Volatility Map [${country}]</p>
                         <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
-                            ${d.volatility.slice(0,4).map(v => `
-                                <div class="flex flex-col items-center">
-                                    <div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div>
-                                    <p class="text-[10px] mt-3 font-extrabold uppercase text-white">${v.loc.split(' ')[0]}</p>
-                                </div>`).join('')}
+                            ${(d.volatility || []).slice(0,4).map(v => `<div class="flex flex-col items-center"><div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div><p class="text-[10px] mt-3 font-extrabold uppercase text-white">${v.loc.split(' ')[0]}</p></div>`).join('')}
                         </div>
                         <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
                     </div>
-                    <div class="card p-0 overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div>
-                        <table class="w-full text-xs divide-y divide-gray-100">
-                            <tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody>
-                        </table>
-                    </div>
+                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
                 </div>
                 <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket Aggregate)</p><canvas id="resilienceLine"></canvas></div>
             `;
         }
-
         if (type === 'FMCG') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${d.stockouts.map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
-                    
-                    <!-- LAST MILE DEMAND MAP -->
-                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden">
-                        <p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400">African Last-Mile Demand Heatmap [${country}]</p>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
+                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden"><p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400">African Last-Mile Demand Heatmap [${country}]</p>
                         <div class="flex items-center justify-around h-full pt-10">
-                             ${d.map_hotspots.map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 40 + h.value/20)}px; height: ${Math.min(100, 40 + h.value/20)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500">${h.label}</p></div>`).join('')}
+                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 40 + h.value/20)}px; height: ${Math.min(100, 40 + h.value/20)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500">${h.label}</p></div>`).join('')}
                         </div>
                     </div>
-
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody><tr><td class="p-4 font-bold text-gray-800">Bar Soap</td><td class="p-4 text-right font-black text-orange-600 text-base">50 units</td></tr></tbody></table></div>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                     <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
@@ -1348,10 +1346,9 @@
                 </div>
             `;
         }
+        return '';
     }
-
     function initPortalVisuals(type, data) {
-        // Destroy existing charts to allow fresh re-draw
         const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
         ids.forEach(id => Chart.getChart(id)?.destroy());
 
@@ -1362,24 +1359,18 @@
         }
         
         if (type.includes('NGO') || type.includes('Partner')) {
-            const chartData = data.resilience; // Using the 'resilience' key from backend
-            new Chart(document.getElementById('resilienceLine'), { 
-                type: 'line', 
-                data: { labels: chartData.labels, datasets: [{ label: 'Price Index', data: chartData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, 
-                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } 
-            });
+            const resData = data.resilience || { labels: [], values: [] };
+            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
         }
 
         if (type === 'FMCG') {
             const colors = ['#ea580c', '#3b82f6', '#16a34a'];
-            // Multi-SKU Line Chart
             new Chart(document.getElementById('skuChart'), { 
                 type: 'line', 
-                data: { labels: data.forecast.labels, datasets: data.forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5 })) },
+                data: { labels: data.labels, datasets: data.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5, borderWidth: 3 })) },
                 options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10, weight: 'bold' } } } }, maintainAspectRatio: false }
             });
 
-            // Grouped ROI Bar Chart
             new Chart(document.getElementById('upliftBar'), { 
                 type: 'bar', 
                 data: { 
@@ -1389,7 +1380,7 @@
                         { label: 'Promo Vol', data: data.uplift.promo, backgroundColor: '#16a34a', borderRadius: 4 }
                     ] 
                 }, 
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
             });
         }
     }
