@@ -1241,8 +1241,8 @@
                                 ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || !checkedMonths.length ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
                             </div>
                         </div>
-                        <div class="flex items-center justify-end"><button class="btn-primary text-xs w-full py-3 shadow-lg font-bold" onclick="resetFilters()">
-                                <i data-lucide="layout-grid" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh My Data</button></div>
+                        <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh My Data</button></div>
                     </div>
                 `;
             } else {
