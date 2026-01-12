@@ -1183,148 +1183,134 @@
         }
     }
 
-    // ---- ANALYTICS ----
+    // ---- ANALYTICS PORTAL ENGINE ----
     async function loadAnalytics() {
-    try {
-        const res = await call('/api/v1/analytics/dashboard');
-        const container = document.getElementById('portal_content');
-        if (!container) return;
+        try {
+            const res = await call('/api/v1/analytics/dashboard');
+            const container = document.getElementById('portal_dynamic_container');
+            const titleDisplay = document.getElementById('portal_title_display');
+            if (!container) return;
 
-        const type = res.type;
-        const d = res.data;
+            const type = res.type; 
+            const d = res.data;    
+            titleDisplay.innerText = `${type} Portal`;
 
-        // 1. GENERATE THE SHARED FILTER ROW (Slicers)
-        let filterHTML = `
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border">
-                <div><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase">Business Name</p>
-                    <div class="slicer-box" id="slicer_biz">
-                        <div class="slicer-item"><input type="checkbox" checked> <span>My Business</span></div>
-                        ${(d.businesses || []).map(b => `<div class="slicer-item"><input type="checkbox"> <span>${b}</span></div>`).join('')}
+            // 1. GENERATE POWER BI STYLE SLICERS
+            let slicerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-xl border shadow-sm">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Business Entity</p>
+                        <div class="border rounded-lg p-2 max-h-24 overflow-y-auto bg-gray-50">
+                            <label class="flex items-center gap-2 text-xs py-1"><input type="checkbox" checked> <span>My Business</span></label>
+                            ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-xs py-1"><input type="checkbox"> <span>${b}</span></label>`).join('')}
+                        </div>
                     </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Date Selection</p>
+                        <div class="border rounded-lg p-2 max-h-24 overflow-y-auto bg-gray-50">
+                            ${['Apr 2025','May 2025','Jun 2025','Jul 2025'].map(m => `<label class="flex items-center gap-2 text-xs py-1"><input type="checkbox"> <span>${m}</span></label>`).join('')}
+                        </div>
+                    </div>
+                    <div class="flex items-end"><button class="btn-primary text-xs w-full py-2" onclick="loadAnalytics()">Refresh Data</button></div>
                 </div>
-                <div><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase">Date Selection</p>
-                    <div class="slicer-box">${['April 2025','May 2025','June 2025','July 2025'].map(m => `<div class="slicer-item"><input type="checkbox"> <span>${m}</span></div>`).join('')}</div>
-                </div>
-                ${type === 'FMCG' || type === 'NGO' ? `<div><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase">Business Type</p>
-                    <div class="slicer-box">${['Retailer','Wholesaler','Distributor'].map(t => `<div class="slicer-item"><input type="checkbox"> <span>${t}</span></div>`).join('')}</div>
-                </div>` : '<div></div>'}
-                <div class="flex flex-col justify-end"><button class="btn-outline text-xs w-full">Apply Filters</button></div>
-            </div>
-        `;
+            `;
 
-        // 2. GENERATE PORTAL SPECIFIC VISUALS
-        let gridHTML = "";
+            // 2. GENERATE ROLE-SPECIFIC GRID
+            let gridHTML = "";
 
+            if (type === 'Retailer') {
+                gridHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="card p-6 flex flex-col items-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-4 text-left w-full">Credit Score (Gauge)</p>
+                            <div class="relative h-32 w-full flex justify-center items-end">
+                                <canvas id="gaugeChart"></canvas>
+                                <div class="absolute bottom-2 text-5xl font-black text-gray-900">${d.credit.score}</div>
+                            </div>
+                            <span class="pill bg-blue-100 text-blue-700 mt-4 font-bold tracking-widest uppercase">Tier: ${d.credit.tier}</span>
+                        </div>
+                        <div class="card p-0 overflow-hidden col-span-2">
+                            <div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div>
+                            <table class="w-full text-sm">
+                                ${d.top_products.map(p => `<tr class="border-b hover:bg-gray-50"><td class="px-6 py-3">${p.item}</td><td class="px-6 py-3 text-right font-black">$${p.val.toLocaleString()}</td></tr>`).join('')}
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (type === 'Fintech') {
+                gridHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Risk Scatter: CoV vs Pending</p><canvas id="riskScatter"></canvas></div>
+                        <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Merchant Risk likelihood</div>
+                            <table class="w-full text-xs">
+                                <thead class="bg-gray-100 font-bold text-gray-400"><tr><th class="p-4 text-left">BUSINESS</th><th class="p-4 text-center">CoV INDEX</th><th class="p-4 text-right">RISK</th></tr></thead>
+                                <tbody>${d.risk_profiles.map(m => `<tr><td class="p-4 font-bold">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status === 'High Risk' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${m.status}</span></td></tr>`).join('')}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (type === 'NGO' || type === 'Development Partner') {
+                gridHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="card p-4 col-span-2 h-96"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Map: Price Volatility [${res.country}]</p><div class="h-full bg-gray-50 rounded flex items-center justify-center italic text-gray-300 border-2 border-dashed">Geospatial Heatmap Placeholder</div></div>
+                        <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-6 py-3 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div>
+                            <table class="w-full text-xs">
+                                ${d.volatility.map(v => `<tr class="border-b"><td class="px-4 py-3">${v.loc}</td><td class="px-4 py-3 italic">${v.item}</td><td class="px-4 py-3 text-right font-mono text-red-600 font-bold">${v.index}</td></tr>`).join('')}
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (type === 'FMCG') {
+                gridHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div class="card p-0 overflow-hidden"><div class="bg-red-50 px-4 py-2 border-b border-red-100 font-bold text-[10px] text-red-600 uppercase">Stock Out Flags</div>
+                            <table class="w-full text-xs">${d.stockouts.map(s => `<tr><td class="p-3 font-semibold">${s.loc}</td><td class="p-3 text-right text-red-600 font-black">${s.flags}</td></tr>`).join('')}</table>
+                        </div>
+                        <div class="card p-4 col-span-2 h-64"><p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Regional Demand Heatmap</p><div class="h-full bg-gray-50 border rounded-xl flex items-center justify-center italic text-gray-300">Geo-Revenue Density [${res.country}]</div></div>
+                        <div class="card p-6 h-64"><p class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Demand Forecast SKU</p><canvas id="skuChart"></canvas></div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = slicerHTML + gridHTML;
+            initPortalVisuals(type, d);
+            lucide.createIcons();
+
+        } catch(e) { 
+            console.error("Portal Engine Error:", e);
+            document.getElementById('portal_dynamic_container').innerHTML = `<div class="card p-10 text-center text-red-500">Error loading ${type} portal views: ${e.message}</div>`;
+        }
+    }
+
+    // CHART JS INITIALISERS
+    function initPortalVisuals(type, data) {
+        if (type === 'Retailer') {
+            new Chart(document.getElementById('gaugeChart'), {
+                type: 'doughnut',
+                data: { datasets: [{ data: [75, 25], backgroundColor: ['#3b82f6', '#f3f4f6'], circumference: 180, rotation: 270, cutout: '85%' }] },
+                options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
+            });
+        }
         if (type === 'Fintech') {
-            gridHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-4 flex flex-col items-center">
-                        <p class="kpi-label">Credit Score</p>
-                        <div class="gauge-container"><canvas id="gaugeChart"></canvas><div class="gauge-value">1.84</div></div>
-                    </div>
-                    <div class="model-card"><p class="kpi-label">Credit Tier</p><h1 class="text-5xl font-black text-gray-900 mt-2">Gold</h1><p class="text-blue-600 text-xs font-bold mt-2">Verified Profile</p></div>
-                    <div class="card p-4 col-span-2"><p class="kpi-label">Total Revenue by Month</p><div class="h-40 mt-4"><canvas id="finRevLine"></canvas></div></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                    <div class="card p-0 overflow-hidden"><table class="matrix-table"><thead><tr><th>Business</th><th>Score</th><th>Risk</th></tr></thead><tbody><tr><td>Green Supply</td><td>1.84</td><td class="text-green-600 font-bold">Low Risk</td></tr><tr><td>Mama Tendi</td><td>1.84</td><td class="text-green-600 font-bold">Low Risk</td></tr></tbody></table></div>
-                    <div class="card p-4"><p class="kpi-label">Payments Pending per Year</p><div class="h-48"><canvas id="scatterPending"></canvas></div></div>
-                    <div class="card p-4"><p class="kpi-label">Risk: Consistency vs Missed Payments</p><div class="h-48"><canvas id="scatterRisk"></canvas></div></div>
-                </div>
-            `;
+            new Chart(document.getElementById('riskScatter'), {
+                type: 'scatter',
+                data: { datasets: [{ label: 'Merchant Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#ea580c', pointRadius: 6 }] },
+                options: { scales: { x: { title: { display: true, text: 'Consistency (CoV)' } }, y: { title: { display: true, text: 'Pending Payments ($)' } } } }
+            });
         }
-
-        else if (type === 'NGO') {
-            gridHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 col-span-2"><p class="kpi-label">Map: Price Volatility by Location</p><div class="h-80 bg-gray-100 rounded mt-4 flex items-center justify-center italic text-gray-400">Kenya Heatmap [Volatility Focus]</div></div>
-                    <div class="card p-0 overflow-hidden"><table class="matrix-table"><thead><tr><th>Location</th><th>Item</th><th>Volatility</th></tr></thead><tbody><tr><td>Mombasa</td><td>Sugar</td><td class="text-red-500 font-bold">2.00</td></tr><tr><td>Nairobi</td><td>Maize</td><td class="text-orange-500 font-bold">0.49</td></tr></tbody></table></div>
-                </div>
-                <div class="card p-4 mt-6"><p class="kpi-label">Market Resilience: Price Trend & Volatility by Month</p><div class="h-64 mt-4"><canvas id="resilienceChart"></canvas></div></div>
-            `;
+        if (type === 'FMCG') {
+            new Chart(document.getElementById('skuChart'), {
+                type: 'line',
+                data: { labels: ['Apr', 'May', 'Jun', 'Jul'], datasets: [{ data: [45, 52, 48, 65], borderColor: '#ea580c', tension: 0.4, fill: false }] },
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
         }
-
-        else if (type === 'FMCG') {
-            gridHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 col-span-1 overflow-hidden"><div class="bg-gray-50 px-4 py-2 border-b font-bold text-[10px]">STOCK OUT FLAGS</div><table class="matrix-table"><tbody><tr><td>Nairobi</td><td class="text-right text-red-600 font-bold">1</td></tr><tr><td>Kisumu</td><td class="text-right">0</td></tr></tbody></table></div>
-                    <div class="card p-4 col-span-2"><p class="kpi-label">Regional Revenue Map</p><div class="h-48 bg-blue-50 rounded mt-2 flex items-center justify-center">Geo Revenue visual</div></div>
-                    <div class="card p-0 col-span-1 overflow-hidden"><div class="bg-gray-50 px-4 py-2 border-b font-bold text-[10px]">LOW STOCK ALERTS</div><table class="matrix-table"><tbody><tr><td>Bar Soap</td><td class="text-right text-orange-600 font-bold">50 units</td></tr></tbody></table></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-4"><p class="kpi-label">Demand Forecast per SKU</p><div class="h-64 mt-4"><canvas id="skuForecast"></canvas></div></div>
-                    <div class="card p-4"><p class="kpi-label">Uplift: Sales Before/After Promotion</p><div class="h-64 mt-4"><canvas id="promoBar"></canvas></div></div>
-                </div>
-            `;
-        }
-
-        else if (type === 'Retailer') {
-            gridHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4"><p class="kpi-label">Low Stock Alerts</p><div class="space-y-2 mt-4"><div class="flex justify-between text-sm p-2 bg-red-50 rounded"><span>Sugar 1kg</span><span class="font-bold">5 units</span></div></div></div>
-                    <div class="card p-4 flex flex-col items-center"><p class="kpi-label">Credit Score</p><div class="gauge-container"><canvas id="gaugeChart"></canvas><div class="gauge-value">720</div></div></div>
-                    <div class="card p-0 overflow-hidden"><div class="bg-gray-50 px-4 py-2 border-b font-bold text-[10px]">TOP PRODUCTS</div><table class="matrix-table"><tbody><tr><td>Sugar</td><td class="text-right font-bold">$120</td></tr></tbody></table></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-4"><p class="kpi-label">Total Quantity by Category</p><div class="h-48"><canvas id="qtyBar"></canvas></div></div>
-                    <div class="card p-4"><p class="kpi-label">Total Revenue per Month</p><div class="h-48"><canvas id="revLine"></canvas></div></div>
-                </div>
-            `;
-        }
-
-        container.innerHTML = filterHTML + gridHTML;
-        
-        // 3. INITIALIZE CHART JS OBJECTS
-        initPortalCharts(type, d);
-        lucide.createIcons();
-    } catch(e) { console.error(e); }
-}
-
-function initPortalCharts(type, data) {
-    // Shared Gauge Logic (Fintech & Retailer)
-    const gaugeCtx = document.getElementById('gaugeChart');
-    if (gaugeCtx) {
-        new Chart(gaugeCtx, {
-            type: 'doughnut',
-            data: { datasets: [{ data: [75, 25], backgroundColor: ['#3b82f6', '#f3f4f6'], circumference: 180, rotation: 270, cutout: '80%' }] },
-            options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
-        });
     }
 
-    if (type === 'Fintech') {
-        new Chart(document.getElementById('scatterRisk'), {
-            type: 'scatter',
-            data: { datasets: [{ label: 'Merchant Risk', data: [{x: 0.6, y: 150}], backgroundColor: '#7c3aed' }] },
-            options: { scales: { x: { title: { display: true, text: 'Sales CoV' } }, y: { title: { display: true, text: 'Missed Payments' } } } }
-        });
-    }
     
-    if (type === 'Retailer') {
-        new Chart(document.getElementById('revLine'), {
-            type: 'line',
-            data: { labels: ['Apr', 'May', 'Jun', 'Jul'], datasets: [{ data: [480, 160, 155, 150], borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] },
-            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
-        });
-    }
-
-        lucide.createIcons();
-    } catch(e) { console.error(e); }
-}
-
-// Visual Helper for Fintech Scatter Plot
-function renderRiskScatter(data) {
-    const ctx = document.getElementById('riskScatter');
-    new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Merchants',
-                data: data.map(m => ({ x: m.cov, y: m.pending })),
-                backgroundColor: '#ea580c'
-            }]
-        },
-        options: { scales: { x: { title: { display: true, text: 'Sales CoV (Inconsistency)' } }, y: { title: { display: true, text: 'Pending Payments ($)' } } } }
-    });
-}
     
     // ---- ACTIONS ----
     async function sendConnect(id, btn) {
