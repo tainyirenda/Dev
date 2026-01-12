@@ -1184,87 +1184,113 @@
 
     // ---- ANALYTICS ----
     async function loadAnalytics() {
-        try {
-            const data = await call('/api/v1/analytics/dashboard');
-            if(!data) return;
+    try {
+        const res = await call('/api/v1/analytics/dashboard');
+        const container = document.getElementById('portal_content'); // Ensure you have this ID in your dashboard section
+        if (!container) return;
 
-            // Revenue
-            const revEl = document.getElementById('disp_revenue');
-            if(revEl) revEl.innerText = '$' + (data.revenue || 0).toLocaleString();
-            
-            // Credit
-            const credEl = document.getElementById('disp_credit');
-            const tierEl = document.getElementById('disp_tier');
-            if(credEl) credEl.innerText = data.credit.score || 0;
-            if(tierEl) tierEl.innerText = 'TIER: ' + (data.credit.tier || 'Unrated');
+        const type = res.type;
+        const w = res.widgets;
 
-            // Table
-            const tBody = document.getElementById('list_top_products');
-            if(tBody) {
-                tBody.innerHTML = '';
-                if(data.top_products) {
-                    data.top_products.forEach(p => {
-                        tBody.innerHTML += `
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-3 text-gray-900 font-medium">${p.item}</td>
-                                <td class="px-6 py-3 text-right text-gray-500">${p.qty}</td>
-                                <td class="px-6 py-3 text-right text-gray-900 font-semibold">$${p.value}</td>
-                            </tr>`;
-                    });
-                }
-            }
+        // --- RENDER BY TYPE ---
 
-            // Alerts
-            const alertList = document.getElementById('list_alerts');
-            if(alertList) {
-                alertList.innerHTML = '';
-                if(!data.alerts || data.alerts.length === 0) {
-                    alertList.innerHTML = '<li class="text-green-600 text-sm">All clear. No alerts.</li>';
-                } else {
-                    data.alerts.forEach(a => {
-                        if (a.item && a.item.includes("Unconfirmed")) {
-                            alertList.innerHTML += `
-                                <li class="flex items-center gap-2 animate-ai text-orange-600 p-2 text-sm bg-orange-50 rounded mb-2">
-                                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
-                                    <span>AI analyzing new upload...</span>
-                                </li>`;
-                        } else {
-                            alertList.innerHTML += `
-                                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg text-sm mb-2">
-                                    <span class="text-gray-700">${a.item}</span>
-                                    <span class="font-bold text-red-600">${a.stock}</span>
-                                </li>`;
-                        }
-                    });
-                }
-                lucide.createIcons();
-            }
+        if (type === 'Retailer') {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-6">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Revenue Trend</p>
+                        <p class="text-3xl font-black mt-2 text-orange-600">$${res.revenue || '5,700'}</p>
+                        <div class="h-32 mt-4"><canvas id="mainChart"></canvas></div>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Credit Score</p>
+                        <h1 class="text-7xl font-black text-gray-900 mt-4">${w.score}</h1>
+                        <span class="pill bg-green-100 text-green-700 mt-4 inline-block">TIER: GOLD</span>
+                    </div>
+                    <div class="card p-0 overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-2 border-b font-bold text-xs">TOP PRODUCTS</div>
+                        <table class="w-full text-sm">
+                            ${w.table.map(p => `<tr class="border-b">
+                                <td class="p-3">${p.item}</td>
+                                <td class="p-3 text-right font-bold">$${p.value}</td>
+                            </tr>`).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+            renderChart('mainChart', w.main_chart.labels, w.main_chart.values);
+        }
 
-            // Chart
-            const ctx = document.getElementById('revenueChart');
-            if(ctx && data.chart_labels) {
-                if(window.myRevenueChart) window.myRevenueChart.destroy();
-                window.myRevenueChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.chart_labels,
-                        datasets: [{
-                            label: 'Revenue',
-                            data: data.chart_values,
-                            borderColor: '#ea580c',
-                            backgroundColor: 'rgba(234,88,12,0.05)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 3
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x: { display: false }, y: { display: false } } }
-                });
-            }
-        } catch(e) { console.error(e); }
-    }
+        else if (type === 'FMCG') {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card p-6 h-96">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Demand Heatmap [${res.country || 'Regional'}]</p>
+                        <div class="mt-4 bg-gray-100 rounded-xl h-64 flex items-center justify-center italic text-gray-400">
+                            Geospatial Visualization Area (Kenya/Nigeria Focus)
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Stockout Frequency</p>
+                        <div class="space-y-4 mt-6">
+                            ${w.stockouts.map(s => `
+                                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                                    <span class="font-bold">${s.item}</span>
+                                    <span class="text-red-600 font-black">${s.freq} Stockout</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
+        else if (type === 'NGO') {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-6 col-span-2">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Price Volatility Index (Staple Foods)</p>
+                        <div class="h-64 mt-4"><canvas id="volatilityChart"></canvas></div>
+                    </div>
+                    <div class="card p-6">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Trade Disparity Alerts</p>
+                        <div class="mt-6 space-y-3">
+                            <p class="text-sm text-gray-600">Regional Disparity detected in <strong>Cardiff Region</strong>. Maize supply is 14% below expected threshold.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        else if (type === 'Fintech') {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="card p-6 text-center">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Eligible Retailers</p>
+                        <h1 class="text-5xl font-black text-blue-600 mt-4">${w.eligibility}</h1>
+                    </div>
+                    <div class="card p-6 col-span-3">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Merchant Risk Tier Distribution</p>
+                        <div class="h-48 mt-4"><canvas id="riskChart"></canvas></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Actionable Alerts (Common to all, but typed)
+        const advisory = document.getElementById('advisory_row');
+        advisory.innerHTML = res.alerts.map(a => `
+            <div class="card p-4 border-l-4 ${a.cat === 'STOCK' ? 'border-red-500' : 'border-blue-500'} flex items-center gap-4">
+                <i data-lucide="info" class="w-5 h-5 text-gray-400"></i>
+                <p class="text-sm font-bold text-gray-700">${a.msg}</p>
+            </div>
+        `).join('');
+
+        lucide.createIcons();
+    } catch(e) { console.error(e); }
+}
+
+    
     // ---- ACTIONS ----
     async function sendConnect(id, btn) {
         const originalText = btn.innerText;
