@@ -1348,10 +1348,51 @@
             new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
         
-        if (type.includes('NGO') || type.includes('Partner')) {
-            const resData = data.resilience || { labels: [], values: [] };
-            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
+        if (type.includes('NGO') || type.includes('Development Partner')) {
+        const ctx = document.getElementById('resilienceLine');
+        if (!ctx) return;
+
+        // Ensure we are pulling from the correct data path defined in the backend
+        const chartData = data.resilience || { labels: [], values: [] };
+        
+        // Safety: If values are all 0, we show a 'No Data' message
+        if (chartData.values.every(v => v === 0)) {
+            console.warn("NGO resilience data is empty or zero.");
         }
+
+        new Chart(ctx, { 
+            type: 'line', 
+            data: { 
+                labels: chartData.labels, 
+                datasets: [{ 
+                    label: 'Basket Price Index', 
+                    data: chartData.values, 
+                    borderColor: '#ef4444', 
+                    backgroundColor: 'rgba(239,68,68,0.05)', 
+                    fill: true, 
+                    tension: 0.4, 
+                    pointRadius: 5,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff'
+                }] 
+            }, 
+            options: { 
+                plugins: { legend: { display: false } }, 
+                maintainAspectRatio: false, 
+                scales: { 
+                    y: { 
+                        beginAtZero: false, 
+                        ticks: { 
+                            callback: v => '$' + v.toFixed(2),
+                            stepSize: 0.05 
+                        },
+                        grid: { color: '#f3f4f6' }
+                    },
+                    x: { grid: { display: false } }
+                } 
+            } 
+        });
+    }
 
         if (type === 'FMCG') {
             // FIX: Use the specific forecast sub-object returned from backend
