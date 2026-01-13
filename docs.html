@@ -53,7 +53,8 @@
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2 px-3">Business Portals</p>
         <a href="#retailers" class="sidebar-link">Retailer Guides</a>
         <a href="#compliance" class="sidebar-link">Corporate Verification</a>
-        <a href="#insights-logic" class="sidebar-link">Dashboard Area</a>
+        <a href="#dashboards" class="sidebar-link">Dashboards</a>
+        <a href="#insights-logic" class="sidebar-link">Insights</a>
         <a href="#connect-hub" class="sidebar-link">The Connect Hub</a>
         <a href="#billing" class="sidebar-link">Billing & Payments</a>
         
@@ -177,7 +178,94 @@
             </div>
         </section>
 
-      <!-- DASHBOARD SECTION -->
+      <!-- ANALYTICS DASHBOARDS SECTION -->
+        <section id="dashboards" class="mb-20">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i data-lucide="layout-dashboard" class="w-8 h-8 text-purple-600"></i> Analytics Dashboards
+            </h2>
+            <div class="prose text-gray-600 space-y-6 max-w-none">
+                <p>The TradeNet Analytics Engine transforms raw WhatsApp-native data into actionable economic indicators. Each portal is uniquely partitioned to deliver a specific value proposition while ensuring strict data privacy for our retail partners.</p>
+
+                <!-- INTERACTIVITY GUIDE -->
+                <div class="bg-white border rounded-2xl overflow-hidden shadow-sm mb-10">
+                    <div class="bg-gray-50 px-6 py-3 border-b font-bold text-sm text-gray-700 flex items-center gap-2">
+                        <i data-lucide="mouse-pointer-2" class="w-4 h-4"></i> Dashboard Interactivity
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm leading-relaxed mb-4">Organizations (FMCG, NGO, Fintech) utilize <strong>Interactive Slicers</strong> to filter the entire retail ecosystem. By selecting specific 'Retailer Entities' or 'Countries,' all visuals—including maps, scatter plots, and matrices—synchronize to show the filtered aggregate.</p>
+                        <div class="flex gap-4">
+                            <span class="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase">Slicer-Driven</span>
+                            <span class="text-[10px] font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full uppercase">Real-Time Sync</span>
+                            <span class="text-[10px] font-bold bg-orange-50 text-orange-600 px-3 py-1 rounded-full uppercase">Partitioned Scope</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- METRIC DICTIONARY -->
+                <h3 class="text-xl font-bold text-gray-900 mt-10">Calculation Methodology</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    
+                    <!-- Retailer Pillar -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4 text-blue-600"></i> Retailer Metrics
+                        </h4>
+                        <div class="text-sm space-y-4">
+                            <p><strong>Credit Score (100pt Scale):</strong> A proprietary weighting of Revenue Volume (40%), Activity Consistency (30%), and Payment Health (30%).</p>
+                            <p><strong>Balanced Product Mix:</strong> DAX-style logic that ensures granular product sales always sum perfectly to the reported monthly revenue, even in sparse-data environments.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fintech/NGO Pillar -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="landmark" class="w-4 h-4 text-indigo-600"></i> Corporate Metrics
+                        </h4>
+                        <div class="text-sm space-y-4">
+                            <p><strong>Sales CoV (Inconsistency):</strong> Calculated as the Coefficient of Variation. High CoV indicates seasonal or unreliable trade patterns, vital for lending risk assessment.</p>
+                            <p><strong>Price Volatility Index:</strong> Uses Population Standard Deviation to identify regional price shocks in staple goods, alerting NGOs to food security risks.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PORTAL BREAKDOWN MATRIX -->
+                <div class="mt-12 overflow-x-auto">
+                    <table class="w-full text-xs text-left border rounded-xl">
+                        <thead class="bg-gray-50 uppercase font-bold text-gray-400">
+                            <tr>
+                                <th class="p-4 border-b">Stakeholder</th>
+                                <th class="p-4 border-b">Primary Visuals</th>
+                                <th class="p-4 border-b">Strategic Value</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y text-gray-600">
+                            <tr>
+                                <td class="p-4 font-bold text-gray-900">Retailer</td>
+                                <td class="p-4">Revenue Trends, Credit Gauge, Stock Alerts</td>
+                                <td class="p-4">Operational efficiency & loan eligibility.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold text-gray-900">FMCG</td>
+                                <td class="p-4">Demand Heatmaps, Stockout Flags, ROI Uplift</td>
+                                <td class="p-4">Route optimization & brand performance.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold text-gray-900">NGO</td>
+                                <td class="p-4">Volatility Matrix, Regional Shock Maps</td>
+                                <td class="p-4">Market resilience & disaster monitoring.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold text-gray-900">Fintech</td>
+                                <td class="p-4">Risk Scatters, Portfolio Tiers, Debt Tracking</td>
+                                <td class="p-4">Credit-risk modeling & lead generation.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+      <!-- Insights SECTION -->
       <section id="insights-logic" class="mb-20">
     <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
         <i data-lucide="brain-circuit" class="w-8 h-8 text-purple-600"></i> AI Insights Engine
@@ -194,8 +282,8 @@
                 <p class="text-xs">Identifies price disparities across districts to alert NGOs of food security risks.</p>
             </div>
             <div class="p-4 bg-gray-50 rounded-xl border">
-                <p class="font-bold text-gray-900">Actionable Links</p>
-                <p class="text-xs">Every insight includes a direct link to the Connect Hub to resolve the issue (e.g. find a supplier).</p>
+                <p class="font-bold text-gray-900">Behavioural Analysis</p>
+                <p class="text-xs">Analyse behaviour trends of the markets making financial decision and tracking easier for Fintechs/Lenders</p>
             </div>
         </div>
     </div>
