@@ -989,7 +989,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
-                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i> View All History</button></div>
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh Data</button></div>
                     </div>
                 `;
             } else {
@@ -1032,11 +1032,11 @@
         if (type === 'Retailer') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100pt)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
-                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products (DAX Balanced)</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val || 0).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+                    <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
+                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val || 0).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Total Revenue history</p><canvas id="retailLine"></canvas></div>
+                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
                     <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
                 </div>
             `;
