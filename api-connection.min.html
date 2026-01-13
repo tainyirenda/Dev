@@ -824,37 +824,71 @@
 </div>
 
   <script>
-    // ---- CONFIGURATION ----
+    // ---- 1. GOOGLE TRANSLATE & LANGUAGE LOGIC (CRITICAL) ----
+    function fireGoogleTranslateEvent(el, eventName) { 
+        try { 
+            if (document.createEvent) { 
+                var event = document.createEvent("HTMLEvents"); 
+                event.initEvent(eventName, true, true); 
+                el.dispatchEvent(event); 
+            } else { 
+                el.dispatchEvent(new Event(eventName)); 
+            } 
+        } catch (e) { console.error("Translate Event Error:", e); } 
+    }
+
+    function setGoogleTransCookie(lang) { 
+        document.cookie = "googtrans=/en/" + lang + ";path=/;"; 
+        document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; 
+    }
+
+    window.setLanguage = function(lang) { 
+        function apply() { 
+            const c = document.querySelector(".goog-te-combo"); 
+            if (!c) return false; 
+            c.value = lang; 
+            fireGoogleTranslateEvent(c, "change"); 
+            try { localStorage.setItem("selectedLang", lang); } catch (e) {} 
+            return true; 
+        } 
+        if (apply()) return; 
+        const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
+        obs.observe(document.body, { childList: true, subtree: true }); 
+        setGoogleTransCookie(lang); 
+        setTimeout(() => window.location.reload(), 300); 
+    };
+
+    function googleTranslateElementInit() { 
+        new google.translate.TranslateElement({ 
+            pageLanguage: 'en', 
+            includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
+        }, 'google_translate_element'); 
+    }
+
+    // ---- 2. CONFIGURATION & GLOBAL STATE ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
     const SIGNIN_PAGE = 'api-connection.html';
 
-    // ---- GLOBAL STATE ----
     let currentUserType = 'Retailer';
     let currentVerifStatus = 'NOT_SUBMITTED';
     let currentConnectResults = [];
+    let searchTimeout;
 
-    // ---- API HELPER ----
+    // ---- 3. API HELPER ----
     async function call(path, method='GET', body=null) {
         const t = localStorage.getItem('token');
         if(!t) throw new Error("No token");
-        
-        const opts = {
-            method,
-            headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' }
-        };
+        const opts = { method, headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } };
         if(body) opts.body = JSON.stringify(body);
-
         const res = await fetch(API_BASE + path, opts);
         const data = await res.json().catch(()=>null);
-        
-        // Return explicit error for access control
         if (res.status === 403) throw new Error("VERIFICATION_REQUIRED");
         if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
-        
         return data;
     }
 
-    // ---- VIEW ROUTER ----
+    // ---- 4. VIEW ROUTER & ACCESS CONTROL ----
     async function switchView(viewName) {
         let me;
         try {
@@ -863,154 +897,230 @@
             currentVerifStatus = me.user.status;
             const currentPaymentStatus = me.user.payment_status;
 
-            // Access Control Check
             if (['dashboard', 'insights', 'connect'].includes(viewName)) {
                 if (currentUserType !== 'Retailer') {
-                    if (currentVerifStatus !== 'APPROVED') {
-                        viewName = 'restricted';
-                    } 
+                    if (currentVerifStatus !== 'APPROVED') { viewName = 'restricted'; } 
                     else if (currentPaymentStatus !== 'ACTIVE') {
                         viewName = 'billing';
                         alert("Account Approved! Please select a package to activate your portal.");
                     }
                 }
             }
-        } catch(e) {
-            console.error("Auth check failed", e);
-        }
+        } catch(e) { console.error("Session sync failed", e); }
 
-        // Switch Visibility
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
       
-        // Apply UI Constraints for Billing
-        if (viewName === 'billing') {
-            applyBillingConstraints();
-        }
+        if (viewName === 'billing') { applyBillingConstraints(); }
       
         lucide.createIcons();
         window.scrollTo(0, 0);
 
-        // Load Data
         if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'connect') loadConnectHub();
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
     }
-    
+
     function applyBillingConstraints() {
         const fmcgSec = document.getElementById('billing_fmcg_section');
         const ngoSec = document.getElementById('billing_ngo_section');
         const fintechSec = document.getElementById('billing_fintech_section');
 
-        // 1. Sector Isolation: Hide irrelevant tables entirely
         if (fmcgSec) fmcgSec.classList.add('hidden');
         if (ngoSec) ngoSec.classList.add('hidden');
         if (fintechSec) fintechSec.classList.add('hidden');
 
-        if (currentUserType === 'FMCG') {
-            if (fmcgSec) fmcgSec.classList.remove('hidden');
-        } else if (currentUserType === 'NGO' || currentUserType === 'Development Partner') {
-            if (ngoSec) ngoSec.classList.remove('hidden');
-        } else if (currentUserType === 'Fintech' || currentUserType === 'Micro-Lender') {
-            if (fintechSec) fintechSec.classList.remove('hidden');
-        }
+        if (currentUserType === 'FMCG') { fmcgSec?.classList.remove('hidden'); }
+        else if (currentUserType === 'NGO' || currentUserType === 'Development Partner') { ngoSec?.classList.remove('hidden'); }
+        else if (currentUserType === 'Fintech' || currentUserType === 'Micro-Lender') { fintechSec?.classList.remove('hidden'); }
 
-        // 2. Button Visuals (Grayscale for non-approved users)
         const billingButtons = document.querySelectorAll('button[onclick^="selectPlanTest"], button[onclick^="contactSales"]');
-        
         billingButtons.forEach(btn => {
-            if (currentUserType === 'Retailer') {
-                btn.classList.add('hidden'); // Retailers see nothing in paid tables
-            } 
+            if (currentUserType === 'Retailer') { btn.classList.add('hidden'); } 
             else if (currentVerifStatus !== 'APPROVED') {
                 btn.disabled = true;
                 btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
-            } 
-            else {
+            } else {
                 btn.disabled = false;
                 btn.classList.remove('hidden', 'grayscale', 'opacity-50', 'cursor-not-allowed');
             }
         });
     }
 
-    
-    // Global state for search timing
-    let searchTimeout;
-
-    // "Live Search" wrapper
-    function debouncedSearch() {
-        // 1. Clear the timer if the user is still typing
-        clearTimeout(searchTimeout);
-        
-        // 2. Set a new timer
-        searchTimeout = setTimeout(() => {
-            // 3. Trigger the existing load function after 400ms pause
-            loadConnectHub(); 
-        }, 400);
-    }
-
-  
-    // ---- PAYMENT HUB ----
-    async function selectPlanTest(tierName) {
-        // 1. Logic Check
-        if (currentUserType === 'Retailer') {
-            alert("As a Retailer/Vendor/Trader, you already have full access via the Free Community Tier. No further activation is required.");
-            return;
-        }
-
-        if (currentVerifStatus !== 'APPROVED') {
-            alert("Your account must be approved before selecting a plan.");
-            return;
-        }
-
-        const displayName = tierName.replace('_', ' ');
-        if(!confirm(`Confirm selection of ${displayName} plan?`)) return;
-        
-        try {
-            const res = await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
-            alert("Success! Package activated. You now have full access.");
-            window.location.reload(); 
-        } catch(e) {
-            alert("Activation failed: " + e.message);
-        }
-    }
-
-    // CONTACT SALES WITH REDIRECT
-    async function contactSales(tierName) {
-        const displayName = tierName.replace('_', ' ');
-        
-        if(!confirm(`Would you like to request a consultation for the ${displayName} plan?`)) return;
+    // ---- 5. MASTER ANALYTICS PORTAL ENGINE ----
+    async function loadAnalytics() {
+        const container = document.getElementById('portal_dynamic_container');
+        const titleDisplay = document.getElementById('portal_title_display');
+        const rangeDisplay = document.getElementById('date_range_header'); 
+        if (!container) return;
 
         try {
-            await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
-            alert("Inquiry Sent! A specialist from our team will reach out to you shortly.");
+            const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
+            const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
+            const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
-            // Redirect back to the Hub (Main Page) after inquiry
-            switchView('hub'); 
-        } catch(e) {
-            alert("Failed to send inquiry: " + e.message);
+            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
+            const res = await call(url);
+            
+            const type = res.type;
+            const d = res.data || {};
+
+            if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
+            if (rangeDisplay && res.available_months && res.available_months.length > 0) {
+                const start = checkedMonths.length > 0 ? checkedMonths[0] : res.available_months[0];
+                const end = checkedMonths.length > 0 ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
+                rangeDisplay.innerText = `${start} — ${end} 2026`;
+            }
+
+            let topBarHTML = "";
+            if (type === 'Retailer') {
+                topBarHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
+                            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
+                            <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
+                            <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
+                        </div>
+                        <div class="card p-6 bg-white border flex flex-col justify-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">Viewing Period</p>
+                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
+                                ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i> View All History</button></div>
+                    </div>
+                `;
+            } else {
+                topBarHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
+                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Retailer Entity</p>
+                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
+                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''}> <span>${b}</span></label>`).join('')}
+                            </div>
+                        </div>
+                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Country</p>
+                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
+                                ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''}> <span>${c}</span></label>`).join('')}
+                            </div>
+                        </div>
+                        <div class="md:col-span-2"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Date</p>
+                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
+                                ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''}> <span>${m}</span></label>`).join('')}
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 flex flex-col gap-2 justify-end">
+                            <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Interactivity</button>
+                            <button class="btn-outline text-xs w-full py-2.5 bg-white font-bold" onclick="resetFilters()"><i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i> View Complete Ecosystem</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
+            initPortalVisuals(type, {...d, ...res.charts});
+            lucide.createIcons();
+
+        } catch(e) { 
+            console.error("Portal Engine Error:", e);
+            container.innerHTML = `<p class="text-red-500 text-center py-20 font-bold">Sync Error: ${e.message}</p>`;
         }
     }
 
-    
-    // ---- LOAD CONNECT HUB ----
+    function renderPortalGrid(type, d, country) {
+        if (type === 'Retailer') {
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100pt)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
+                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products (DAX Balanced)</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val || 0).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Total Revenue history</p><canvas id="retailLine"></canvas></div>
+                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
+                </div>
+            `;
+        }
+        if (type.includes('NGO') || type.includes('Partner')) {
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map: African Markets</p>
+                        <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
+                            ${(d.volatility || []).slice(0,3).map(v => `<div class="flex flex-col items-center"><div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div><p class="text-[10px] mt-3 font-extrabold uppercase text-white text-center max-w-[120px]">${v.loc}</p></div>`).join('')}
+                        </div>
+                        <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
+                    </div>
+                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${(d.volatility || []).map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
+                </div>
+                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket Aggregate)</p><canvas id="resilienceLine"></canvas></div>
+            `;
+        }
+        if (type === 'FMCG') {
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
+                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden"><p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400 text-[10px]">African Last-Mile Demand Heatmap [${country}]</p>
+                        <div class="flex items-center justify-around h-full pt-10">
+                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 45 + h.value/25)}px; height: ${Math.min(100, 45 + h.value/25)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500 text-center max-w-[80px]">${h.label}</p></div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
+                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI (Retailer Aggregate)</p><canvas id="upliftBar"></canvas></div>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    function initPortalVisuals(type, data) {
+        const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
+        ids.forEach(id => { const c = Chart.getChart(id); if (c) c.destroy(); });
+
+        if (type === 'Retailer') {
+            new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit?.score || 0, Math.max(0, 100 - (data.credit?.score || 0))], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+            new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels || [], datasets: [{ data: data.line_values || [], borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+            new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels || [], datasets: [{ data: data.bar_values || [], backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+        }
+        
+        if (type.includes('NGO') || type.includes('Partner')) {
+            const resData = data.resilience || { labels: [], values: [] };
+            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
+        }
+
+        if (type === 'FMCG' && data.datasets) {
+            const forecast = data.forecast || { labels: [], datasets: [] };
+            const colors = ['#ea580c', '#3b82f6', '#16a34a'];
+            new Chart(document.getElementById('skuChart'), { 
+                type: 'line', 
+                data: { labels: forecast.labels, datasets: forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5, borderWidth: 3 })) },
+                options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10, weight: 'bold' } } } }, maintainAspectRatio: false }
+            });
+
+            const uplift = data.uplift || { labels: [], pre: [], promo: [] };
+            new Chart(document.getElementById('upliftBar'), { 
+                type: 'bar', 
+                data: { labels: uplift.labels, datasets: [{ label: 'Pre-Promo', data: uplift.pre, backgroundColor: '#e2e8f0', borderRadius: 4 }, { label: 'Promo Vol', data: uplift.promo, backgroundColor: '#16a34a', borderRadius: 4 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
+            });
+        }
+    }
+
+    // ---- 6. DISCOVERY & NETWORKING (CONNECT HUB) ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
         const filterWrapper = document.getElementById('filter_controls_wrapper');
         list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
         
-        // Tab UI logic
         document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
         document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
-        // --- HIDE/SHOW FILTERS ---
-        if (mode === 'connections') {
-            filterWrapper.classList.add('hidden');
-        } else {
-            filterWrapper.classList.remove('hidden');
-        }
+        if (mode === 'connections') { filterWrapper?.classList.add('hidden'); } else { filterWrapper?.classList.remove('hidden'); }
 
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
@@ -1018,7 +1128,6 @@
 
         try {
             let url = `/api/v1/connect?mode=${mode}`;
-            // Only attach filters if we are in 'browse' mode
             if (mode === 'browse') {
                 if(search) url += `&search=${encodeURIComponent(search)}`;
                 if(type) url += `&type=${encodeURIComponent(type)}`;
@@ -1027,9 +1136,8 @@
 
             const data = await call(url);
             list.innerHTML = '';
-            
             if(!data.results || data.results.length === 0) {
-                const msg = mode === 'browse' ? `No matches found.` : "You haven't connected with any businesses yet.";
+                const msg = mode === 'browse' ? "No matches found." : "You haven't connected with any businesses yet.";
                 list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">${msg}</p>`;
                 return;
             }
@@ -1040,7 +1148,7 @@
             currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
                 const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
-                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse shadow-sm shadow-red-200"></span>` : '';
+                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse"></span>` : '';
                 
                 let aiBadge = '', cardClass = 'border-l-transparent';
                 if (mode === 'browse' && b.score >= 10) {
@@ -1048,14 +1156,13 @@
                     aiBadge = `<div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mb-2 w-fit tracking-wider"><i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> SMART MATCH</div>`;
                 }
 
-                let primaryAction = '', secondaryActions = '';
+                let pAction = '', sAction = '';
                 if(mode === 'browse') {
-                    primaryAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
-                    secondaryActions = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
+                    pAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
+                    sAction = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
                 } else {
-                    // Pass is_online status to openChat
-                    primaryAction = `<button onclick="openChat('${b.id}', '${escapedName}', ${b.is_online})" class="btn-primary text-xs w-full py-2">Chat Now</button>`;
-                    secondaryActions = `
+                    pAction = `<button onclick="openChat('${b.id}', '${escapedName}', ${b.is_online})" class="btn-primary text-xs w-full py-2">Chat Now</button>`;
+                    sAction = `
                         <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1"><i data-lucide="user-x" class="w-3 h-3"></i> Disconnect</button>
                         <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>
                     `;
@@ -1075,877 +1182,104 @@
                                 <button onclick="openProfileModal(${index}, ${isConnected})" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
                             </div>
                         </div>
-                        <div class="shrink-0 w-32 flex flex-col items-center">
-                            ${primaryAction}
-                            <div class="mt-3 flex flex-col items-center gap-2">
-                                ${secondaryActions}
-                            </div>
-                        </div>
+                        <div class="shrink-0 w-32 flex flex-col items-center">${pAction}<div class="mt-3 flex flex-col items-center gap-2">${sAction}</div></div>
                     </div>
                 </div>`;
             });
-
             lucide.createIcons();
             checkNotifications();
-        } catch(e) { 
-            console.error(e);
-            list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
-        }
+        } catch(e) { console.error(e); }
     }
 
-    
-      function openProfileModal(index, isConnected) {
-        // Look up data by index
+    // ---- 7. MODALS, VERIFICATION & UTILS ----
+    function openProfileModal(index, isConnected) {
         const data = currentConnectResults[index];
         if(!data) return;
-
-        currentProfileData = data;
-        
-        // Populate UI
         document.getElementById('pd_name').innerText = data.name || 'Unknown';
         document.getElementById('pd_type').innerText = data.type || 'N/A';
         document.getElementById('pd_loc').innerText = data.loc || 'N/A';
         document.getElementById('pd_score').innerText = data.score || 'N/A';
-        
-        const vBox = document.getElementById('pd_verif_box');
-        const vBadge = document.getElementById('pd_verified');
-        
+        const vBox = document.getElementById('pd_verif_box'), vBadge = document.getElementById('pd_verified');
         if (data.is_verified) {
-            vBox.classList.remove('hidden');
-            vBadge.classList.remove('hidden');
+            vBox.classList.remove('hidden'); vBadge.classList.remove('hidden');
             document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
             document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else {
-            vBox.classList.add('hidden');
-            vBadge.classList.add('hidden');
-        }
-
+        } else { vBox.classList.add('hidden'); vBadge.classList.add('hidden'); }
         const chatBtn = document.getElementById('pd_chat_btn');
-        if (isConnected) {
-            chatBtn.classList.remove('hidden');
-            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
-            chatBtn.innerText = "Send Message";
-        } else {
-            chatBtn.classList.add('hidden');
-        }
-
-        document.getElementById('profile_detail_modal').classList.remove('hidden');
-        lucide.createIcons();
-    }
-    
-    // ---- ACTIONS ----
-    
-    async function sendConnect(id, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "Sending...";
-        btn.disabled = true;
-        try {
-            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
-            btn.innerText = "Request Sent";
-            btn.className = "px-3 py-2 text-xs rounded bg-green-50 text-green-700 border border-green-200";
-        } catch(e) {
-            alert("Failed to send request.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
+        if (isConnected) { chatBtn.classList.remove('hidden'); chatBtn.onclick = () => { closeModal('profile_detail_modal'); openChat(data.id, data.name, data.is_online); }; } else { chatBtn.classList.add('hidden'); }
+        openModal('profile_detail_modal');
     }
 
-    async function disconnectUser(id, name) {
-        if(!confirm(`Are you sure you want to disconnect from ${name}?`)) return;
-        
+    function openModal(id) { const m = document.getElementById(id); if (m) { m.classList.remove('hidden'); document.body.style.overflow = 'hidden'; } }
+    function closeModal(id) { const m = document.getElementById(id); if (m) { m.classList.add('hidden'); document.body.style.overflow = 'auto'; } }
+
+    async function loadVerification() {
         try {
-            await call('/api/v1/connect', 'POST', { action: 'disconnect', target_id: id });
-            // Refresh list
-            loadConnectHub('connections');
-        } catch(e) {
-            alert("Error disconnecting: " + e.message);
-        }
+            const data = await call('/api/v1/verification');
+            if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
+            if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
+            const sc = document.getElementById('verif_status_card'), f = document.getElementById('verifForm'), eb = document.getElementById('btn_edit_verif');
+            if (data.status === "NOT_SUBMITTED") { sc.classList.add('hidden'); f.classList.remove('hidden'); }
+            else {
+                f.classList.add('hidden'); sc.classList.remove('hidden'); eb.classList.remove('hidden');
+                document.getElementById('verif_title').innerText = data.status;
+                document.getElementById('verif_desc').innerText = data.status === 'APPROVED' ? "Verified." : "Reviewing.";
+                const iconBox = document.getElementById('verif_icon_box'), icon = document.getElementById('verif_icon');
+                if (data.status === 'APPROVED') { iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-green-600"; icon.setAttribute('data-lucide', 'check'); }
+                else { iconBox.className = "w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-blue-600 animate-spin"; icon.setAttribute('data-lucide', 'loader-2'); }
+            }
+            lucide.createIcons();
+        } catch(e) {}
     }
-    
 
     function resetFilters() {
-        document.querySelectorAll('#slicer_dates input, #slicer_biz input, #slicer_countries input').forEach(el => {
-            el.checked = false;
-        });
+        document.querySelectorAll('#slicer_dates input, #slicer_biz input, #slicer_countries input').forEach(el => el.checked = false);
         const searchInput = document.getElementById('filter_search');
         if (searchInput) searchInput.value = '';
         loadAnalytics();
     }
 
-    
-    // ---- MASTER ANALYTICS PORTAL ENGINE ----
-          
-    async function loadAnalytics() {
-        const container = document.getElementById('portal_dynamic_container');
-        const titleDisplay = document.getElementById('portal_title_display');
-        const rangeDisplay = document.getElementById('date_range_header'); 
-        if (!container) return;
-
-        try {
-            // 1. COLLECT SLICER INPUTS
-            const selectedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
-            const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
-            const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
-            
-            // 2. FETCH DATA
-            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(selectedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
-            const res = await call(url);
-            
-            const type = res.type;
-            const d = res.data || {};
-
-            // 3. UPDATE UI HEADERS
-            if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
-            if (rangeDisplay && res.available_months && res.available_months.length > 0) {
-                const start = selectedMonths.length > 0 ? selectedMonths[0] : res.available_months[0];
-                const end = selectedMonths.length > 0 ? selectedMonths[selectedMonths.length-1] : res.available_months[res.available_months.length-1];
-                rangeDisplay.innerText = `${start} — ${end} 2026`;
-            }
-
-            // 4. GENERATE TOP BAR
-            let topBarHTML = "";
-            if (type === 'Retailer') {
-                topBarHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
-                            <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
-                            <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
-                        </div>
-                        <div class="card p-6 bg-white border">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Filter: Viewing Period</p>
-                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
-                                ${res.available_months.map(m => `
-                                    <label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                                        <input type="checkbox" value="${m}" ${selectedMonths.includes(m) || selectedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> 
-                                        ${m}
-                                    </label>
-                                `).join('')}
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-end">
-                            <button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
-                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh My Data
-                            </button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                topBarHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="md:col-span-3">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Retailer Entity</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
-                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''}> <span>${b}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-3">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
-                                ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''}> <span>${c}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-2">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Date</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
-                                ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${selectedMonths.includes(m) || selectedMonths.length === 0 ? 'checked' : ''}> <span>${m}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-4 flex flex-col gap-2 justify-end">
-                            <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Filters</button>
-                            <button class="btn-outline text-xs w-full py-2.5 bg-white font-bold" onclick="resetFilters()">
-                                <i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i> Refresh Data
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
-            initPortalVisuals(type, {...d, ...res.charts});
-            lucide.createIcons();
-
-        } catch(e) { 
-            console.error("Portal Engine Error:", e);
-            container.innerHTML = `<p class="text-red-500 text-center py-20 font-bold">Sync Error: ${e.message}</p>`;
-        }
-    }
-        
-        function renderPortalGrid(type, d, country) {
-        if (type === 'Retailer') {
-        return `
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]">
-                    <p class="kpi-label w-full">Credit Score (100 Point Scale)</p>
-                    <div class="relative h-40 w-full flex justify-center items-end">
-                        <canvas id="gaugeChart"></canvas>
-                        <div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div>
-                    </div>
-                    <span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit.tier}</span>
-                </div>
-                <div class="card p-0 overflow-hidden col-span-2">
-                    <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div>
-                    <table class="w-full text-sm">
-                        <tbody class="divide-y divide-gray-100">
-                            ${d.top_products.map(p => `
-                                <tr>
-                                    <td class="px-6 py-4 font-medium text-gray-700">${p.item}</td>
-                                    <td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val).toLocaleString()}</td>
-                                </tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px]">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
-                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px]">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
-            </div>
-        `;
-    }
-        if (type.includes('NGO') || type.includes('Development Partner')) {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- AFRICAN VOLATILITY MAP -->
-                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map</p>
-                        <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
-                            ${(d.volatility || []).slice(0,3).map(v => `
-                                <div class="flex flex-col items-center">
-                                    <div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div>
-                                    <p class="text-[10px] mt-3 font-extrabold uppercase text-white text-center max-w-[120px]">${v.loc}</p>
-                                </div>`).join('')}
-                        </div>
-                        <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
-                    </div>
-                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
-                </div>
-                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket)</p><canvas id="resilienceLine"></canvas></div>
-            `;
-        }
-        if (type === 'FMCG') {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
-                    
-                    <!-- AFRICAN LAST MILE HEATMAP -->
-                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden">
-                        <p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400 text-[10px]">African Last-Mile Demand Heatmap [${country}]</p>
-                        <div class="flex items-center justify-around h-full pt-10">
-                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 45 + h.value/25)}px; height: ${Math.min(100, 45 + h.value/25)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500">${h.label}</p></div>`).join('')}
-                        </div>
-                    </div>
-
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast</p><canvas id="skuChart"></canvas></div>
-                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI</p><canvas id="upliftBar"></canvas></div>
-                </div>
-            `;
-        }
-        return '';
-    }
-    
-    function initPortalVisuals(type, data) {
-        const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
-        ids.forEach(id => Chart.getChart(id)?.destroy());
-
-        if (type === 'Retailer') {
-          if (type === 'Retailer') {
-        // Line Chart
-        new Chart(document.getElementById('retailLine'), { 
-            type: 'line', 
-            data: { 
-                labels: data.line_labels, 
-                datasets: [{ data: data.line_values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] 
-            }, 
-            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } 
-        });
-
-        // Bar Chart - FIXED: Now maps to bar_labels and bar_values
-        new Chart(document.getElementById('retailBar'), { 
-            type: 'bar', 
-            data: { 
-                labels: data.bar_labels, 
-                datasets: [{ label: 'Units Sold', data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] 
-            }, 
-            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } 
-        }); 
-            new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit.score, Math.max(0, 100 - data.credit.score)], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-          }
-    
-        if (type.includes('NGO') || type.includes('Development Partner')) {
-        const ctx = document.getElementById('resilienceLine');
-        if (!ctx) return;
-
-        // Ensure we are pulling from the correct data path defined in the backend
-        const chartData = data.resilience || { labels: [], values: [] };
-        
-        // Safety: If values are all 0, we show a 'No Data' message
-        if (chartData.values.every(v => v === 0)) {
-            console.warn("NGO resilience data is empty or zero.");
-        }
-
-        new Chart(ctx, { 
-            type: 'line', 
-            data: { 
-                labels: chartData.labels, 
-                datasets: [{ 
-                    label: 'Basket Price Index', 
-                    data: chartData.values, 
-                    borderColor: '#ef4444', 
-                    backgroundColor: 'rgba(239,68,68,0.05)', 
-                    fill: true, 
-                    tension: 0.4, 
-                    pointRadius: 5,
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff'
-                }] 
-            }, 
-            options: { 
-                plugins: { legend: { display: false } }, 
-                maintainAspectRatio: false, 
-                scales: { 
-                    y: { 
-                        beginAtZero: false, 
-                        ticks: { 
-                            callback: v => '$' + v.toFixed(2),
-                            stepSize: 0.05 
-                        },
-                        grid: { color: '#f3f4f6' }
-                    },
-                    x: { grid: { display: false } }
-                } 
-            } 
-        });
-    }
-
-        if (type === 'FMCG') {
-            // FIX: Use the specific forecast sub-object returned from backend
-            const forecast = data.forecast || { labels: [], datasets: [] };
-            const colors = ['#ea580c', '#3b82f6', '#16a34a'];
-            new Chart(document.getElementById('skuChart'), { 
-                type: 'line', 
-                data: { labels: forecast.labels, datasets: forecast.datasets.map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5, borderWidth: 3 })) },
-                options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10, weight: 'bold' } } } }, maintainAspectRatio: false }
-            });
-
-            // FIX: Use the uplift sub-object
-            const uplift = data.uplift || { labels: [], pre: [], promo: [] };
-            new Chart(document.getElementById('upliftBar'), { 
-                type: 'bar', 
-                data: { 
-                    labels: uplift.labels, 
-                    datasets: [
-                        { label: 'Pre-Promo', data: uplift.pre, backgroundColor: '#e2e8f0', borderRadius: 4 },
-                        { label: 'Promo Vol', data: uplift.promo, backgroundColor: '#16a34a', borderRadius: 4 }
-                    ] 
-                }, 
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
-            });
-        }
-    }
-    
-    
-    // ---- ACTIONS ----
-    async function sendConnect(id, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "Sending...";
-        btn.disabled = true;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-
-        try {
-            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
-            btn.innerText = "Request Sent";
-            btn.classList.remove('text-blue-600', 'border-blue-200');
-            btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
-        } catch(e) {
-            alert("Failed to send request. Please try again.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    }
-
-    async function loadRequests() {
-        const panel = document.getElementById('requests_panel');
-        const list = document.getElementById('requests_list');
-        panel.classList.toggle('hidden');
-        
-        try {
-            const data = await call('/api/v1/connect?mode=requests');
-            list.innerHTML = '';
-            
-            if(!data.results || data.results.length === 0) {
-                document.getElementById('notif_badge').classList.add('hidden');
-                list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>'; 
-                return; 
-            }
-            
-            data.results.forEach(r => {
-                list.innerHTML += `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl border shadow-sm">
-                    <span class="font-bold text-sm text-gray-900">${r.name}</span>
-                    <div class="flex gap-2">
-                        <button onclick="acceptRequest('${r.id}', this)" class="px-4 py-1.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors">Accept</button>
-                        <button onclick="declineRequest('${r.id}', this)" class="px-4 py-1.5 border border-red-200 text-red-600 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors">Decline</button>
-                    </div>
-                </div>`;
-            });
-        } catch(e) { console.error(e); }
-    }
-
-    
-    async function acceptRequest(connId, btn) {
-        btn.innerText = "...";
-        await call('/api/v1/connect', 'POST', { action: 'accept', connection_id: connId });
-        btn.parentElement.remove();
-        loadConnectHub('connections'); 
-    }
-
-    async function declineRequest(connId, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "...";
-        btn.disabled = true;
-
-        try {
-            await call('/api/v1/connect', 'POST', { 
-                action: 'decline', 
-                connection_id: connId 
-            });
-            
-            // Remove the card from the UI
-            const card = btn.closest('.flex.justify-between');
-            card.classList.add('opacity-0', 'scale-95', 'transition-all', 'duration-300');
-            setTimeout(() => {
-                card.remove();
-                // Check if list is now empty to hide panel or show "No requests"
-                const list = document.getElementById('requests_list');
-                if (list.children.length === 0) {
-                    list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>';
-                    document.getElementById('notif_badge').classList.add('hidden');
-                }
-            }, 300);
-
-            // Refresh the badge count
-            checkNotifications();
-        } catch(e) {
-            alert("Error declining request: " + e.message);
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
-    }
-
-    async function checkNotifications() {
-        const data = await call('/api/v1/connect?mode=requests');
-        const badge = document.getElementById('notif_badge');
-        
-        if(data.results && data.results.length > 0) {
-            badge.classList.remove('hidden');
-            badge.innerText = data.results.length; // Optional: Show count
-        } else {
-            // Explicitly hide if 0
-            badge.classList.add('hidden');
-        }
-    }
-
-    //Business card in connection hub
-    let currentProfileData = null;
-
-function openProfileModal(index, isConnected) {
-        // Look up the clean data object from our global registry
-        const data = currentConnectResults[index];
-        if(!data) return;
-
-        currentProfileData = data;
-        document.getElementById('pd_name').innerText = data.name || 'Unknown';
-        document.getElementById('pd_type').innerText = data.type || 'N/A';
-        document.getElementById('pd_loc').innerText = data.loc || 'N/A';
-        document.getElementById('pd_score').innerText = data.score || 'N/A';
-        
-        // Show/Hide verification details
-        const vBox = document.getElementById('pd_verif_box');
-        const vBadge = document.getElementById('pd_verified');
-        if (data.is_verified) {
-            vBox.classList.remove('hidden');
-            vBadge.classList.remove('hidden');
-            document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
-            document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else {
-            vBox.classList.add('hidden');
-            vBadge.classList.add('hidden');
-        }
-
-        // Handle Chat button logic
-        const chatBtn = document.getElementById('pd_chat_btn');
-        if (isConnected) {
-            chatBtn.classList.remove('hidden');
-            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
-            chatBtn.innerText = "Send Message";
-        } else {
-            chatBtn.classList.add('hidden');
-        }
-
-        document.getElementById('profile_detail_modal').classList.remove('hidden');
-        lucide.createIcons();
-    }
-
-    
-function closeProfileModal() {
-    document.getElementById('profile_detail_modal').classList.add('hidden');
-}
-    // ---- CHAT SYSTEM ----
-    let currentChatPartner = null;
-    let chatInterval = null;
-
-    async function openChat(partnerId, partnerName, isOnline) {
-    currentChatPartner = partnerId;
-    document.getElementById('chat_partner_name').innerText = partnerName;
-
-    // UPDATE THE UI STATUS
-    const statusDot = document.getElementById('chat_status_dot');
-    const statusText = document.getElementById('chat_status_text');
-    
-    if (isOnline) {
-        statusDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
-        statusText.innerText = "Online";
-        statusText.className = "text-green-600 font-medium";
-    } else {
-        statusDot.className = "w-2 h-2 rounded-full bg-gray-400";
-        statusText.innerText = "Offline";
-        statusText.className = "text-gray-500";
-    }
-
-    document.getElementById('chat_modal').classList.remove('hidden');
-    
-    // Notify backend that messages are being read
-    try {
-        await call(`/api/v1/chat/read?partner_id=${partnerId}`, 'POST');
-    } catch(e) { console.warn("Failed to mark as read"); }
-
-    loadMessages();
-    chatInterval = setInterval(loadMessages, 3000);
-}
-
-    function closeChat() {
-        document.getElementById('chat_modal').classList.add('hidden');
-        clearInterval(chatInterval);
-        currentChatPartner = null;
-    }
-
-    async function loadMessages() {
-        if(!currentChatPartner) return;
-        const box = document.getElementById('chat_box');
-        const data = await call(`/api/v1/chat?partner_id=${currentChatPartner}`);
-        const isAtBottom = box.scrollHeight - box.scrollTop === box.clientHeight;
-        box.innerHTML = '';
-        data.messages.forEach(m => {
-            const align = m.is_me ? "self-end bg-orange-600 text-white" : "self-start bg-gray-200 text-gray-800";
-            box.innerHTML += `
-            <div class="flex flex-col ${m.is_me ? 'items-end' : 'items-start'}">
-                <div class="px-4 py-2 rounded-2xl max-w-[80%] text-sm ${align}">
-                    ${m.text}
-                </div>
-                <span class="text-[10px] text-gray-400 mt-1">${m.time}</span>
-            </div>`;
-        });
-        if(isAtBottom) box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendMessage() {
-        const input = document.getElementById('chat_input');
-        const text = input.value.trim();
-        if(!text) return;
-        input.value = ''; 
-        await call('/api/v1/chat', 'POST', { partner_id: currentChatPartner, content: text });
-        loadMessages(); 
-    }
-    document.getElementById('chat_input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
-    
-    //report modal
-    let currentReportTarget = null;
-
-function openReportModal(id, name) {
-    currentReportTarget = id;
-    document.getElementById('report_target_name').innerText = name;
-    document.getElementById('report_modal').classList.remove('hidden');
-}
-
-function closeReportModal() {
-    document.getElementById('report_modal').classList.add('hidden');
-    document.getElementById('report_details').value = '';
-}
-
-async function submitReport() {
-    const category = document.getElementById('report_category').value;
-    const details = document.getElementById('report_details').value;
-    const btn = document.getElementById('btn_submit_report');
-
-    if(!details.trim()) return alert("Please provide details.");
-
-    btn.disabled = true; btn.innerText = "Sending...";
-    try {
-        await call('/api/v1/report', 'POST', {
-            target_id: currentReportTarget,
-            category: category,
-            details: details
-        });
-        alert("Report submitted. Our team will review this and take the appropriate action. We may reach out to you for more information or feedback.");
-        closeReportModal();
-    } catch(e) {
-        alert("Failed to send report: " + e.message);
-    } finally {
-        btn.disabled = false; btn.innerText = "Submit Report";
-    }
-}
-
-    // ---- MODAL CONTROLS ----
-    function openModal(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.remove('hidden');
-            // Prevent body scrolling when modal is open
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    function closeModal(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.add('hidden');
-            // Restore body scrolling
-            document.body.style.overflow = 'auto';
-        }
-    }
-
-    // Close modals if user clicks the dark background
-    window.onclick = function(event) {
-        if (event.target.classList.contains('fixed') && event.target.classList.contains('inset-0')) {
-            event.target.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-    };
-    
-    // ---- VERIFICATION ----
-    async function loadVerification() {
-        const form = document.getElementById('verifForm');
-        const statusCard = document.getElementById('verif_status_card');
-        const editBtn = document.getElementById('btn_edit_verif');
-
+    async function loadTracking() {
         try {
             const data = await call('/api/v1/verification');
-            
-            if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
-            if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
-            
-            editBtn.classList.remove('hidden'); 
-
-            if (data.status === "NOT_SUBMITTED") {
-                statusCard.classList.add('hidden'); form.classList.remove('hidden');
-            } 
-            else if (data.status === "PENDING") {
-                form.classList.add('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
-                document.getElementById('verif_title').innerText = "Application Under Review";
-                document.getElementById('verif_desc').innerText = "You can update your details if needed.";
-            }
-            else if (data.status === "APPROVED") {
-                form.classList.add('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
-                document.getElementById('verif_title').innerText = "Business Verified";
-                document.getElementById('verif_desc').innerText = "Your business is verified. Click edit to update details.";
-            }
-            else if (data.status === "REJECTED") {
-                form.classList.remove('hidden'); statusCard.classList.remove('hidden');
-                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
-                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
-                document.getElementById('verif_icon').innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
-                document.getElementById('verif_title').innerText = "Action Required";
-                document.getElementById('verif_desc').innerText = "Please correct your details and resubmit.";
-                editBtn.classList.add('hidden');
-            }
-            lucide.createIcons();
-        } catch(e) { console.error(e); }
-    }
-
-    window.enableVerifEdit = function() {
-        document.getElementById('verifForm').classList.remove('hidden');
-        document.getElementById('verif_status_card').classList.add('hidden');
-    }
-
-    document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const payload = {
-            business_name: document.getElementById('v_biz_name').value,
-            business_location: document.getElementById('v_biz_loc').value,
-            business_type: document.getElementById('v_biz_type').value,
-            registration_number: document.getElementById('v_reg_num').value,
-            tax_id: document.getElementById('v_tax_id').value || null
-        };
-        const btn = e.target.querySelector('button');
-        const oldText = btn.innerText;
-        btn.innerText = "Submitting..."; btn.disabled = true;
-        try {
-            const res = await call('/api/v1/verification', 'POST', payload);
-        if (res.auto_approved) {
-            alert("Success! Your Retailer account has been auto-verified for the Free Community Tier. You now have full access.");
-        } else {
-            alert("Application Submitted! Your status is now Pending.");
-        };
-            await loadVerification();
-            if (res.auto_approved) switchView('dashboard');
-    } catch(err) { alert("Error: " + err.message); }
-      finally {
-            // Reset the button state NO MATTER WHAT happens
-            btn.innerText = oldText; 
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    });
-
-    async function loadTracking() {
-    try {
-        const data = await call('/api/v1/verification');
-        
-        // 1. Map DOM Elements
-        const s1 = document.getElementById('step1_icon'), 
-              s2 = document.getElementById('step2_icon'), 
-              s3 = document.getElementById('step3_icon');
-        const d1 = document.getElementById('step1_date'), 
-              d2 = document.getElementById('step2_date'), 
-              d3 = document.getElementById('step3_date');
-        const t2 = document.getElementById('step2_title'), 
-              t3 = document.getElementById('step3_title'), 
-              desc2 = document.getElementById('step2_desc');
-
-        // 2. Handle Dynamic Labels (Retailer vs Business)
-        if (data.type === 'Retailer') {
-            if(t2) t2.innerText = "Secondary Validation";
-            if(desc2) desc2.innerText = "Automated system checks and community tier alignment.";
-            if(t3) t3.innerText = "Access Completed";
-        } else {
-            if(t2) t2.innerText = "Compliance Review";
-            if(desc2) desc2.innerText = "Our team is verifying your registration and tax credentials.";
-            if(t3) t3.innerText = "Verification Approved";
-        }
-
-        // 3. Reset Icons to default state
-        [s1, s2, s3].forEach(el => {
-            if(el) {
-                el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10";
-                el.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>'; // Default icon
-            }
-        });
-
-        // 4. Update UI based on Status
-        if (data.status !== "NOT_SUBMITTED") {
-            // Milestone 1: Always Green
-            s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-            if (data.submitted_at) {
-                d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-            }
-
-            // Milestone 2 & 3: Conditional
-            if (data.status === "PENDING") {
-                s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10";
-                s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
-            } 
-            else if (data.status === "APPROVED") {
-                // Both 2 and 3 become green
-                s2.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                
-                if (data.reviewed_at) {
-                    const reviewDate = new Date(data.reviewed_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-                    if(d2) d2.innerText = (data.type === 'Retailer' ? "Validated on " : "Reviewed on ") + reviewDate;
-                    if(d3) d3.innerText = "Approved on " + reviewDate;
+            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon'), d1=document.getElementById('step1_date'), d2=document.getElementById('step2_date'), d3=document.getElementById('step3_date'), t2=document.getElementById('step2_title'), t3=document.getElementById('step3_title'), desc2=document.getElementById('step2_desc');
+            if (data.type === 'Retailer') { if(t2) t2.innerText = "Secondary Validation"; if(desc2) desc2.innerText = "Automated checks."; if(t3) t3.innerText = "Access Completed"; }
+            [s1, s2, s3].forEach(el => { if(el) el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10"; });
+            if (data.status !== "NOT_SUBMITTED") {
+                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                if (data.submitted_at) d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB');
+                if (data.status === "PENDING") { s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10"; s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>'; }
+                else if (data.status === "APPROVED") {
+                    s2.className = s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                    if (data.reviewed_at) { const revDate = new Date(data.reviewed_at).toLocaleDateString('en-GB'); if(d2) d2.innerText = "Validated on " + revDate; if(d3) d3.innerText = "Approved on " + revDate; }
                 }
             }
-            else if (data.status === "REJECTED") {
-                s2.className = "w-10 h-10 rounded-full bg-red-500 border-4 border-white flex items-center justify-center text-white z-10";
-                s2.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
-                if(d2) d2.innerText = "Rejected";
-                document.getElementById('track_action')?.classList.remove('hidden');
-            }
-        }
-        
-        document.getElementById('track_id').innerText = data.reg_num || "VER-";
-        lucide.createIcons();
-    } catch(e) { 
-        console.error("LoadTracking error:", e); 
+            lucide.createIcons();
+        } catch(e) {}
     }
-}
 
-    
-    // ---- INIT ----
     async function init() {
         lucide.createIcons();
         try {
             const me = await call('/api/v1/me');
-            const name = me?.user?.name || '';
-            const email = me?.user?.email || 'Unknown';
-            
-            // Save GLOBAL State
-            currentUserType = me?.user?.type || 'Retailer';
-            currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
-
-            let display = name ? name : (email.split('@')[0]);
-            document.getElementById('welcomeName').innerText = display;
-            document.getElementById('email').innerText = email;
-            document.getElementById('status').innerText = 'Signed in';
-        } catch(e) {
-            window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
-        }
+            currentUserType = me.user.type; currentVerifStatus = me.user.status;
+            document.getElementById('welcomeName').innerText = me.user.name || 'User';
+            document.getElementById('email').innerText = me.user.email || '—';
+        } catch(e) { window.location.href = SIGNIN_PAGE; }
     }
 
-    // ---- MISC LISTENERS ----
-    const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (DRC)","Congo (Republic)","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea (North)","Korea (South)","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
-    
-    function initCountries(selectId) {
-        const select = document.getElementById(selectId);
-        if(!select) return;
-        select.innerHTML = '<option value="">Select Country</option>';
-        allCountries.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c; opt.innerText = c;
-            select.appendChild(opt);
-        });
-    }
-
+    function initCountries(id) { const s = document.getElementById(id); if(!s) return; allCountries.forEach(c => { const o = document.createElement('option'); o.value = c; o.innerText = c; s.appendChild(o); }); }
     document.addEventListener("DOMContentLoaded", () => {
-        initCountries('v_biz_loc');
-        initCountries('filter_loc'); // Populate the Filter dropdown too!
-        
-        const langBtn = document.getElementById("lang-btn");
-        const langMenu = document.getElementById("lang-menu");
-        if(langBtn && langMenu) {
-            langBtn.addEventListener("click", (e) => { e.stopPropagation(); langMenu.classList.toggle("hidden"); });
-            document.addEventListener("click", (e) => { if(!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add("hidden"); });
-        }
+        initCountries('v_biz_loc'); initCountries('filter_loc');
+        const lb = document.getElementById("lang-btn"), lm = document.getElementById("lang-menu");
+        lb?.addEventListener("click", (e) => { e.stopPropagation(); lm.classList.toggle("hidden"); });
+        document.addEventListener("click", () => lm?.classList.add("hidden"));
     });
-
-    document.getElementById('copyBtn')?.addEventListener('click', async () => {
-      const email = document.getElementById('email')?.innerText?.trim();
-      if (!email || email === '—') return;
-      try { await navigator.clipboard.writeText(email); const btn = document.getElementById('copyBtn'); const old = btn.innerText; btn.innerText = 'Copied'; setTimeout(()=> btn.innerText = old, 1200); } catch {}
-    });
-
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        window.location.href = SIGNIN_PAGE;
-    });
-
-    const y = document.getElementById('year');
-    if (y) y.textContent = new Date().getFullYear();
-
+    document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem('token'); window.location.href = SIGNIN_PAGE; });
     document.addEventListener('DOMContentLoaded', init);
 
-  
-  </script>
+    // Initialise Google Translate
+    window.addEventListener('load', googleTranslateElementInit);
+</script>
 </body>
 </html>
