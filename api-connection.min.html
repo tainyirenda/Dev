@@ -1197,19 +1197,19 @@
     // ---- MASTER ANALYTICS PORTAL ENGINE ----
           
     async function loadAnalytics() {
+        async function loadAnalytics() {
         const container = document.getElementById('portal_dynamic_container');
         const titleDisplay = document.getElementById('portal_title_display');
         const rangeDisplay = document.getElementById('date_range_header'); 
         if (!container) return;
 
         try {
-            // 1. COLLECT SLICER INPUTS (Safe check: if null, use empty array)
+            // 1. COLLECT SLICER INPUTS
             const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
             const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
             const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
             // 2. FETCH DATA
-            // Building URL with all potential filters
             const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
             const res = await call(url);
             
