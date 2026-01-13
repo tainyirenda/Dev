@@ -1122,58 +1122,11 @@
         }
 
       if (type === 'Fintech' || type === 'Micro-Lender') {
-            // 1. Aggregated Revenue Line Chart
-            const lineCtx = document.getElementById('finLine');
-            if (lineCtx && data.fin_line) {
-                new Chart(lineCtx, {
-                    type: 'line',
-                    data: { 
-                        labels: data.fin_line.labels, 
-                        datasets: [{ 
-                            label: 'Ecosystem Revenue', 
-                            data: data.fin_line.values, 
-                            borderColor: '#3b82f6', 
-                            backgroundColor: 'rgba(59,130,246,0.05)', 
-                            fill: true, 
-                            tension: 0.3,
-                            pointRadius: 4
-                        }] 
-                    },
-                    options: { 
-                        plugins: { legend: { display: false } }, 
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: { ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#f3f4f6' } },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            }
-
-            // 2. Risk Scatter Plot (Consistency vs Debt)
-            const scatterCtx = document.getElementById('riskScatter');
-            if (scatterCtx && data.risk_profiles) {
-                new Chart(scatterCtx, {
-                    type: 'scatter',
-                    data: { 
-                        datasets: [{ 
-                            label: 'Merchant Risk', 
-                            data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), 
-                            backgroundColor: '#7c3aed', 
-                            pointRadius: 7,
-                            hoverRadius: 10
-                        }] 
-                    },
-                    options: { 
-                        scales: { 
-                            x: { title: { display: true, text: 'Inconsistency (Sales CoV)', font: { size: 10 } } }, 
-                            y: { title: { display: true, text: 'Pending Payments ($)', font: { size: 10 } }, ticks: { callback: v => '$' + v } } 
-                        }, 
-                        plugins: { legend: { display: false } } 
-                    }
-                });
-            }
+            const finLine = data.fin_line || { labels: [], values: [] };
+            new Chart(document.getElementById('finLine'), { type: 'line', data: { labels: finLine.labels, datasets: [{ label: 'Revenue', data: finLine.values, borderColor: '#3b82f6', tension: 0.3 }] }, options: { maintainAspectRatio: false } });
+            new Chart(document.getElementById('riskScatter'), { type: 'scatter', data: { datasets: [{ data: (data.risk_profiles || []).map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed' }] }, options: { scales: { x: { title: { display: true, text: 'Consistency' } }, y: { title: { display: true, text: 'Debt' } } } } });
         }
+    }
       
         if (type === 'FMCG') {
             const colors = ['#ea580c', '#3b82f6', '#16a34a'];
