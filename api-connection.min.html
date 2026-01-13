@@ -1209,9 +1209,11 @@
             const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
             // 2. FETCH DATA
-            const res = await call(`/api/v1/analytics/dashboard?months=${encodeURIComponent(selectedMonths)}&biz=${encodeURIComponent(selectedRetailers)}`);
+            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
+            const res = await call(url);
             const type = res.type;
             const d = res.data;
+
 
             // 3. UPDATE UI HEADERS
             titleDisplay.innerText = `${type} Portal`;
