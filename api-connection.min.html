@@ -856,7 +856,7 @@
 
     // ---- VIEW ROUTER ----
     async function switchView(viewName) {
-        // 1. Fetch fresh status from the API
+        // 1. Fetch fresh status from the API to update global state
         let me;
         try {
             me = await call('/api/v1/me');
@@ -865,76 +865,43 @@
             const currentPaymentStatus = me.user.payment_status;
 
             // 2. ACCESS CONTROL CHECK
+            // Restricted views: Dashboard, Insights, Connect Hub
             if (['dashboard', 'insights', 'connect'].includes(viewName)) {
                 if (currentUserType !== 'Retailer') {
+                    // Check Step 1: Manual Verification
                     if (currentVerifStatus !== 'APPROVED') {
                         viewName = 'restricted';
                     } 
+                    // Check Step 2: Package Activation (Payment)
                     else if (currentPaymentStatus !== 'ACTIVE') {
                         viewName = 'billing';
-                        alert("Account Approved! Please select a package to activate your portal.");
+                        alert("Account Approved! Please select a plan below to activate your premium dashboard and tools.");
                     }
                 }
             }
         } catch(e) {
-            console.error("Auth check failed", e);
+            console.error("Session sync failed", e);
         }
 
         // 3. SWITCH UI VISIBILITY
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
-      
-        // --- THE TRIGGER: Run constraints if on the billing page ---
+
+        // 4. APPLY HIGH-END UI CONSTRAINTS
+        // This ensures buttons are hidden for Retailers or grayed out for non-approved Orgs
         if (viewName === 'billing') {
             applyBillingConstraints();
-        }
-
-        // --- BILLING UX CONSTRAINTS ---
-        if (viewName === 'billing') {
-            // Targets buttons for BOTH plan selection and contact sales
-            const billingButtons = document.querySelectorAll('button[onclick^="selectPlanTest"], button[onclick^="contactSales"]');
-            
-            billingButtons.forEach(btn => {
-                if (currentUserType === 'Retailer') {
-                    // 1. Hide ALL billing buttons for retailers (they use the free tier)
-                    btn.classList.add('hidden');
-                } 
-                else if (currentVerifStatus !== 'APPROVED') {
-                    // 2. Gray out buttons for non-approved organizations
-                    btn.disabled = true;
-                    btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
-                } 
-                else {
-                    // 3. Ensure buttons are normal for approved organizations
-                    btn.disabled = false;
-                    btn.classList.remove('hidden', 'grayscale', 'opacity-50', 'cursor-not-allowed');
-                }
-            });
         }
       
         lucide.createIcons();
         window.scrollTo(0, 0);
 
-        // 4. LOAD DATA
+        // 5. TRIGGER DATA LOADERS
         if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
         if(viewName === 'connect') loadConnectHub();
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
-    }
-    // Global state for search timing
-    let searchTimeout;
-
-    // "Live Search" wrapper
-    function debouncedSearch() {
-        // 1. Clear the timer if the user is still typing
-        clearTimeout(searchTimeout);
-        
-        // 2. Set a new timer
-        searchTimeout = setTimeout(() => {
-            // 3. Trigger the existing load function after 400ms pause
-            loadConnectHub(); 
-        }, 400);
     }
 
     function applyBillingConstraints() {
@@ -973,6 +940,23 @@
         });
     }
 
+    
+    // Global state for search timing
+    let searchTimeout;
+
+    // "Live Search" wrapper
+    function debouncedSearch() {
+        // 1. Clear the timer if the user is still typing
+        clearTimeout(searchTimeout);
+        
+        // 2. Set a new timer
+        searchTimeout = setTimeout(() => {
+            // 3. Trigger the existing load function after 400ms pause
+            loadConnectHub(); 
+        }, 400);
+    }
+
+  
     // ---- PAYMENT HUB ----
     async function selectPlanTest(tierName) {
         // 1. Logic Check
