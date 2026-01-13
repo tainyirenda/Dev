@@ -1287,42 +1287,24 @@
                 </div>
             `;
         }
-        if (type.includes('NGO') || type.includes('Development Partner')) {
+        if (type.includes('NGO') || type.includes('Partner')) {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- PRICE VOLATILITY BUBBLE MAP -->
+                    <!-- AFRICAN VOLATILITY MAP BUBBLES -->
                     <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">African Regional Price Volatility Map</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map: African Markets</p>
                         <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
                             ${(d.volatility || []).slice(0,3).map(v => `
                                 <div class="flex flex-col items-center">
-                                    <div class="w-24 h-24 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex flex-col items-center justify-center shadow-[0_0_30px_rgba(239,68,68,0.4)]">
-                                        <span class="font-black text-3xl text-red-500">${v.index}</span>
-                                        <span class="text-[8px] text-red-400 uppercase font-bold">Index</span>
-                                    </div>
-                                    <!-- FIX: Displaying Full Location Name instead of splitting -->
-                                    <p class="text-[10px] mt-4 font-extrabold uppercase text-white tracking-widest text-center max-w-[120px]">${v.loc}</p>
+                                    <div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div>
+                                    <p class="text-[10px] mt-3 font-extrabold uppercase text-white text-center max-w-[100px]">${v.loc}</p>
                                 </div>`).join('')}
                         </div>
                         <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
                     </div>
-
-                    <!-- VOLATILITY MATRIX -->
-                    <div class="card p-0 overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div>
-                        <table class="w-full text-xs divide-y divide-gray-100">
-                            <tbody>
-                                ${(d.volatility || []).map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}
-                            </tbody>
-                        </table>
-                    </div>
+                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
                 </div>
-
-                <!-- RESILIENCE GRAPH -->
-                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500">
-                    <p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket Aggregate)</p>
-                    <canvas id="resilienceLine"></canvas>
-                </div>
+                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket Aggregate)</p><canvas id="resilienceLine"></canvas></div>
             `;
         }
         if (type === 'FMCG') {
@@ -1360,39 +1342,12 @@
             new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
         
-        if (type.includes('NGO') || type.includes('Development Partner')) {
-            // FIX: Pull data from the 'resilience' sub-key in res.charts
+        if (type.includes('NGO') || type.includes('Partner')) {
+            // Price Shocks: Pulling from correctly aggregated 'resilience' key
             const resData = data.resilience || { labels: [], values: [] };
-            new Chart(document.getElementById('resilienceLine'), { 
-                type: 'line', 
-                data: { 
-                    labels: resData.labels, 
-                    datasets: [{ 
-                        label: 'Avg Price Index', 
-                        data: resData.values, 
-                        borderColor: '#ef4444', 
-                        backgroundColor: 'rgba(239,68,68,0.05)', 
-                        fill: true, 
-                        tension: 0.4, 
-                        pointRadius: 5,
-                        pointBackgroundColor: '#fff',
-                        borderWidth: 3
-                    }] 
-                }, 
-                options: { 
-                    plugins: { legend: { display: false } }, 
-                    maintainAspectRatio: false, 
-                    scales: { 
-                        y: { 
-                            beginAtZero: false, 
-                            ticks: { callback: v => '$' + v.toFixed(2) },
-                            grid: { color: '#f3f4f6' }
-                        },
-                        x: { grid: { display: false } }
-                    } 
-                } 
-            });
+            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Basket Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
         }
+
 
         if (type === 'FMCG' && data.forecast) {
             const colors = ['#ea580c', '#3b82f6', '#16a34a'];
