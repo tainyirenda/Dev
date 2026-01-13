@@ -1233,7 +1233,7 @@
                             <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
                         </div>
                         <div class="card p-6 bg-white border">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Slicer: Viewing Period</p>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Filter: Viewing Period</p>
                             <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
                                 ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || !checkedMonths.length ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
                             </div>
@@ -1247,27 +1247,27 @@
                 topBarHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
                         <div class="md:col-span-3">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Retailer Entity</p>
+                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Retailer Entity</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
                                 ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''}> <span>${b}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-3">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Country</p>
+                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
                                 ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''}> <span>${c}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-2">
-                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Date</p>
+                            <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Date</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
                                 ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''}> <span>${m}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-4 flex flex-col gap-2 justify-end">
-                            <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Interactivity</button>
+                            <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Filters</button>
                             <button class="btn-outline text-xs w-full py-2.5 bg-white font-bold" onclick="resetFilters()">
-                                <i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i> Refresh Data (View All)
+                                <i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i> Refresh Data
                             </button>
                         </div>
                     </div>
@@ -1299,7 +1299,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- AFRICAN VOLATILITY MAP -->
                     <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">African Regional Price Volatility Map [${country}]</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map</p>
                         <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
                             ${(d.volatility || []).slice(0,3).map(v => `
                                 <div class="flex flex-col items-center">
@@ -1309,9 +1309,9 @@
                         </div>
                         <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
                     </div>
-                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix (Staples)</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
+                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${d.volatility.map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
                 </div>
-                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket Aggregate)</p><canvas id="resilienceLine"></canvas></div>
+                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket)</p><canvas id="resilienceLine"></canvas></div>
             `;
         }
         if (type === 'FMCG') {
