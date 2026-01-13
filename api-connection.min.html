@@ -16,21 +16,7 @@
   <!-- Chart.js for Dashboard -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Google Translate Logic -->
-  <script type="text/javascript">
-  function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
-  function setGoogleTransCookie(lang) { document.cookie = "googtrans=/en/" + lang + ";path=/;"; document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; }
-  window.setLanguage = function(lang) { 
-    function apply() { const c = document.querySelector(".goog-te-combo"); if (!c) return false; c.value = lang; fireGoogleTranslateEvent(c, "change"); try { localStorage.setItem("selectedLang", lang); } catch (e) {} return true; } 
-    if (apply()) return; 
-    const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
-    obs.observe(document.body, { childList: true, subtree: true }); 
-    setGoogleTransCookie(lang); 
-    setTimeout(() => window.location.reload(), 300); 
-  };
-  function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element'); }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
   
   <style>
     :root{ --au-ink:#111827; --au-stone:#6b7280; --au-line:#e5e7eb; --au-surface:#f8fafc; --au-accent:#ea580c; --au-green:#16a34a; }
@@ -823,7 +809,10 @@
     </div>
 </div>
 
+  
+
   <script>
+
     // ---- 1. GOOGLE TRANSLATE & LANGUAGE LOGIC (CRITICAL) ----
     function fireGoogleTranslateEvent(el, eventName) { 
         try { 
@@ -866,28 +855,37 @@
         }, 'google_translate_element'); 
     }
 
-    // ---- 2. CONFIGURATION & GLOBAL STATE ----
+    // ---- CONFIGURATION ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
     const SIGNIN_PAGE = 'api-connection.html';
 
+    // ---- GLOBAL STATE ----
     let currentUserType = 'Retailer';
     let currentVerifStatus = 'NOT_SUBMITTED';
     let currentConnectResults = [];
-    let searchTimeout;
 
-    // ---- 3. API HELPER ----
+    // ---- API HELPER ----
     async function call(path, method='GET', body=null) {
         const t = localStorage.getItem('token');
         if(!t) throw new Error("No token");
-        const opts = { method, headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } };
+        
+        const opts = {
+            method,
+            headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' }
+        };
         if(body) opts.body = JSON.stringify(body);
+
         const res = await fetch(API_BASE + path, opts);
         const data = await res.json().catch(()=>null);
+        
+        // Return explicit error for access control
         if (res.status === 403) throw new Error("VERIFICATION_REQUIRED");
         if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
+        
         return data;
     }
 
+    // ---- VIEW ROUTER ----
     // ---- 4. VIEW ROUTER & ACCESS CONTROL ----
     async function switchView(viewName) {
         let me;
@@ -948,8 +946,8 @@
             }
         });
     }
-
-    // ---- 5. MASTER ANALYTICS PORTAL ENGINE ----
+    
+// ---- 5. MASTER ANALYTICS PORTAL ENGINE ----
     async function loadAnalytics() {
         const container = document.getElementById('portal_dynamic_container');
         const titleDisplay = document.getElementById('portal_title_display');
@@ -1111,16 +1109,38 @@
         }
     }
 
-    // ---- 6. DISCOVERY & NETWORKING (CONNECT HUB) ----
+    
+    // Global state for search timing
+    let searchTimeout;
+
+    // "Live Search" wrapper
+    function debouncedSearch() {
+        // 1. Clear the timer if the user is still typing
+        clearTimeout(searchTimeout);
+        
+        // 2. Set a new timer
+        searchTimeout = setTimeout(() => {
+            // 3. Trigger the existing load function after 400ms pause
+            loadConnectHub(); 
+        }, 400);
+    }
+
+     // ---- LOAD CONNECT HUB ----
     async function loadConnectHub(mode = 'browse') {
         const list = document.getElementById('connect_list');
         const filterWrapper = document.getElementById('filter_controls_wrapper');
         list.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>Loading...</p>';
         
+        // Tab UI logic
         document.getElementById('tab-browse').className = mode==='browse' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
         document.getElementById('tab-network').className = mode==='connections' ? "text-sm font-semibold text-orange-600 border-b-2 border-orange-500 pb-2" : "text-sm text-gray-500 hover:text-gray-700 pb-2";
 
-        if (mode === 'connections') { filterWrapper?.classList.add('hidden'); } else { filterWrapper?.classList.remove('hidden'); }
+        // --- HIDE/SHOW FILTERS ---
+        if (mode === 'connections') {
+            filterWrapper.classList.add('hidden');
+        } else {
+            filterWrapper.classList.remove('hidden');
+        }
 
         const search = document.getElementById('filter_search')?.value || '';
         const type = document.getElementById('filter_type')?.value || '';
@@ -1128,6 +1148,7 @@
 
         try {
             let url = `/api/v1/connect?mode=${mode}`;
+            // Only attach filters if we are in 'browse' mode
             if (mode === 'browse') {
                 if(search) url += `&search=${encodeURIComponent(search)}`;
                 if(type) url += `&type=${encodeURIComponent(type)}`;
@@ -1136,8 +1157,9 @@
 
             const data = await call(url);
             list.innerHTML = '';
+            
             if(!data.results || data.results.length === 0) {
-                const msg = mode === 'browse' ? "No matches found." : "You haven't connected with any businesses yet.";
+                const msg = mode === 'browse' ? `No matches found.` : "You haven't connected with any businesses yet.";
                 list.innerHTML = `<p class="text-gray-400 col-span-3 text-center py-20 italic">${msg}</p>`;
                 return;
             }
@@ -1148,7 +1170,7 @@
             currentConnectResults.forEach((b, index) => {
                 const escapedName = (b.name || '').replace(/'/g, "\\'"); 
                 const verifiedBadge = b.is_verified ? `<i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-50 ml-1.5 shrink-0"></i>` : '';
-                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse"></span>` : '';
+                const unreadDot = (b.unread > 0) ? `<span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-2 animate-pulse shadow-sm shadow-red-200"></span>` : '';
                 
                 let aiBadge = '', cardClass = 'border-l-transparent';
                 if (mode === 'browse' && b.score >= 10) {
@@ -1156,13 +1178,14 @@
                     aiBadge = `<div class="flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mb-2 w-fit tracking-wider"><i data-lucide="sparkles" class="w-3 h-3 animate-pulse"></i> SMART MATCH</div>`;
                 }
 
-                let pAction = '', sAction = '';
+                let primaryAction = '', secondaryActions = '';
                 if(mode === 'browse') {
-                    pAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
-                    sAction = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
+                    primaryAction = `<button onclick="sendConnect('${b.id}', this)" class="btn-primary text-xs w-full py-2">Connect +</button>`;
+                    secondaryActions = `<button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>`;
                 } else {
-                    pAction = `<button onclick="openChat('${b.id}', '${escapedName}', ${b.is_online})" class="btn-primary text-xs w-full py-2">Chat Now</button>`;
-                    sAction = `
+                    // Pass is_online status to openChat
+                    primaryAction = `<button onclick="openChat('${b.id}', '${escapedName}', ${b.is_online})" class="btn-primary text-xs w-full py-2">Chat Now</button>`;
+                    secondaryActions = `
                         <button onclick="disconnectUser('${b.id}', '${escapedName}')" class="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1"><i data-lucide="user-x" class="w-3 h-3"></i> Disconnect</button>
                         <button onclick="openReportModal('${b.id}', '${escapedName}')" class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1"><i data-lucide="flag" class="w-3 h-3"></i> Report</button>
                     `;
@@ -1182,55 +1205,374 @@
                                 <button onclick="openProfileModal(${index}, ${isConnected})" class="text-[10px] font-semibold text-blue-600 hover:underline">View Full Profile</button>
                             </div>
                         </div>
-                        <div class="shrink-0 w-32 flex flex-col items-center">${pAction}<div class="mt-3 flex flex-col items-center gap-2">${sAction}</div></div>
+                        <div class="shrink-0 w-32 flex flex-col items-center">
+                            ${primaryAction}
+                            <div class="mt-3 flex flex-col items-center gap-2">
+                                ${secondaryActions}
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             });
+
             lucide.createIcons();
             checkNotifications();
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e);
+            list.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error: ${e.message}</p>`;
+        }
     }
 
-    // ---- 7. MODALS, VERIFICATION & UTILS ----
-    function openProfileModal(index, isConnected) {
+    
+      function openProfileModal(index, isConnected) {
+        // Look up data by index
         const data = currentConnectResults[index];
         if(!data) return;
+
+        currentProfileData = data;
+        
+        // Populate UI
         document.getElementById('pd_name').innerText = data.name || 'Unknown';
         document.getElementById('pd_type').innerText = data.type || 'N/A';
         document.getElementById('pd_loc').innerText = data.loc || 'N/A';
         document.getElementById('pd_score').innerText = data.score || 'N/A';
-        const vBox = document.getElementById('pd_verif_box'), vBadge = document.getElementById('pd_verified');
+        
+        const vBox = document.getElementById('pd_verif_box');
+        const vBadge = document.getElementById('pd_verified');
+        
         if (data.is_verified) {
-            vBox.classList.remove('hidden'); vBadge.classList.remove('hidden');
+            vBox.classList.remove('hidden');
+            vBadge.classList.remove('hidden');
             document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
             document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
-        } else { vBox.classList.add('hidden'); vBadge.classList.add('hidden'); }
+        } else {
+            vBox.classList.add('hidden');
+            vBadge.classList.add('hidden');
+        }
+
         const chatBtn = document.getElementById('pd_chat_btn');
-        if (isConnected) { chatBtn.classList.remove('hidden'); chatBtn.onclick = () => { closeModal('profile_detail_modal'); openChat(data.id, data.name, data.is_online); }; } else { chatBtn.classList.add('hidden'); }
-        openModal('profile_detail_modal');
+        if (isConnected) {
+            chatBtn.classList.remove('hidden');
+            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
+            chatBtn.innerText = "Send Message";
+        } else {
+            chatBtn.classList.add('hidden');
+        }
+
+        document.getElementById('profile_detail_modal').classList.remove('hidden');
+        lucide.createIcons();
     }
-
-    function openModal(id) { const m = document.getElementById(id); if (m) { m.classList.remove('hidden'); document.body.style.overflow = 'hidden'; } }
-    function closeModal(id) { const m = document.getElementById(id); if (m) { m.classList.add('hidden'); document.body.style.overflow = 'auto'; } }
-
-    async function loadVerification() {
+    
+    // ---- ACTIONS ----
+    
+    async function sendConnect(id, btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+        btn.disabled = true;
         try {
-            const data = await call('/api/v1/verification');
-            if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
-            if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
-            const sc = document.getElementById('verif_status_card'), f = document.getElementById('verifForm'), eb = document.getElementById('btn_edit_verif');
-            if (data.status === "NOT_SUBMITTED") { sc.classList.add('hidden'); f.classList.remove('hidden'); }
-            else {
-                f.classList.add('hidden'); sc.classList.remove('hidden'); eb.classList.remove('hidden');
-                document.getElementById('verif_title').innerText = data.status;
-                document.getElementById('verif_desc').innerText = data.status === 'APPROVED' ? "Verified." : "Reviewing.";
-                const iconBox = document.getElementById('verif_icon_box'), icon = document.getElementById('verif_icon');
-                if (data.status === 'APPROVED') { iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-green-600"; icon.setAttribute('data-lucide', 'check'); }
-                else { iconBox.className = "w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center"; icon.className = "w-5 h-5 text-blue-600 animate-spin"; icon.setAttribute('data-lucide', 'loader-2'); }
-            }
-            lucide.createIcons();
-        } catch(e) {}
+            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
+            btn.innerText = "Request Sent";
+            btn.className = "px-3 py-2 text-xs rounded bg-green-50 text-green-700 border border-green-200";
+        } catch(e) {
+            alert("Failed to send request.");
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
+
+    async function disconnectUser(id, name) {
+        if(!confirm(`Are you sure you want to disconnect from ${name}?`)) return;
+        
+        try {
+            await call('/api/v1/connect', 'POST', { action: 'disconnect', target_id: id });
+            // Refresh list
+            loadConnectHub('connections');
+        } catch(e) {
+            alert("Error disconnecting: " + e.message);
+        }
+    }
+    
+
+    
+    
+    // ---- ACTIONS ----
+    async function sendConnect(id, btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        try {
+            await call('/api/v1/connect', 'POST', { action: 'request', target_id: id });
+            btn.innerText = "Request Sent";
+            btn.classList.remove('text-blue-600', 'border-blue-200');
+            btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
+        } catch(e) {
+            alert("Failed to send request. Please try again.");
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    async function loadRequests() {
+        const panel = document.getElementById('requests_panel');
+        const list = document.getElementById('requests_list');
+        panel.classList.toggle('hidden');
+        
+        try {
+            const data = await call('/api/v1/connect?mode=requests');
+            list.innerHTML = '';
+            
+            if(!data.results || data.results.length === 0) {
+                document.getElementById('notif_badge').classList.add('hidden');
+                list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>'; 
+                return; 
+            }
+            
+            data.results.forEach(r => {
+                list.innerHTML += `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border shadow-sm">
+                    <span class="font-bold text-sm text-gray-900">${r.name}</span>
+                    <div class="flex gap-2">
+                        <button onclick="acceptRequest('${r.id}', this)" class="px-4 py-1.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors">Accept</button>
+                        <button onclick="declineRequest('${r.id}', this)" class="px-4 py-1.5 border border-red-200 text-red-600 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors">Decline</button>
+                    </div>
+                </div>`;
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    
+    async function acceptRequest(connId, btn) {
+        btn.innerText = "...";
+        await call('/api/v1/connect', 'POST', { action: 'accept', connection_id: connId });
+        btn.parentElement.remove();
+        loadConnectHub('connections'); 
+    }
+
+    async function declineRequest(connId, btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "...";
+        btn.disabled = true;
+
+        try {
+            await call('/api/v1/connect', 'POST', { 
+                action: 'decline', 
+                connection_id: connId 
+            });
+            
+            // Remove the card from the UI
+            const card = btn.closest('.flex.justify-between');
+            card.classList.add('opacity-0', 'scale-95', 'transition-all', 'duration-300');
+            setTimeout(() => {
+                card.remove();
+                // Check if list is now empty to hide panel or show "No requests"
+                const list = document.getElementById('requests_list');
+                if (list.children.length === 0) {
+                    list.innerHTML = '<p class="text-xs text-gray-500 italic">No pending requests.</p>';
+                    document.getElementById('notif_badge').classList.add('hidden');
+                }
+            }, 300);
+
+            // Refresh the badge count
+            checkNotifications();
+        } catch(e) {
+            alert("Error declining request: " + e.message);
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    async function checkNotifications() {
+        const data = await call('/api/v1/connect?mode=requests');
+        const badge = document.getElementById('notif_badge');
+        
+        if(data.results && data.results.length > 0) {
+            badge.classList.remove('hidden');
+            badge.innerText = data.results.length; // Optional: Show count
+        } else {
+            // Explicitly hide if 0
+            badge.classList.add('hidden');
+        }
+    }
+
+    //Business card in connection hub
+    let currentProfileData = null;
+
+function openProfileModal(index, isConnected) {
+        // Look up the clean data object from our global registry
+        const data = currentConnectResults[index];
+        if(!data) return;
+
+        currentProfileData = data;
+        document.getElementById('pd_name').innerText = data.name || 'Unknown';
+        document.getElementById('pd_type').innerText = data.type || 'N/A';
+        document.getElementById('pd_loc').innerText = data.loc || 'N/A';
+        document.getElementById('pd_score').innerText = data.score || 'N/A';
+        
+        // Show/Hide verification details
+        const vBox = document.getElementById('pd_verif_box');
+        const vBadge = document.getElementById('pd_verified');
+        if (data.is_verified) {
+            vBox.classList.remove('hidden');
+            vBadge.classList.remove('hidden');
+            document.getElementById('pd_reg_num').innerText = data.reg_num || 'Verified';
+            document.getElementById('pd_tax_id').innerText = data.tax_id || 'Not Provided';
+        } else {
+            vBox.classList.add('hidden');
+            vBadge.classList.add('hidden');
+        }
+
+        // Handle Chat button logic
+        const chatBtn = document.getElementById('pd_chat_btn');
+        if (isConnected) {
+            chatBtn.classList.remove('hidden');
+            chatBtn.onclick = () => { closeProfileModal(); openChat(data.id, data.name); };
+            chatBtn.innerText = "Send Message";
+        } else {
+            chatBtn.classList.add('hidden');
+        }
+
+        document.getElementById('profile_detail_modal').classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    
+function closeProfileModal() {
+    document.getElementById('profile_detail_modal').classList.add('hidden');
+}
+    // ---- CHAT SYSTEM ----
+    let currentChatPartner = null;
+    let chatInterval = null;
+
+    async function openChat(partnerId, partnerName, isOnline) {
+    currentChatPartner = partnerId;
+    document.getElementById('chat_partner_name').innerText = partnerName;
+
+    // UPDATE THE UI STATUS
+    const statusDot = document.getElementById('chat_status_dot');
+    const statusText = document.getElementById('chat_status_text');
+    
+    if (isOnline) {
+        statusDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+        statusText.innerText = "Online";
+        statusText.className = "text-green-600 font-medium";
+    } else {
+        statusDot.className = "w-2 h-2 rounded-full bg-gray-400";
+        statusText.innerText = "Offline";
+        statusText.className = "text-gray-500";
+    }
+
+    document.getElementById('chat_modal').classList.remove('hidden');
+    
+    // Notify backend that messages are being read
+    try {
+        await call(`/api/v1/chat/read?partner_id=${partnerId}`, 'POST');
+    } catch(e) { console.warn("Failed to mark as read"); }
+
+    loadMessages();
+    chatInterval = setInterval(loadMessages, 3000);
+}
+
+    function closeChat() {
+        document.getElementById('chat_modal').classList.add('hidden');
+        clearInterval(chatInterval);
+        currentChatPartner = null;
+    }
+
+    async function loadMessages() {
+        if(!currentChatPartner) return;
+        const box = document.getElementById('chat_box');
+        const data = await call(`/api/v1/chat?partner_id=${currentChatPartner}`);
+        const isAtBottom = box.scrollHeight - box.scrollTop === box.clientHeight;
+        box.innerHTML = '';
+        data.messages.forEach(m => {
+            const align = m.is_me ? "self-end bg-orange-600 text-white" : "self-start bg-gray-200 text-gray-800";
+            box.innerHTML += `
+            <div class="flex flex-col ${m.is_me ? 'items-end' : 'items-start'}">
+                <div class="px-4 py-2 rounded-2xl max-w-[80%] text-sm ${align}">
+                    ${m.text}
+                </div>
+                <span class="text-[10px] text-gray-400 mt-1">${m.time}</span>
+            </div>`;
+        });
+        if(isAtBottom) box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat_input');
+        const text = input.value.trim();
+        if(!text) return;
+        input.value = ''; 
+        await call('/api/v1/chat', 'POST', { partner_id: currentChatPartner, content: text });
+        loadMessages(); 
+    }
+    document.getElementById('chat_input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+    
+    //report modal
+    let currentReportTarget = null;
+
+function openReportModal(id, name) {
+    currentReportTarget = id;
+    document.getElementById('report_target_name').innerText = name;
+    document.getElementById('report_modal').classList.remove('hidden');
+}
+
+function closeReportModal() {
+    document.getElementById('report_modal').classList.add('hidden');
+    document.getElementById('report_details').value = '';
+}
+
+async function submitReport() {
+    const category = document.getElementById('report_category').value;
+    const details = document.getElementById('report_details').value;
+    const btn = document.getElementById('btn_submit_report');
+
+    if(!details.trim()) return alert("Please provide details.");
+
+    btn.disabled = true; btn.innerText = "Sending...";
+    try {
+        await call('/api/v1/report', 'POST', {
+            target_id: currentReportTarget,
+            category: category,
+            details: details
+        });
+        alert("Report submitted. Our team will review this and take the appropriate action. We may reach out to you for more information or feedback.");
+        closeReportModal();
+    } catch(e) {
+        alert("Failed to send report: " + e.message);
+    } finally {
+        btn.disabled = false; btn.innerText = "Submit Report";
+    }
+}
+
+    // ---- MODAL CONTROLS ----
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('hidden');
+            // Restore body scrolling
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Close modals if user clicks the dark background
+    window.onclick = function(event) {
+        if (event.target.classList.contains('fixed') && event.target.classList.contains('inset-0')) {
+            event.target.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    };
 
     function resetFilters() {
         document.querySelectorAll('#slicer_dates input, #slicer_biz input, #slicer_countries input').forEach(el => el.checked = false);
@@ -1240,46 +1582,271 @@
     }
 
     async function loadTracking() {
-        try {
-            const data = await call('/api/v1/verification');
-            const s1=document.getElementById('step1_icon'), s2=document.getElementById('step2_icon'), s3=document.getElementById('step3_icon'), d1=document.getElementById('step1_date'), d2=document.getElementById('step2_date'), d3=document.getElementById('step3_date'), t2=document.getElementById('step2_title'), t3=document.getElementById('step3_title'), desc2=document.getElementById('step2_desc');
-            if (data.type === 'Retailer') { if(t2) t2.innerText = "Secondary Validation"; if(desc2) desc2.innerText = "Automated checks."; if(t3) t3.innerText = "Access Completed"; }
-            [s1, s2, s3].forEach(el => { if(el) el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10"; });
-            if (data.status !== "NOT_SUBMITTED") {
-                s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                if (data.submitted_at) d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB');
-                if (data.status === "PENDING") { s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10"; s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>'; }
-                else if (data.status === "APPROVED") {
-                    s2.className = s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
-                    if (data.reviewed_at) { const revDate = new Date(data.reviewed_at).toLocaleDateString('en-GB'); if(d2) d2.innerText = "Validated on " + revDate; if(d3) d3.innerText = "Approved on " + revDate; }
+    try {
+        const data = await call('/api/v1/verification');
+        
+        // 1. Map DOM Elements
+        const s1 = document.getElementById('step1_icon'), 
+              s2 = document.getElementById('step2_icon'), 
+              s3 = document.getElementById('step3_icon');
+        const d1 = document.getElementById('step1_date'), 
+              d2 = document.getElementById('step2_date'), 
+              d3 = document.getElementById('step3_date');
+        const t2 = document.getElementById('step2_title'), 
+              t3 = document.getElementById('step3_title'), 
+              desc2 = document.getElementById('step2_desc');
+
+        // 2. Handle Dynamic Labels (Retailer vs Business)
+        if (data.type === 'Retailer') {
+            if(t2) t2.innerText = "Secondary Validation";
+            if(desc2) desc2.innerText = "Automated system checks and community tier alignment.";
+            if(t3) t3.innerText = "Access Completed";
+        } else {
+            if(t2) t2.innerText = "Compliance Review";
+            if(desc2) desc2.innerText = "Our team is verifying your registration and tax credentials.";
+            if(t3) t3.innerText = "Verification Approved";
+        }
+
+        // 3. Reset Icons to default state
+        [s1, s2, s3].forEach(el => {
+            if(el) {
+                el.className = "w-10 h-10 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center text-white z-10";
+                el.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>'; // Default icon
+            }
+        });
+
+        // 4. Update UI based on Status
+        if (data.status !== "NOT_SUBMITTED") {
+            // Milestone 1: Always Green
+            s1.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+            if (data.submitted_at) {
+                d1.innerText = "Submitted on " + new Date(data.submitted_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            }
+
+            // Milestone 2 & 3: Conditional
+            if (data.status === "PENDING") {
+                s2.className = "w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white z-10";
+                s2.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+            } 
+            else if (data.status === "APPROVED") {
+                // Both 2 and 3 become green
+                s2.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                s3.className = "w-10 h-10 rounded-full bg-green-500 border-4 border-white flex items-center justify-center text-white z-10";
+                
+                if (data.reviewed_at) {
+                    const reviewDate = new Date(data.reviewed_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+                    if(d2) d2.innerText = (data.type === 'Retailer' ? "Validated on " : "Reviewed on ") + reviewDate;
+                    if(d3) d3.innerText = "Approved on " + reviewDate;
                 }
             }
-            lucide.createIcons();
-        } catch(e) {}
+            else if (data.status === "REJECTED") {
+                s2.className = "w-10 h-10 rounded-full bg-red-500 border-4 border-white flex items-center justify-center text-white z-10";
+                s2.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
+                if(d2) d2.innerText = "Rejected";
+                document.getElementById('track_action')?.classList.remove('hidden');
+            }
+        }
+        
+        document.getElementById('track_id').innerText = data.reg_num || "VER-";
+        lucide.createIcons();
+    } catch(e) { 
+        console.error("LoadTracking error:", e); 
+    }
+}
+
+  
+    // ---- PAYMENT HUB ----
+    async function selectPlanTest(tierName) {
+        // 1. Logic Check
+        if (currentUserType === 'Retailer') {
+            alert("As a Retailer/Vendor/Trader, you already have full access via the Free Community Tier. No further activation is required.");
+            return;
+        }
+
+        if (currentVerifStatus !== 'APPROVED') {
+            alert("Your account must be approved before selecting a plan.");
+            return;
+        }
+
+        const displayName = tierName.replace('_', ' ');
+        if(!confirm(`Confirm selection of ${displayName} plan?`)) return;
+        
+        try {
+            const res = await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
+            alert("Success! Package activated. You now have full access.");
+            window.location.reload(); 
+        } catch(e) {
+            alert("Activation failed: " + e.message);
+        }
     }
 
+    // CONTACT SALES WITH REDIRECT
+    async function contactSales(tierName) {
+        const displayName = tierName.replace('_', ' ');
+        
+        if(!confirm(`Would you like to request a consultation for the ${displayName} plan?`)) return;
+
+        try {
+            await call('/api/v1/payments/contact-sales', 'POST', { tier: tierName });
+            alert("Inquiry Sent! A specialist from our team will reach out to you shortly.");
+            
+            // Redirect back to the Hub (Main Page) after inquiry
+            switchView('hub'); 
+        } catch(e) {
+            alert("Failed to send inquiry: " + e.message);
+        }
+    }
+
+    
+   
+    // ---- VERIFICATION ----
+    async function loadVerification() {
+        const form = document.getElementById('verifForm');
+        const statusCard = document.getElementById('verif_status_card');
+        const editBtn = document.getElementById('btn_edit_verif');
+
+        try {
+            const data = await call('/api/v1/verification');
+            
+            if(data.reg_num) document.getElementById('v_reg_num').value = data.reg_num;
+            if(data.tax_id) document.getElementById('v_tax_id').value = data.tax_id;
+            
+            editBtn.classList.remove('hidden'); 
+
+            if (data.status === "NOT_SUBMITTED") {
+                statusCard.classList.add('hidden'); form.classList.remove('hidden');
+            } 
+            else if (data.status === "PENDING") {
+                form.classList.add('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-blue-50 border-blue-200 text-blue-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-blue-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 text-blue-700 animate-spin"></i>';
+                document.getElementById('verif_title').innerText = "Application Under Review";
+                document.getElementById('verif_desc').innerText = "You can update your details if needed.";
+            }
+            else if (data.status === "APPROVED") {
+                form.classList.add('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-green-50 border-green-200 text-green-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-green-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-700"></i>';
+                document.getElementById('verif_title').innerText = "Business Verified";
+                document.getElementById('verif_desc').innerText = "Your business is verified. Click edit to update details.";
+            }
+            else if (data.status === "REJECTED") {
+                form.classList.remove('hidden'); statusCard.classList.remove('hidden');
+                statusCard.className = "mb-6 p-5 rounded-lg border flex flex-col gap-3 bg-red-50 border-red-200 text-red-900";
+                document.getElementById('verif_icon').parentElement.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-200";
+                document.getElementById('verif_icon').innerHTML = '<i data-lucide="x" class="w-5 h-5 text-red-700"></i>';
+                document.getElementById('verif_title').innerText = "Action Required";
+                document.getElementById('verif_desc').innerText = "Please correct your details and resubmit.";
+                editBtn.classList.add('hidden');
+            }
+            lucide.createIcons();
+        } catch(e) { console.error(e); }
+    }
+
+    window.enableVerifEdit = function() {
+        document.getElementById('verifForm').classList.remove('hidden');
+        document.getElementById('verif_status_card').classList.add('hidden');
+    }
+
+    document.getElementById('verifForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            business_name: document.getElementById('v_biz_name').value,
+            business_location: document.getElementById('v_biz_loc').value,
+            business_type: document.getElementById('v_biz_type').value,
+            registration_number: document.getElementById('v_reg_num').value,
+            tax_id: document.getElementById('v_tax_id').value || null
+        };
+        const btn = e.target.querySelector('button');
+        const oldText = btn.innerText;
+        btn.innerText = "Submitting..."; btn.disabled = true;
+        try {
+            const res = await call('/api/v1/verification', 'POST', payload);
+        if (res.auto_approved) {
+            alert("Success! Your Retailer account has been auto-verified for the Free Community Tier. You now have full access.");
+        } else {
+            alert("Application Submitted! Your status is now Pending.");
+        };
+            await loadVerification();
+            if (res.auto_approved) switchView('dashboard');
+    } catch(err) { alert("Error: " + err.message); }
+      finally {
+            // Reset the button state NO MATTER WHAT happens
+            btn.innerText = oldText; 
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    });
+
+    
+    // ---- INIT ----
     async function init() {
         lucide.createIcons();
         try {
             const me = await call('/api/v1/me');
-            currentUserType = me.user.type; currentVerifStatus = me.user.status;
-            document.getElementById('welcomeName').innerText = me.user.name || 'User';
-            document.getElementById('email').innerText = me.user.email || '—';
-        } catch(e) { window.location.href = SIGNIN_PAGE; }
+            const name = me?.user?.name || '';
+            const email = me?.user?.email || 'Unknown';
+            
+            // Save GLOBAL State
+            currentUserType = me?.user?.type || 'Retailer';
+            currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
+
+            let display = name ? name : (email.split('@')[0]);
+            document.getElementById('welcomeName').innerText = display;
+            document.getElementById('email').innerText = email;
+            document.getElementById('status').innerText = 'Signed in';
+        } catch(e) {
+            window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+        }
     }
 
-    function initCountries(id) { const s = document.getElementById(id); if(!s) return; allCountries.forEach(c => { const o = document.createElement('option'); o.value = c; o.innerText = c; s.appendChild(o); }); }
+    window.addEventListener('load', googleTranslateElementInit);
+
+    // ---- MISC LISTENERS ----
+    const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (DRC)","Congo (Republic)","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea (North)","Korea (South)","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+    
+    function initCountries(selectId) {
+        const select = document.getElementById(selectId);
+        if(!select) return;
+        select.innerHTML = '<option value="">Select Country</option>';
+        allCountries.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            select.appendChild(opt);
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-        initCountries('v_biz_loc'); initCountries('filter_loc');
-        const lb = document.getElementById("lang-btn"), lm = document.getElementById("lang-menu");
-        lb?.addEventListener("click", (e) => { e.stopPropagation(); lm.classList.toggle("hidden"); });
-        document.addEventListener("click", () => lm?.classList.add("hidden"));
+        initCountries('v_biz_loc');
+        initCountries('filter_loc'); // Populate the Filter dropdown too!
+        
+        const langBtn = document.getElementById("lang-btn");
+        const langMenu = document.getElementById("lang-menu");
+        if(langBtn && langMenu) {
+            langBtn.addEventListener("click", (e) => { e.stopPropagation(); langMenu.classList.toggle("hidden"); });
+            document.addEventListener("click", (e) => { if(!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add("hidden"); });
+        }
     });
-    document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem('token'); window.location.href = SIGNIN_PAGE; });
+
+    document.getElementById('copyBtn')?.addEventListener('click', async () => {
+      const email = document.getElementById('email')?.innerText?.trim();
+      if (!email || email === '—') return;
+      try { await navigator.clipboard.writeText(email); const btn = document.getElementById('copyBtn'); const old = btn.innerText; btn.innerText = 'Copied'; setTimeout(()=> btn.innerText = old, 1200); } catch {}
+    });
+
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        window.location.href = SIGNIN_PAGE;
+    });
+
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+
     document.addEventListener('DOMContentLoaded', init);
 
-    // Initialise Google Translate
-    window.addEventListener('load', googleTranslateElementInit);
-</script>
+  
+  </script>
 </body>
 </html>
