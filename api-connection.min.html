@@ -1274,17 +1274,35 @@
         
         function renderPortalGrid(type, d, country) {
         if (type === 'Retailer') {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]"><p class="kpi-label w-full">Credit Score (100pt)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit.tier}</span></div>
-                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products (DAX Ranked)</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${d.top_products.map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${p.val.toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]">
+                    <p class="kpi-label w-full">Credit Score (100 Point Scale)</p>
+                    <div class="relative h-40 w-full flex justify-center items-end">
+                        <canvas id="gaugeChart"></canvas>
+                        <div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div>
+                    </div>
+                    <span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit.tier}</span>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-6 h-80"><p class="kpi-label mb-6">Total Revenue History</p><canvas id="retailLine"></canvas></div>
-                    <div class="card p-6 h-80"><p class="kpi-label mb-6">Quantity Sold by Category</p><canvas id="retailBar"></canvas></div>
+                <div class="card p-0 overflow-hidden col-span-2">
+                    <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div>
+                    <table class="w-full text-sm">
+                        <tbody class="divide-y divide-gray-100">
+                            ${d.top_products.map(p => `
+                                <tr>
+                                    <td class="px-6 py-4 font-medium text-gray-700">${p.item}</td>
+                                    <td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val).toLocaleString()}</td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `;
-        }
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px]">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
+                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px]">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
+            </div>
+        `;
+    }
         if (type.includes('NGO') || type.includes('Development Partner')) {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1334,11 +1352,29 @@
         ids.forEach(id => Chart.getChart(id)?.destroy());
 
         if (type === 'Retailer') {
+          if (type === 'Retailer') {
+        // Line Chart
+        new Chart(document.getElementById('retailLine'), { 
+            type: 'line', 
+            data: { 
+                labels: data.line_labels, 
+                datasets: [{ data: data.line_values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] 
+            }, 
+            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } 
+        });
+
+        // Bar Chart - FIXED: Now maps to bar_labels and bar_values
+        new Chart(document.getElementById('retailBar'), { 
+            type: 'bar', 
+            data: { 
+                labels: data.bar_labels, 
+                datasets: [{ label: 'Units Sold', data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] 
+            }, 
+            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } 
+        }); 
             new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit.score, Math.max(0, 100 - data.credit.score)], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels, datasets: [{ data: data.line_values, borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels, datasets: [{ data: data.bar_values, backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
-        
+          }
+    
         if (type.includes('NGO') || type.includes('Development Partner')) {
         const ctx = document.getElementById('resilienceLine');
         if (!ctx) return;
