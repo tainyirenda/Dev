@@ -1246,6 +1246,7 @@
                     </div>
                 `;
             } else {
+                // ORG SLICERS (RETAILER LIST NOW FULL)
                 topBarHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
                         <div class="col-span-1">
@@ -1257,7 +1258,7 @@
                         <div class="col-span-1">
                             <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Slicer: Date Selection</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
-                                ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || !checkedMonths.length ? 'checked' : ''}> <span>${m}</span></label>`).join('')}
+                                ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''}> <span>${m}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="col-span-1"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Scope</p><div class="p-3 border rounded-xl bg-gray-100 text-[10px] font-bold text-gray-400 italic leading-tight">Ecosystem Aggregate (Retailers Only)</div></div>
@@ -1266,41 +1267,12 @@
                 `;
             }
 
-            // 5. GENERATE GRID
-            let gridHTML = "";
-            if (type === 'Retailer') {
-                gridHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card p-6 flex flex-col items-center justify-between min-h-[300px]">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left w-full">Credit Score (100 Point Scale)</p>
-                            <div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit.score}</div></div>
-                            <span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">TIER: ${d.credit.tier}</span>
-                        </div>
-                        <div class="card p-0 overflow-hidden col-span-2">
-                            <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div>
-                            <table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${d.top_products.map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${p.val.toLocaleString()}</td></tr>`).join('')}</tbody></table>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
-                        <div class="card p-6 h-80"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Quantity Sold by Category</p><canvas id="retailBar"></canvas></div>
-                    </div>
-                `;
-            } else {
-                gridHTML = generateOrgGrid(type, d, res.country);
-            }
-
             container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
-            
-            // 3. INITIALIZE CHARTS
             initPortalVisuals(type, {...d, ...res.charts});
             lucide.createIcons();
 
-        } catch(e) { 
-            console.error("Dashboard Engine Error:", e); 
-        }
+        } catch(e) { console.error("Portal Engine Error:", e); }
     }
-
         
         function renderPortalGrid(type, d, country) {
         if (type === 'Retailer') {
@@ -1318,9 +1290,15 @@
         if (type.includes('NGO') || type.includes('Partner')) {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">African Regional Price Volatility Map [${country}]</p>
+                    <!-- AFRICAN VOLATILITY MAP -->
+                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">African Regional Price Volatility Map [${country}]</p>
                         <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
-                            ${(d.volatility || []).slice(0,4).map(v => `<div class="flex flex-col items-center"><div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div><p class="text-[10px] mt-3 font-extrabold uppercase text-white">${v.loc.split(' ')[0]}</p></div>`).join('')}
+                            ${(d.volatility || []).slice(0,4).map(v => `
+                                <div class="flex flex-col items-center">
+                                    <div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div>
+                                    <p class="text-[10px] mt-3 font-extrabold uppercase text-white">${v.loc.split(' ')[0]}</p>
+                                </div>`).join('')}
                         </div>
                         <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
                     </div>
@@ -1333,11 +1311,15 @@
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
-                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden"><p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400">African Last-Mile Demand Heatmap [${country}]</p>
+                    
+                    <!-- LAST MILE DEMAND MAP -->
+                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden">
+                        <p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400">African Last-Mile Demand Heatmap [${country}]</p>
                         <div class="flex items-center justify-around h-full pt-10">
-                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 40 + h.value/20)}px; height: ${Math.min(100, 40 + h.value/20)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500">${h.label}</p></div>`).join('')}
+                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 45 + h.value/20)}px; height: ${Math.min(100, 45 + h.value/20)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500">${h.label}</p></div>`).join('')}
                         </div>
                     </div>
+
                     <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
@@ -1348,6 +1330,8 @@
         }
         return '';
     }
+
+    
     function initPortalVisuals(type, data) {
         const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
         ids.forEach(id => Chart.getChart(id)?.destroy());
@@ -1363,7 +1347,7 @@
             new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
         }
 
-        if (type === 'FMCG') {
+        if (type === 'FMCG' && data.forecast) {
             const colors = ['#ea580c', '#3b82f6', '#16a34a'];
             new Chart(document.getElementById('skuChart'), { 
                 type: 'line', 
