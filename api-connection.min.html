@@ -1209,7 +1209,7 @@
             const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
             // 2. FETCH DATA
-            const res = await call(`/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}`);
+            const res = await call(`/api/v1/analytics/dashboard?months=${encodeURIComponent(selectedMonths)}&biz=${encodeURIComponent(selectedRetailers)}`);
             const type = res.type;
             const d = res.data;
 
@@ -1235,7 +1235,10 @@
                         <div class="card p-6 bg-white border">
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Filter: Viewing Period</p>
                             <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
-                                ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || !checkedMonths.length ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
+                                ${res.available_months.map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${selectedMonths.includes(m) || !selectedMonths ? 'checked' : ''} onchange="loadAnalytics()"> 
+                                        ${m}
+                                    </label>
+                                `).join('')}
                             </div>
                         </div>
                         <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
