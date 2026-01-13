@@ -1203,23 +1203,24 @@
         if (!container) return;
 
         try {
-            // 1. COLLECT SLICER INPUTS
+            // 1. COLLECT SLICER INPUTS (Safe check: if null, use empty array)
             const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
             const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
             const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
             // 2. FETCH DATA
+            // Building URL with all potential filters
             const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
             const res = await call(url);
+            
             const type = res.type;
-            const d = res.data;
-
+            const d = res.data || {};
 
             // 3. UPDATE UI HEADERS
-            titleDisplay.innerText = `${type} Portal`;
-            if (rangeDisplay && res.available_months.length > 0) {
-                const start = checkedMonths.length ? checkedMonths[0] : res.available_months[0];
-                const end = checkedMonths.length ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
+            if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
+            if (rangeDisplay && res.available_months && res.available_months.length > 0) {
+                const start = checkedMonths.length > 0 ? checkedMonths[0] : res.available_months[0];
+                const end = checkedMonths.length > 0 ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
                 rangeDisplay.innerText = `${start} — ${end} 2026`;
             }
 
