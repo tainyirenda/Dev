@@ -966,10 +966,11 @@
             const d = res.data || {};
 
             if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
+                
             if (rangeDisplay && res.available_months && res.available_months.length > 0) {
                 const start = checkedMonths.length > 0 ? checkedMonths[0] : res.available_months[0];
                 const end = checkedMonths.length > 0 ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
-                rangeDisplay.innerText = `${start} — ${end} 2026`;
+                rangeDisplay.innerText = res.date_range;
             }
 
             let topBarHTML = "";
@@ -1511,7 +1512,7 @@ function closeProfileModal() {
     const statusDot = document.getElementById('chat_status_dot');
     const statusText = document.getElementById('chat_status_text');
     
-    if (isOnline) {
+    if (isOnline == true) {
         statusDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
         statusText.innerText = "Online";
         statusText.className = "text-green-600 font-medium";
