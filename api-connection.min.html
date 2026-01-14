@@ -998,12 +998,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
                         <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Retailer Entity</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
-                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''} onchange="loadAnalytics()> <span>${b}</span></label>`).join('')}
+                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${b}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
-                                ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''} onchange="loadAnalytics()> <span>${c}</span></label>`).join('')}
+                                ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${c}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-2"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Date</p>
