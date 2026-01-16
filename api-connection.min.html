@@ -899,7 +899,7 @@
     }
 
     // ---- VIEW ROUTER ----
-    // ---- 4. VIEW ROUTER & ACCESS CONTROL ----
+    // ---- VIEW ROUTER & ACCESS CONTROL ----
     async function switchView(viewName) {
         let me;
         try {
@@ -929,6 +929,7 @@
         window.scrollTo(0, 0);
 
         if(viewName === 'dashboard' || viewName === 'insights') loadAnalytics();
+        if(viewName === 'insights') loadInsights();
         if(viewName === 'connect') loadConnectHub();
         if(viewName === 'verification') loadVerification();
         if(viewName === 'track') loadTracking();
