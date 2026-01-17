@@ -1192,29 +1192,48 @@
             const res = await call('/api/v1/analytics/insights');
             const insights = res.insights || [];
 
-            // DRIVE UI BY SEVERITY
-            const urgentData = insights.filter(i => i.sev === 'URGENT');
-            const advisoryData = insights.filter(i => i.sev !== 'URGENT');
+            const urgentData = insights.filter(i => i.sev === 'URGENT' || i.sev === 'WARNING');
+            const advisoryData = insights.filter(i => i.sev === 'INFO');
 
-            urgentContainer.innerHTML = urgentData.length ? urgentData.map(ins => `
-                <div class="p-4 bg-red-50 border border-red-100 rounded-xl animate-fadeIn mb-3">
-                    <div class="flex justify-between items-start">
-                        <p class="text-sm font-bold text-red-900">${ins.msg}</p>
-                        <span class="text-[9px] font-bold text-red-400 uppercase">${ins.date}</span>
+            // Helper to render a card with both Action and Report buttons
+            const renderCard = (ins, color) => `
+                <div class="card p-5 border-l-4 border-${color}-500 bg-${color}-50/30 flex flex-col gap-4 animate-fadeIn mb-4 group">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-${color}-100 flex items-center justify-center text-${color}-600 shrink-0">
+                                <i data-lucide="${color === 'red' ? 'alert-triangle' : 'sparkles'}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${ins.cat}</p>
+                                <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">${ins.date}</span>
                     </div>
-                    ${ins.link ? `<button onclick="window.location.hash='${ins.link}'; switchView('connect');" class="mt-3 text-[10px] font-bold text-red-600 hover:underline">Take Action Now →</button>` : ''}
-                </div>
-            `).join('') : `<p class="text-gray-400 italic text-sm">No urgent alerts for your scope.</p>`;
+                    
+                    <div class="flex items-center justify-between border-t border-${color}-100 pt-3">
+                        <!-- Left: Report Button -->
+                        <button onclick="openReportModal('SYSTEM_AI', 'AI Insight: ${ins.cat}')" 
+                                class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors">
+                            <i data-lucide="flag" class="w-3 h-3"></i> Report Issue
+                        </button>
 
-            advisoryContainer.innerHTML = advisoryData.length ? advisoryData.map(ins => `
-                <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl animate-fadeIn mb-3">
-                    <p class="text-sm text-blue-900 font-medium">${ins.msg}</p>
-                    <p class="mt-2 text-[9px] text-blue-400 font-bold uppercase">${ins.date} — SYSTEM ADVISORY</p>
+                        <!-- Right: Action Button (if link exists) -->
+                        ${ins.link ? `
+                            <button onclick="window.location.hash='${ins.link}'; switchView('connect');" 
+                                    class="bg-${color}-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-lg shadow-sm hover:opacity-90 transition-all">
+                                Take Action
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
-            `).join('') : `<p class="text-gray-400 italic text-sm">Our AI is monitoring the ecosystem for trends...</p>`;
+            `;
+
+            urgentContainer.innerHTML = urgentData.length ? urgentData.map(i => renderCard(i, 'red')).join('') : `<p class="text-gray-400 italic text-sm">No urgent alerts.</p>`;
+            advisoryContainer.innerHTML = advisoryData.length ? advisoryData.map(i => renderCard(i, 'blue')).join('') : `<p class="text-gray-400 italic text-sm">No new advisories.</p>`;
 
             lucide.createIcons();
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error("Insights Error:", e); }
     }
     
     // Global state for search timing
