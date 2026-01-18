@@ -1203,38 +1203,44 @@
             const advisoryData = insights.filter(i => i.sev === 'INFO' || !i.sev);
 
             // 3. Helper to render the high-end card with the 'Report' button
-            const createInsightCard = (ins, color) => `
-                <div class="card p-5 border-l-4 ${color === 'red' ? 'border-red-500 bg-red-50/30' : 'border-blue-500 bg-blue-50/30'} animate-fadeIn mb-4">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full ${color === 'red' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'} flex items-center justify-center shrink-0">
-                                <i data-lucide="${color === 'red' ? 'alert-triangle' : 'sparkles'}" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${ins.cat || 'AI Insight'}</p>
-                                <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
-                            </div>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase">${ins.date}</span>
-                    </div>
-                    
-                    <div class="flex items-center justify-between mt-4 pt-3 border-t ${color === 'red' ? 'border-red-100' : 'border-blue-100'}">
-                        <!-- THE NEW REPORT BUTTON -->
-                        <button onclick="openReportModal('SYSTEM_AI', 'AI Insight: ${ins.cat}')" 
-                                class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors">
-                            <i data-lucide="flag" class="w-3 h-3"></i> Report Accuracy
-                        </button>
+            const createInsightCard = (ins, color) => {
+        const isUrgent = ins.sev === 'URGENT';
+        const cardColor = isUrgent ? 'red' : 'blue';
+        const icon = isUrgent ? 'alert-triangle' : 'sparkles';
 
-                        <!-- ACTION BUTTON -->
-                        ${ins.link ? `
-                            <button onclick="window.location.hash='${ins.link}'; switchView('connect');" 
-                                    class="${color === 'red' ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] font-bold px-4 py-1.5 rounded-lg shadow-sm hover:opacity-90 transition-all">
-                                Take Action
-                            </button>
-                        ` : ''}
+        return `
+            <div class="card p-5 border-l-4 border-${cardColor}-500 bg-${cardColor}-50/30 animate-fadeIn mb-4 shadow-sm group">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-full bg-${cardColor}-100 flex items-center justify-center text-${cardColor}-600 shrink-0">
+                            <i data-lucide="${icon}" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${ins.cat || 'AI System'}</p>
+                            <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
+                        </div>
                     </div>
+                    <span class="text-[9px] font-bold text-gray-400 uppercase bg-white/50 px-2 py-1 rounded border">${ins.date}</span>
                 </div>
-            `;
+                
+                <div class="flex items-center justify-between mt-4 pt-3 border-t border-${cardColor}-100">
+                    <button onclick="openReportModal('SYSTEM_AI', 'Insight Error: ${ins.cat}')" 
+                            class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors">
+                        <i data-lucide="flag" class="w-3 h-3"></i> Inaccurate?
+                    </button>
+
+                    ${ins.link ? `
+                        <button onclick="window.location.hash='${ins.link}'; switchView('connect');" 
+                                class="bg-${cardColor}-600 text-white text-[10px] font-bold px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-all">
+                            Take Action
+                        </button>
+                    ` : `
+                        <span class="text-[9px] text-gray-400 italic">No action required</span>
+                    `}
+                </div>
+            </div>
+        `;
+    };
 
             // 4. Inject Content or Show Empty State
             urgentContainer.innerHTML = urgentData.length 
