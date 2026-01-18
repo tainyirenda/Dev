@@ -307,7 +307,7 @@
         <!-- Type Filter -->
         <select id="filter_type" onchange="loadConnectHub('browse')" class="text-sm border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-500">
             <option value="">All Types</option>
-            <option value="Retailer">Retailer</option>
+            <option value="Trader">Trader</option>
             <option value="FMCG">FMCG</option>
             <option value="NGO">NGO</option>
             <option value="Development Partner">Development Partner</option>
@@ -445,7 +445,7 @@
             <!-- FORM -->
             <form id="verifForm" class="space-y-4">
                 <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6">
-                    <p><strong>Note:</strong> Verification is primarily for Organizations (FMCG, FinTech, NGO etc.). Retailers are verified via transaction history, but can also be verified here.</p>
+                    <p><strong>Note:</strong> Verification is primarily for Organizations (FMCG, FinTech, NGO etc.). Traders are verified via transaction history, but can also be verified here.</p>
                 </div>
 
                 <div>
@@ -465,7 +465,7 @@
                         <label class="block text-sm font-medium text-gray-700">Organization Type</label>
                         <select id="v_biz_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white" required>
                             <option value="">Select Type</option>
-                            <option value="Retailer">Retailer / Vendor / Trader</option>
+                            <option value="Trader">Trader / Vendor / Retailer</option>
                             <option value="FMCG">FMCG / Supplier / Distributor</option>
                             <option value="Fintech">Fintech / Bank</option>
                             <option value="Micro-Lender">Micro-Lender</option>
@@ -574,15 +574,15 @@
 
         <div class="space-y-10">
 
-            <!-- Retailers & Merchants Table (Free Tier) -->
+            <!-- Traders & Merchants Table (Free Tier) -->
 <div class="card overflow-hidden">
     <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex items-center gap-3">
         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
             <i data-lucide="store" class="w-4 h-4"></i>
         </div>
         <div>
-            <h3 class="text-lg font-bold text-indigo-800">Retailers, Vendors & Traders</h3>
-            <p class="text-xs text-indigo-600">Supporting local commerce with free digital tools. (To apply, set business type to 'retailers' tier)</p>
+            <h3 class="text-lg font-bold text-indigo-800">Traders, Vendors & Retailers</h3>
+            <p class="text-xs text-indigo-600">Supporting local commerce with free digital tools. (To apply, set business type to 'Traders' tier)</p>
         </div>
     </div>
     <div class="overflow-x-auto">
@@ -605,7 +605,7 @@
                         Full analytics dashboard, Connect Hub access, WhatsApp-based inventory-sales tracking & credit profiling, and AI-generated recommendations & stock alerts.
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <!-- We show this as the active plan by default for retailers -->
+                        <!-- We show this as the active plan by default for traders -->
                         <span class="pill bg-indigo-100 text-indigo-700">Included</span>
                     </td>
                 </tr>
@@ -714,7 +714,7 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 font-bold text-gray-900">Starter</td>
                                 <td class="px-6 py-4 text-gray-600">$750/m <span class="text-xs text-gray-400">(£600)</span></td>
-                                <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, retailer profiles, risk-tier insights</td>
+                                <td class="px-6 py-4 text-gray-600">Basic credit-scoring API, Trader profiles, risk-tier insights</td>
                                 <td class="px-6 py-4 text-right"><button onclick="selectPlanTest('FINTECH_STARTER')" class="btn-outline text-xs border-black-200 text-black-600 hover:bg-orange-50">Select Plan</button></td>
                             </tr>
                             <tr class="hover:bg-gray-50 bg-gray-50/50">
@@ -743,7 +743,7 @@
         </div>
         <h2 class="text-2xl font-bold text-gray-900">Verification Required</h2>
         <p class="text-gray-600 mt-2 max-w-md mx-auto">
-            As an Organization (Non-Retailer), you must have an <strong>Approved Business Verification</strong> to access the Dashboard, Insights, and Connect Hub.
+            As an Organization (Non-Trader), you must have an <strong>Approved Business Verification</strong> to access the Dashboard, Insights, and Connect Hub.
         </p>
         <div class="mt-8 flex justify-center gap-4">
             <button onclick="switchView('verification')" class="btn-primary">Go to Verification</button>
@@ -873,7 +873,7 @@
     const SIGNIN_PAGE = 'api-connection.html';
 
     // ---- GLOBAL STATE ----
-    let currentUserType = 'Retailer';
+    let currentUserType = 'Trader';
     let currentVerifStatus = 'NOT_SUBMITTED';
     let currentConnectResults = [];
 
@@ -909,7 +909,7 @@
             const currentPaymentStatus = me.user.payment_status;
 
             if (['dashboard', 'insights', 'connect'].includes(viewName)) {
-                if (currentUserType !== 'Retailer') {
+                if (currentUserType !== 'Trader') {
                     if (currentVerifStatus !== 'APPROVED') { viewName = 'restricted'; } 
                     else if (currentPaymentStatus !== 'ACTIVE') {
                         viewName = 'billing';
@@ -950,7 +950,7 @@
 
         const billingButtons = document.querySelectorAll('button[onclick^="selectPlanTest"], button[onclick^="contactSales"]');
         billingButtons.forEach(btn => {
-            if (currentUserType === 'Retailer') { btn.classList.add('hidden'); } 
+            if (currentUserType === 'Trader') { btn.classList.add('hidden'); } 
             else if (currentVerifStatus !== 'APPROVED') {
                 btn.disabled = true;
                 btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
@@ -970,10 +970,10 @@
 
         try {
             const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
-            const selectedRetailers = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
+            const selectedTraders = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
             const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
             
-            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedRetailers.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
+            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedTraders.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
             const res = await call(url);
             
             const type = res.type;
@@ -988,7 +988,7 @@
             }
 
             let topBarHTML = "";
-            if (type === 'Retailer') {
+            if (type === 'Trader') {
                 topBarHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
@@ -1010,9 +1010,9 @@
             } else {
                 topBarHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Retailer Entity</p>
+                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Trader Entity</p>
                             <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
-                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedRetailers.includes(b) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${b}</span></label>`).join('')}
+                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedTraders.includes(b) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${b}</span></label>`).join('')}
                             </div>
                         </div>
                         <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
@@ -1044,7 +1044,7 @@
     }
 
     function renderPortalGrid(type, d, country) {
-        if (type === 'Retailer') {
+        if (type === 'Trader') {
             return `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
@@ -1084,7 +1084,7 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                     <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
-                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI (Retailer Aggregate)</p><canvas id="upliftBar"></canvas></div>
+                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI (Trader Aggregate)</p><canvas id="upliftBar"></canvas></div>
                 </div>
             `;
         }
@@ -1102,7 +1102,7 @@
                         <h1 class="text-4xl font-black text-orange-600 uppercase">${p.tier}</h1>
                     </div>
                     <div class="card p-4 col-span-2 h-48 bg-white shadow-sm">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregated Retailer Revenue (Ecosystem)</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregated Trader Revenue (Ecosystem)</p>
                         <canvas id="finLine"></canvas>
                     </div>
                 </div>
@@ -1125,7 +1125,7 @@
         const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
         ids.forEach(id => { const c = Chart.getChart(id); if (c) c.destroy(); });
 
-        if (type === 'Retailer') {
+        if (type === 'Trader') {
             new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit?.score || 0, Math.max(0, 100 - (data.credit?.score || 0))], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
             new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels || [], datasets: [{ data: data.line_values || [], borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
             new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels || [], datasets: [{ data: data.bar_values || [], backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
@@ -1737,8 +1737,8 @@ async function submitReport() {
               t3 = document.getElementById('step3_title'), 
               desc2 = document.getElementById('step2_desc');
 
-        // 2. Handle Dynamic Labels (Retailer vs Business)
-        if (data.type === 'Retailer') {
+        // 2. Handle Dynamic Labels (Trader vs Business)
+        if (data.type === 'Trader') {
             if(t2) t2.innerText = "Secondary Validation";
             if(desc2) desc2.innerText = "Automated system checks and community tier alignment.";
             if(t3) t3.innerText = "Access Completed";
@@ -1776,7 +1776,7 @@ async function submitReport() {
                 
                 if (data.reviewed_at) {
                     const reviewDate = new Date(data.reviewed_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-                    if(d2) d2.innerText = (data.type === 'Retailer' ? "Validated on " : "Reviewed on ") + reviewDate;
+                    if(d2) d2.innerText = (data.type === 'Trader' ? "Validated on " : "Reviewed on ") + reviewDate;
                     if(d3) d3.innerText = "Approved on " + reviewDate;
                 }
             }
@@ -1799,8 +1799,8 @@ async function submitReport() {
     // ---- PAYMENT HUB ----
     async function selectPlanTest(tierName) {
         // 1. Logic Check
-        if (currentUserType === 'Retailer') {
-            alert("As a Retailer/Vendor/Trader, you already have full access via the Free Community Tier. No further activation is required.");
+        if (currentUserType === 'Trader') {
+            alert("As a Trader/Vendor/Retailer, you already have full access via the Free Community Tier. No further activation is required.");
             return;
         }
 
@@ -1906,7 +1906,7 @@ async function submitReport() {
         try {
             const res = await call('/api/v1/verification', 'POST', payload);
         if (res.auto_approved) {
-            alert("Success! Your Retailer account has been auto-verified for the Free Community Tier. You now have full access.");
+            alert("Success! Your Trader account has been auto-verified for the Free Community Tier. You now have full access.");
         } else {
             alert("Application Submitted! Your status is now Pending.");
         };
@@ -1931,7 +1931,7 @@ async function submitReport() {
             const email = me?.user?.email || 'Unknown';
             
             // Save GLOBAL State
-            currentUserType = me?.user?.type || 'Retailer';
+            currentUserType = me?.user?.type || 'Trader';
             currentVerifStatus = me?.user?.status || 'NOT_SUBMITTED';
 
             let display = name ? name : (email.split('@')[0]);
