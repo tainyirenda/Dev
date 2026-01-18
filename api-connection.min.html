@@ -1109,7 +1109,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                     <div class="card p-8 h-96 shadow-md"><p class="kpi-label mb-6 uppercase font-bold text-gray-900">Risk Scatter: Sales Consistency vs Pending Debt</p><canvas id="riskScatter"></canvas></div>
                     <div class="card p-0 overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Merchant Risk Profiles</div>
+                        <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Trader Risk Profiles</div>
                         <table class="w-full text-xs divide-y divide-gray-100">
                             <thead><tr class="bg-gray-50/50"><th class="px-4 py-3 text-left">BUSINESS</th><th class="px-4 py-3 text-center">CoV INDEX</th><th class="px-4 py-3 text-right">RISK LEVEL</th></tr></thead>
                             <tbody>${d.risk_profiles.map(m => `<tr><td class="p-4 font-bold text-gray-800">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status.includes('High') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">${m.status}</span></td></tr>`).join('')}</tbody>
@@ -1148,7 +1148,7 @@
             // 2. Risk Scatter Plot
             new Chart(document.getElementById('riskScatter'), {
                 type: 'scatter',
-                data: { datasets: [{ label: 'Merchant Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed', pointRadius: 7, hoverRadius: 10 }] },
+                data: { datasets: [{ label: 'Trader Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed', pointRadius: 7, hoverRadius: 10 }] },
                 options: { scales: { x: { title: { display: true, text: 'Inconsistency (Sales CoV)' } }, y: { title: { display: true, text: 'Pending Payments ($)' }, ticks: { callback: v => '$' + v } } }, plugins: { legend: { display: false } } }
             });
         }
