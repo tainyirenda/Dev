@@ -39,10 +39,15 @@
     .section{margin-top:18px;}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
     .card{
-      grid-column:span 12;background:var(--card);border:1px solid var(--border);
-      border-radius:16px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,.06);
-      display:flex;gap:14px;padding:14px;align-items:center;
-    }
+  grid-column:span 12;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 14px rgba(0,0,0,.06);
+  padding:14px;
+  display:block;   /* <-- key change */
+}
     @media (min-width:720px){ .card{grid-column:span 6;} }
     .thumb{
       width:140px;min-width:140px;height:92px;border-radius:12px;border:1px solid var(--border);
@@ -62,6 +67,36 @@
       margin-top:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;
       padding:14px;color:#7c2d12;line-height:1.6;
     }
+
+    /* Ensure media never overflows its container */
+.card video{
+  width:100%;
+  max-width:100%;
+  height:auto;
+  display:block;
+  border-radius:12px;
+}
+
+/* Your .content wrapper needs layout rules */
+.card .content{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Prevent flex blowouts */
+.card, .card *{
+  min-width:0;
+}
+
+    .card--row{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+
   </style>
 </head>
 <body>
@@ -190,7 +225,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card card--row">
           <img class="thumb" src="https://raw.githubusercontent.com/tainyirenda/Dev/main/assets/article8.jpg" alt="WhatsApp / Contact">
           <div class="meta">
             <h3>Join via WhatsApp</h3>
@@ -221,4 +256,12 @@
 
   </div>
 </body>
+  <script>
+  document.querySelectorAll("video").forEach(v => {
+    v.addEventListener("play", () => {
+      document.querySelectorAll("video").forEach(o => { if(o !== v) o.pause(); });
+    });
+  });
+</script>
+
 </html>
