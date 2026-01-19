@@ -1183,34 +1183,45 @@
 
     
     // ---- INSIGHTS & ADVISORY ENGINE ----
-    async function loadInsights() {
-        const urgentContainer = document.getElementById('list_urgent_alerts');
-        const advisoryContainer = document.getElementById('list_ai_advisory');
-        if (!urgentContainer || !advisoryContainer) return;
+async function loadInsights() {
+    const urgentContainer = document.getElementById('list_urgent_alerts');
+    const advisoryContainer = document.getElementById('list_ai_advisory');
+    if (!urgentContainer || !advisoryContainer) return;
 
-        try {
-            const res = await call('/api/v1/analytics/insights');
-            const insights = res.insights || [];
+    try {
+        const res = await call('/api/v1/analytics/insights');
+        const insights = res.insights || [];
+
+        console.log("AI Engine Payload:", insights);
+
+        // 1. Clear placeholders
+        urgentContainer.innerHTML = '';
+        advisoryContainer.innerHTML = '';
+
+        // 2. Filter Data
+        const urgentData = insights.filter(i => i.sev === 'URGENT' || i.sev === 'WARNING');
+        const advisoryData = insights.filter(i => i.sev === 'INFO' || !i.sev);
+
+        // 3. Card Template with Dismiss Logic
+        const createInsightCard = (ins, color) => {
+            const isUrgent = ins.sev === 'URGENT';
+            const cardColor = isUrgent ? 'red' : 'blue';
+            const icon = isUrgent ? 'alert-triangle' : 'sparkles';
             
-            console.log("AI Engine Payload:", insights); // DEBUG: Check your data here
+            // Generate unique ID for the DOM element so we can remove it
+            const domId = `insight-${ins.id}`;
 
-            // 1. Clear placeholders
-            urgentContainer.innerHTML = '';
-            advisoryContainer.innerHTML = '';
+            return `
+            <div id="${domId}" class="card relative p-5 border-l-4 border-${cardColor}-500 bg-${cardColor}-50/30 animate-fadeIn mb-4 shadow-sm group transition-all duration-300">
+                
+                <!-- Dismiss Button (Top Right) -->
+                <button onclick="dismissInsight('${ins.id}', '${domId}')" 
+                        class="absolute top-2 right-2 p-1 text-gray-300 hover:text-gray-500 rounded-full hover:bg-white transition-colors"
+                        title="Dismiss alert">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
 
-            // 2. Filter by Severity (URGENT/WARNING = Red, INFO = Blue)
-            const urgentData = insights.filter(i => i.sev === 'URGENT' || i.sev === 'WARNING');
-            const advisoryData = insights.filter(i => i.sev === 'INFO' || !i.sev);
-
-            // 3. Helper to render the high-end card with the 'Report' button
-            const createInsightCard = (ins, color) => {
-        const isUrgent = ins.sev === 'URGENT';
-        const cardColor = isUrgent ? 'red' : 'blue';
-        const icon = isUrgent ? 'alert-triangle' : 'sparkles';
-
-        return `
-            <div class="card p-5 border-l-4 border-${cardColor}-500 bg-${cardColor}-50/30 animate-fadeIn mb-4 shadow-sm group">
-                <div class="flex items-start justify-between">
+                <div class="flex items-start justify-between pr-6"> <!-- Added padding-right to avoid overlap with close button -->
                     <div class="flex items-start gap-3">
                         <div class="w-10 h-10 rounded-full bg-${cardColor}-100 flex items-center justify-center text-${cardColor}-600 shrink-0">
                             <i data-lucide="${icon}" class="w-5 h-5"></i>
@@ -1220,42 +1231,90 @@
                             <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
                         </div>
                     </div>
-                    <span class="text-[9px] font-bold text-gray-400 uppercase bg-white/50 px-2 py-1 rounded border">${ins.date}</span>
                 </div>
                 
+                <!-- Footer Section -->
                 <div class="flex items-center justify-between mt-4 pt-3 border-t border-${cardColor}-100">
-                    <button onclick="openReportModal('SYSTEM_AI', 'Insight Error: ${ins.cat}')" 
-                            class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors">
-                        <i data-lucide="flag" class="w-3 h-3"></i> Inaccurate?
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase bg-white/50 px-2 py-1 rounded border">${ins.date}</span>
+                        <button onclick="openReportModal('SYSTEM_AI', 'Insight Error: ${ins.cat} - ID: ${ins.id}')" 
+                                class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors ml-2">
+                            <i data-lucide="flag" class="w-3 h-3"></i> Report
+                        </button>
+                    </div>
 
                     ${ins.link ? `
-                        <button onclick="window.location.hash='${ins.link}'; switchView('connect');" 
+                        <button onclick="handleAction('${ins.link}')" 
                                 class="bg-${cardColor}-600 text-white text-[10px] font-bold px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-all">
                             Take Action
                         </button>
-                    ` : `
-                        <span class="text-[9px] text-gray-400 italic">No action required</span>
-                    `}
+                    ` : ''}
                 </div>
             </div>
-        `;
-    };
+            `;
+        };
 
-            // 4. Inject Content or Show Empty State
-            urgentContainer.innerHTML = urgentData.length 
-                ? urgentData.map(i => createInsightCard(i, 'red')).join('') 
-                : `<p class="text-gray-400 italic text-sm p-4">No urgent alerts for your scope.</p>`;
+        // 4. Inject Content
+        urgentContainer.innerHTML = urgentData.length 
+            ? urgentData.map(i => createInsightCard(i, 'red')).join('') 
+            : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg">
+                 <p class="text-gray-400 text-sm">No urgent alerts. Operations are normal.</p>
+               </div>`;
 
-            advisoryContainer.innerHTML = advisoryData.length 
-                ? advisoryData.map(i => createInsightCard(i, 'blue')).join('') 
-                : `<p class="text-gray-400 italic text-sm p-4">Our AI is analyzing trade patterns for new opportunities...</p>`;
+        advisoryContainer.innerHTML = advisoryData.length 
+            ? advisoryData.map(i => createInsightCard(i, 'blue')).join('') 
+            : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg">
+                 <p class="text-gray-400 text-sm">Our AI is analyzing trade patterns...</p>
+               </div>`;
 
-            lucide.createIcons();
-        } catch(e) { 
-            console.error("Insights Load Error:", e);
+        lucide.createIcons();
+
+    } catch(e) { 
+        console.error("Insights Load Error:", e);
+    }
+}
+
+// ---- NEW HELPER FUNCTIONS ----
+
+// 1. Handle Navigation for Action Buttons
+function handleAction(link) {
+    if(link.startsWith('#')) {
+        // Internal navigation
+        window.location.hash = link;
+        // Parse the part after # (e.g., connect?search=Sugar)
+        const view = link.substring(1).split('?')[0]; 
+        switchView(view);
+    } else {
+        // External link
+        window.open(link, '_blank');
+    }
+}
+
+// 2. Dismiss Logic
+async function dismissInsight(insightId, domId) {
+    const el = document.getElementById(domId);
+    
+    // Optimistic UI: Fade it out immediately
+    if(el) {
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.95)';
+        setTimeout(() => el.remove(), 300); // Remove from DOM after transition
+    }
+
+    try {
+        // Send request to backend
+        await call('/api/v1/analytics/insights/dismiss', 'POST', { insight_id: insightId });
+        console.log("Insight dismissed:", insightId);
+    } catch(e) {
+        console.error("Failed to dismiss:", e);
+        // Optional: Revert UI change if API fails
+        if(el) {
+            el.style.opacity = '1';
+            el.style.transform = 'scale(1)';
+            alert("Could not dismiss alert. Please check connection.");
         }
     }
+}
     
     // Global state for search timing
     let searchTimeout;
