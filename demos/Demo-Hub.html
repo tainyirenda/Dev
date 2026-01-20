@@ -9,72 +9,50 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <!-- 1. ADDED TAILWIND CSS (Required for the language menu styling to work) -->
+  <!-- TAILWIND CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- 2. GOOGLE TAG MANAGER (Best Practice: Top of Head) -->
+  <!-- GOOGLE TAG MANAGER -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PKL5BZQF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-N6PKL5BZQF');
   </script>
 
-  <!-- 3. GOOGLE TRANSLATE LOGIC -->
+  <!-- GOOGLE TRANSLATE LOGIC -->
   <script type="text/javascript">
-    // Helper to trigger the change event on the hidden Google select box
     function fireGoogleTranslateEvent(el, eventName) {
-      if (el.fireEvent) { // IE fallback
-        el.fireEvent('on' + eventName);
-      } else {
+      if (el.fireEvent) { el.fireEvent('on' + eventName); } 
+      else {
         var e = document.createEvent('HTMLEvents');
         e.initEvent(eventName, false, true);
         el.dispatchEvent(e);
       }
     }
-
-    // Sets the cookie Google checks for language preference
     function setGoogleTransCookie(lang) {
       var value = "/en/" + lang;
       var domain = window.location.hostname;
       document.cookie = "googtrans=" + value + ";path=/;";
       document.cookie = "googtrans=" + value + ";path=/;domain=" + domain + ";";
     }
-
-    // Global function called by your custom menu buttons
     window.setLanguage = function(lang) {
-      // 1. Try to set the hidden dropdown
       const combo = document.querySelector(".goog-te-combo");
-      if (combo) {
-        combo.value = lang;
-        fireGoogleTranslateEvent(combo, "change");
-      }
-
-      // 2. Save preference
+      if (combo) { combo.value = lang; fireGoogleTranslateEvent(combo, "change"); }
       try { localStorage.setItem("selectedLang", lang); } catch (e) {}
-
-      // 3. Set cookie and reload to ensure it sticks
       setGoogleTransCookie(lang);
-      
-      // Short delay to allow cookie to set before reload
-      setTimeout(function () {
-        window.location.reload();
-      }, 100);
+      setTimeout(function () { window.location.reload(); }, 100);
     }
-
-    // Initialization function called by Google Script
     window.googleTranslateElementInit = function() {
       new google.translate.TranslateElement({
         pageLanguage: 'en',
         includedLanguages: 'en,sw,sn,nr,ny,yo,af,xh,zu,fr,pcm,nd,ha',
-        autoDisplay: false, // Prevents the banner from showing automatically
+        autoDisplay: false,
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       }, 'google_translate_element');
     }
   </script>
-  <!-- Load Google Translate Script -->
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 
   <style>
@@ -93,8 +71,8 @@
       background:linear-gradient(135deg,var(--orange),var(--green));
       border-radius:18px;
       color:#fff;
-      position: relative; /* Needed for positioning the language menu inside */
-      overflow:visible; /* Changed from hidden so dropdown doesn't get cut off */
+      position: relative;
+      overflow:visible;
       box-shadow:0 8px 18px rgba(0,0,0,.10);
     }
     .hero-inner{padding:22px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
@@ -141,13 +119,27 @@
       margin-top:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;
       padding:14px;color:#7c2d12;line-height:1.6;
     }
-    .card video{
-      width:100%;
-      max-width:100%;
-      height:auto;
-      display:block;
-      border-radius:12px;
+    
+    /* --- UPDATED VIDEO CSS --- */
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid var(--border);
     }
+
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
     .card .content{
       width:100%;
       display:flex;
@@ -165,17 +157,16 @@
 </head>
 <body>
 
-  <!-- Hidden Google Translate Element (Logic attaches here) -->
+  <!-- Hidden Google Translate Element -->
   <div id="google_translate_element"></div>
 
   <div class="wrap">
 
     <div class="hero">
       
-      <!-- Custom Language Menu (Positioned Absolute inside Hero) -->
+      <!-- Custom Language Menu -->
       <div id="lang-menu-wrapper" class="absolute right-4 top-4 z-20 inline-block text-left">
         <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border text-gray-800 hover:bg-gray-50">
-          <!-- Lucide Globe Icon -->
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
           <span class="text-sm font-bold">Language</span>
         </button>
@@ -225,86 +216,101 @@
 
         <div class="card">
             <div class="content">
-          <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
-        <source src="./NavigationMenu.mov" type="video/quicktime">
-        <source src="./NavigationMenu.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
-          <div class="meta">
-            <h3>Quick Navigation Menu</h3>
-            <p>Access key actions fast - Upload Inventory, Sales Analytics, Profile (PDF), Website, and Support.</p>
-            <div class="linkrow">
-              <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+              <!-- WRAPPED VIDEO 1 -->
+              <div class="video-container">
+                <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
+                  <source src="./NavigationMenu.mov" type="video/quicktime">
+                  <source src="./NavigationMenu.mp4" type="video/mp4">
+                  Your browser does not support video playback.
+                </video>
+              </div>
+              <div class="meta">
+                <h3>Quick Navigation Menu</h3>
+                <p>Access key actions fast - Upload Inventory, Sales Analytics, Profile (PDF), Website, and Support.</p>
+                <div class="linkrow">
+                  <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+                </div>
+              </div>
             </div>
+        </div>
+
+        <div class="card">
+          <div class="content">
+            <!-- WRAPPED VIDEO 2 -->
+            <div class="video-container">
+              <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
+                <source src="./LanguageSwitch.mov" type="video/quicktime">
+                <source src="./LanguageSwitch.mp4" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
+            </div>
+            <div class="meta">
+              <h3>Language switching in WhatsApp</h3>
+              <p>Multi-language flows so Traders can use the platform in a preferred local language.</p>
+              <div class="linkrow">
+                <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="content">
-          <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
-        <source src="./LanguageSwitch.mov" type="video/quicktime">
-        <source src="./LanguageSwitch.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
-          <div class="meta">
-            <h3>Language switching in WhatsApp</h3>
-            <p>Multi-language flows so Traders can use the platform in a preferred local language.</p>
-            <div class="linkrow">
-              <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+            <!-- WRAPPED VIDEO 3 -->
+            <div class="video-container">
+              <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
+                <source src="./InventoryAI.mov" type="video/quicktime">
+                <source src="./InventoryAI.mp4" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
             </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="content">
-          <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
-        <source src="./InventoryAI.mov" type="video/quicktime">
-        <source src="./InventoryAI.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
-          <div class="meta">
-            <h3>Inventory Upload + AI Recognition</h3>
-            <p>Upload inventory using images or text - AI supports structured product capture.</p>
-            <div class="linkrow">
-              <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
-            </div>
+            <div class="meta">
+              <h3>Inventory Upload + AI Recognition</h3>
+              <p>Upload inventory using images or text - AI supports structured product capture.</p>
+              <div class="linkrow">
+                <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="content">
-          <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
-        <source src="./AnalyticsAlerts.mov" type="video/quicktime">
-        <source src="./AnalyticsAlerts.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
-          <div class="meta">
-            <h3>Sales analytics + alerts</h3>
-            <p>Sales analytics, PDF extraction, and recommendation/stock alerts for smarter restocking.</p>
-            <div class="linkrow">
-              <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+            <!-- WRAPPED VIDEO 4 -->
+            <div class="video-container">
+              <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
+                <source src="./AnalyticsAlerts.mov" type="video/quicktime">
+                <source src="./AnalyticsAlerts.mp4" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
             </div>
-          </div>
+            <div class="meta">
+              <h3>Sales analytics + alerts</h3>
+              <p>Sales analytics, PDF extraction, and recommendation/stock alerts for smarter restocking.</p>
+              <div class="linkrow">
+                <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="card">
           <div class="content">
-          <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
-        <source src="./TradeNetPlatform.mov" type="video/quicktime">
-        <source src="./TradeNetPlatform.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
-          <div class="meta">
-            <h3>TradeNet Platform Access</h3>
-            <p>Dashboard + AI insights + Connect Hub matching and verification capabilities.</p>
-            <div class="linkrow">
-              <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+            <!-- WRAPPED VIDEO 5 -->
+            <div class="video-container">
+              <video controls playsinline preload="metadata" poster="https://www.afroubuntutrade.co.uk/demos/fcc38f2566ad4cf59cec172faaa4f84c_preview.gif">
+                <source src="./TradeNetPlatform.mov" type="video/quicktime">
+                <source src="./TradeNetPlatform.mp4" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
             </div>
-          </div>
+            <div class="meta">
+              <h3>TradeNet Platform Access</h3>
+              <p>Dashboard + AI insights + Connect Hub matching and verification capabilities.</p>
+              <div class="linkrow">
+                <a class="link" href="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7416823820851867648">▶ Watch full demo</a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -339,36 +345,36 @@
 
   </div>
 
-<script>
-  // Video Playback Logic: Only play one video at a time
-  document.querySelectorAll("video").forEach(v => {
-    v.addEventListener("play", () => {
-      document.querySelectorAll("video").forEach(o => { if(o !== v) o.pause(); });
-    });
-  });
-
-  // Toggle Language Dropdown
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn = document.getElementById("lang-btn");
-    const menu = document.getElementById("lang-menu");
-    const wrapper = document.getElementById("lang-menu-wrapper");
-
-    // Toggle dropdown
-    if(btn) {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        menu.classList.toggle("hidden");
+  <script>
+    // Video Playback Logic: Only play one video at a time
+    document.querySelectorAll("video").forEach(v => {
+      v.addEventListener("play", () => {
+        document.querySelectorAll("video").forEach(o => { if(o !== v) o.pause(); });
       });
-    }
-
-    // Clicking outside closes the menu
-    document.addEventListener("click", (e) => {
-      if (wrapper && !wrapper.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
     });
-  });
-</script>
+
+    // Toggle Language Dropdown
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("lang-btn");
+      const menu = document.getElementById("lang-menu");
+      const wrapper = document.getElementById("lang-menu-wrapper");
+
+      // Toggle dropdown
+      if(btn) {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menu.classList.toggle("hidden");
+        });
+      }
+
+      // Clicking outside closes the menu
+      document.addEventListener("click", (e) => {
+        if (wrapper && !wrapper.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
