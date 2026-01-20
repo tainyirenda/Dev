@@ -962,225 +962,242 @@
     }
     
 // ---- 5. MASTER ANALYTICS PORTAL ENGINE ----
-    async function loadAnalytics() {
-        const container = document.getElementById('portal_dynamic_container');
-        const titleDisplay = document.getElementById('portal_title_display');
-        const rangeDisplay = document.getElementById('date_range_header'); 
-        if (!container) return;
 
-        try {
-            const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
-            const selectedTraders = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
-            const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
-            
-            const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedTraders.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
-            const res = await call(url);
-            
-            const type = res.type;
-            const d = res.data || {};
+// Helper: Global function to reset checkboxes and reload
+window.resetFilters = function() {
+    document.querySelectorAll('#slicer_dates input, #slicer_biz input, #slicer_countries input')
+            .forEach(i => i.checked = false);
+    const searchInput = document.getElementById('filter_search');
+        if (searchInput) searchInput.value = '';
+    loadAnalytics();
+}
 
-            if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
-                
-            if (rangeDisplay && res.available_months && res.available_months.length > 0) {
-                const start = checkedMonths.length > 0 ? checkedMonths[0] : res.available_months[0];
-                const end = checkedMonths.length > 0 ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
-                rangeDisplay.innerText = res.date_range;
-            }
+async function loadAnalytics() {
+    const container = document.getElementById('portal_dynamic_container');
+    const titleDisplay = document.getElementById('portal_title_display');
+    const rangeDisplay = document.getElementById('date_range_header'); 
+    if (!container) return;
 
-            let topBarHTML = "";
-            if (type === 'Trader') {
-                topBarHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
-                            <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
-                            <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
-                        </div>
-                        <div class="card p-6 bg-white border flex flex-col justify-center">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">Viewing Period</p>
-                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
-                                ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
-                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh Data</button></div>
-                    </div>
-                `;
-            } else {
-                topBarHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Trader Entity</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
-                                ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedTraders.includes(b) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${b}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
-                                ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${c}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-2"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Date</p>
-                            <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
-                                ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> <span>${m}</span></label>`).join('')}
-                            </div>
-                        </div>
-                        <div class="md:col-span-4 flex flex-col gap-2 justify-end">
-                            <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Filters</button>
-                            <button class="btn-outline text-xs w-full py-2.5 bg-white font-bold" onclick="resetFilters()"><i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i>Refresh Ecosystem</button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
-            initPortalVisuals(type, {...d, ...res.charts});
-            lucide.createIcons();
-
-        } catch(e) { 
-            console.error("Portal Engine Error:", e);
-            container.innerHTML = `<p class="text-red-500 text-center py-20 font-bold">Sync Error: ${e.message}</p>`;
-        }
-    }
-
-    function renderPortalGrid(type, d, country) {
-        if (type === 'Trader') {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
-                    <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val || 0).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
-                    <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
-                </div>
-            `;
-        }
-        if (type.includes('NGO') || type.includes('Development Partner')) {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map</p>
-                        <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
-                            ${(d.volatility || []).slice(0,3).map(v => `<div class="flex flex-col items-center"><div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div><p class="text-[10px] mt-3 font-extrabold uppercase text-white text-center max-w-[120px]">${v.loc}</p></div>`).join('')}
-                        </div>
-                        <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
-                    </div>
-                    <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${(d.volatility || []).map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
-                </div>
-                <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket)</p><canvas id="resilienceLine"></canvas></div>
-            `;
-        }
-        if (type === 'FMCG') {
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
-                    <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden"><p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400 text-[10px]">Last-Mile Demand Heatmap</p>
-                        <div class="flex items-center justify-around h-full pt-10">
-                             ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 45 + h.value/25)}px; height: ${Math.min(100, 45 + h.value/25)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500 text-center max-w-[80px]">${h.label}</p></div>`).join('')}
-                        </div>
-                    </div>
-                    <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
-                    <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI (Trader Aggregate)</p><canvas id="upliftBar"></canvas></div>
-                </div>
-            `;
-        }
-
-      if (type === 'Fintech' || type === 'Micro-Lender') {
-            const p = d.portfolio || { score: 0, tier: 'Unrated' };
-            return `
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="card p-6 text-center flex flex-col justify-center border-t-4 border-t-blue-500 shadow-sm">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Portfolio Health Score</p>
-                        <h1 class="text-6xl font-black text-gray-900 leading-none">${p.score}</h1>
-                    </div>
-                    <div class="card p-6 text-center flex flex-col justify-center border-t-4 border-t-orange-500 shadow-sm">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregate Credit Tier</p>
-                        <h1 class="text-4xl font-black text-orange-600 uppercase">${p.tier}</h1>
-                    </div>
-                    <div class="card p-4 col-span-2 h-48 bg-white shadow-sm">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregated Trader Revenue (Ecosystem)</p>
-                        <canvas id="finLine"></canvas>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="card p-8 h-96 shadow-md"><p class="kpi-label mb-6 uppercase font-bold text-gray-900">Risk Scatter: Sales Consistency vs Pending Debt</p><canvas id="riskScatter"></canvas></div>
-                    <div class="card p-0 overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Trader Risk Profiles</div>
-                        <table class="w-full text-xs divide-y divide-gray-100">
-                            <thead><tr class="bg-gray-50/50"><th class="px-4 py-3 text-left">BUSINESS</th><th class="px-4 py-3 text-center">CoV INDEX</th><th class="px-4 py-3 text-right">RISK LEVEL</th></tr></thead>
-                            <tbody>${d.risk_profiles.map(m => `<tr><td class="p-4 font-bold text-gray-800">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status.includes('High') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">${m.status}</span></td></tr>`).join('')}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-        return '';
-    }
-
-    function initPortalVisuals(type, data) {
-        const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
-        ids.forEach(id => { const c = Chart.getChart(id); if (c) c.destroy(); });
-
-        if (type === 'Trader') {
-            new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit?.score || 0, Math.max(0, 100 - (data.credit?.score || 0))], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels || [], datasets: [{ data: data.line_values || [], borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-            new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels || [], datasets: [{ data: data.bar_values || [], backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
+    try {
+        // 1. Capture Slicer Inputs
+        const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
+        const selectedTraders = Array.from(document.querySelectorAll('#slicer_biz input:checked')).map(i => i.value);
+        const selectedCountries = Array.from(document.querySelectorAll('#slicer_countries input:checked')).map(i => i.value);
         
-        if (type.includes('NGO') || type.includes('Development Partner')) {
-            const resData = data.resilience || { labels: [], values: [] };
-            new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
+        // 2. Fetch Data
+        const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedTraders.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
+        const res = await call(url);
+        
+        const type = res.type;
+        const d = res.data || {};
+
+        // 3. Update Headers
+        if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
+            
+        if (rangeDisplay && res.available_months && res.available_months.length > 0) {
+            const start = checkedMonths.length > 0 ? checkedMonths[0] : res.available_months[0];
+            const end = checkedMonths.length > 0 ? checkedMonths[checkedMonths.length-1] : res.available_months[res.available_months.length-1];
+            rangeDisplay.innerText = `${start} 2026 — ${end} 2026`;
         }
 
-      if (type === 'Fintech' || type === 'Micro-Lender') {
-            // 1. Aggregated Revenue Line
-            const lineData = data.fin_line || { labels: [], values: [] };
-            new Chart(document.getElementById('finLine'), {
-                type: 'line',
-                data: { labels: lineData.labels, datasets: [{ label: 'Ecosystem Sum', data: lineData.values, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)', fill: true, tension: 0.3 }] },
-                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => '$' + v.toLocaleString() } } } }
-            });
-
-            // 2. Risk Scatter Plot
-            new Chart(document.getElementById('riskScatter'), {
-                type: 'scatter',
-                data: { datasets: [{ label: 'Trader Risk', data: data.risk_profiles.map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed', pointRadius: 7, hoverRadius: 10 }] },
-                options: { scales: { x: { title: { display: true, text: 'Inconsistency (Sales CoV)' } }, y: { title: { display: true, text: 'Pending Payments ($)' }, ticks: { callback: v => '$' + v } } }, plugins: { legend: { display: false } } }
-            });
+        // 4. Render Top Bar (Filters)
+        let topBarHTML = "";
+        if (type === 'Trader') {
+            topBarHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
+                        <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
+                        <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
+                    </div>
+                    <div class="card p-6 bg-white border flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">Viewing Period</p>
+                        <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto custom-scrollbar" id="slicer_dates">
+                            ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] font-bold p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> ${m}</label>`).join('')}
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh Data</button></div>
+                </div>
+            `;
+        } else {
+            // Complex Filter Bar for Org/FMCG/Fintech
+            topBarHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border">
+                    <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Trader Entity</p>
+                        <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_biz">
+                            ${(res.slicers || []).map(b => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${b}" ${selectedTraders.includes(b) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${b}</span></label>`).join('')}
+                        </div>
+                    </div>
+                    <div class="md:col-span-3"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Country</p>
+                        <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white custom-scrollbar" id="slicer_countries">
+                            ${(res.countries || []).map(c => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${c}" ${selectedCountries.includes(c) ? 'checked' : ''} onchange="loadAnalytics()"> <span>${c}</span></label>`).join('')}
+                        </div>
+                    </div>
+                    <div class="md:col-span-2"><p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Filter: Date</p>
+                        <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-white" id="slicer_dates">
+                            ${(res.available_months || []).map(m => `<label class="flex items-center gap-2 text-[10px] py-1 px-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="${m}" ${checkedMonths.includes(m) || checkedMonths.length === 0 ? 'checked' : ''} onchange="loadAnalytics()"> <span>${m}</span></label>`).join('')}
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 flex flex-col gap-2 justify-end">
+                        <button class="btn-primary text-xs w-full py-2.5 shadow-lg" onclick="loadAnalytics()">Apply Filters</button>
+                        <button class="btn-outline text-xs w-full py-2.5 bg-white font-bold" onclick="resetFilters()"><i data-lucide="refresh-cw" class="w-3 h-3 mr-2 inline"></i>Reset Filters</button>
+                    </div>
+                </div>
+            `;
         }
 
-        if (type === 'FMCG') {
-            const colors = ['#ea580c', '#3b82f6', '#16a34a'];
-            // Multi-SKU Line Chart
-            if (data.forecast) {
-                new Chart(document.getElementById('skuChart'), { 
-                    type: 'line', 
-                    data: { labels: data.forecast.labels || [], datasets: (data.forecast.datasets || []).map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5, borderWidth: 3 })) },
-                    options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10, weight: 'bold' } } } }, maintainAspectRatio: false }
-                });
-            }
+        // 5. Inject HTML & Init Charts
+        container.innerHTML = topBarHTML + renderPortalGrid(type, d, res.country);
+        initPortalVisuals(type, {...d, ...res.charts});
+        
+        if(window.lucide) lucide.createIcons();
 
-            // Grouped ROI Bar Chart
-            if (data.uplift) {
-                new Chart(document.getElementById('upliftBar'), { 
-                    type: 'bar', 
-                    data: { 
-                        labels: data.uplift.labels || [], 
-                        datasets: [
-                            { label: 'Pre-Promo', data: data.uplift.pre || [], backgroundColor: '#e2e8f0', borderRadius: 4 },
-                            { label: 'Promo Vol', data: data.uplift.promo || [], backgroundColor: '#16a34a', borderRadius: 4 }
-                        ] 
-                    }, 
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
-                });
-            }
-        }
+    } catch(e) { 
+        console.error("Portal Engine Error:", e);
+        container.innerHTML = `<p class="text-red-500 text-center py-20 font-bold">Sync Error: ${e.message}</p>`;
+    }
+}
+
+// ---- GRID RENDERER ----
+function renderPortalGrid(type, d, country) {
+    if (type === 'Trader') {
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
+                <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">$${Math.round(p.val || 0).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
+                <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Quantity Sold by category</p><canvas id="retailBar"></canvas></div>
+            </div>
+        `;
+    }
+    if (type.includes('NGO') || type.includes('Development Partner')) {
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card p-4 col-span-2 h-96 relative bg-gray-900 text-white overflow-hidden shadow-2xl">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-4 relative z-10">Regional Price Volatility Map</p>
+                    <div class="relative flex items-center justify-center h-[300px] gap-12 z-10">
+                        ${(d.volatility || []).slice(0,3).map(v => `<div class="flex flex-col items-center"><div class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 animate-pulse flex items-center justify-center font-black text-2xl text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]">${v.index}</div><p class="text-[10px] mt-3 font-extrabold uppercase text-white text-center max-w-[120px]">${v.loc}</p></div>`).join('')}
+                    </div>
+                    <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i data-lucide="map" class="w-full h-full p-20"></i></div>
+                </div>
+                <div class="card p-0 overflow-hidden shadow-sm"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Volatility Matrix</div><table class="w-full text-xs divide-y divide-gray-100"><tbody>${(d.volatility || []).map(v => `<tr class="hover:bg-gray-50"><td class="p-4"><p class="font-bold text-gray-800">${v.loc}</p><p class="text-[9px] uppercase text-gray-400 font-medium">${v.item}</p></td><td class="p-4 text-right font-black text-red-600 text-lg">${v.index}</td></tr>`).join('')}</tbody></table></div>
+            </div>
+            <div class="card p-8 h-80 mt-6 shadow-sm border-t-4 border-t-red-500"><p class="kpi-label mb-6 font-black uppercase text-gray-900 tracking-tighter text-sm">Market Resilience: Regional Price Shocks (Basket)</p><canvas id="resilienceLine"></canvas></div>
+        `;
+    }
+    if (type === 'FMCG') {
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="card p-0 overflow-hidden border-t-4 border-t-red-500 shadow-sm"><div class="bg-red-50 p-4 border-b border-red-100 font-black text-[10px] text-red-600 uppercase tracking-widest">Stock Out Flags</div><table class="w-full text-xs divide-y divide-red-50">${(d.stockouts || []).map(s => `<tr><td class="p-4 font-bold text-gray-700">${s.loc}</td><td class="p-4 text-right text-red-600 font-black text-base">${s.flags}</td></tr>`).join('')}</table></div>
+                <div class="card p-4 col-span-2 h-80 bg-white shadow-inner relative overflow-hidden"><p class="kpi-label text-center mb-2 font-bold uppercase text-gray-400 text-[10px]">Last-Mile Demand Heatmap</p>
+                    <div class="flex items-center justify-around h-full pt-10">
+                            ${(d.map_hotspots || []).map(h => `<div class="flex flex-col items-center group transition-transform hover:scale-110"><div class="rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center font-black text-blue-700 shadow-lg" style="width: ${Math.min(100, 45 + h.value/25)}px; height: ${Math.min(100, 45 + h.value/25)}px">$${Math.round(h.value)}</div><p class="text-[9px] mt-2 uppercase font-black text-gray-500 text-center max-w-[80px]">${h.label}</p></div>`).join('')}
+                    </div>
+                </div>
+                <div class="card p-0 overflow-hidden border-t-4 border-t-orange-500 shadow-sm"><div class="bg-orange-50 p-4 border-b border-orange-100 font-black text-[10px] text-orange-600 uppercase tracking-widest">Low Stock Alerts</div><table class="w-full text-xs divide-y divide-orange-50"><tbody>${(d.low_stock || []).map(l => `<tr><td class="p-4 font-bold text-gray-800">${l.item}</td><td class="p-4 text-right font-black text-orange-600 text-base">${l.qty}</td></tr>`).join('')}</tbody></table></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Multi-SKU Demand Forecast (Brand Performance)</p><canvas id="skuChart"></canvas></div>
+                <div class="card p-8 h-80 shadow-md"><p class="kpi-label mb-6 font-bold uppercase text-gray-900 tracking-tighter">Uplift in Sales: Promotion ROI (Trader Aggregate)</p><canvas id="upliftBar"></canvas></div>
+            </div>
+        `;
     }
 
+    if (type === 'Fintech' || type === 'Micro-Lender') {
+        const p = d.portfolio || { score: 0, tier: 'Unrated' };
+        // Added safety check: (d.risk_profiles || [])
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="card p-6 text-center flex flex-col justify-center border-t-4 border-t-blue-500 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Portfolio Health Score</p>
+                    <h1 class="text-6xl font-black text-gray-900 leading-none">${p.score}</h1>
+                </div>
+                <div class="card p-6 text-center flex flex-col justify-center border-t-4 border-t-orange-500 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregate Credit Tier</p>
+                    <h1 class="text-4xl font-black text-orange-600 uppercase">${p.tier}</h1>
+                </div>
+                <div class="card p-4 col-span-2 h-48 bg-white shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Aggregated Trader Revenue (Ecosystem)</p>
+                    <canvas id="finLine"></canvas>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card p-8 h-96 shadow-md"><p class="kpi-label mb-6 uppercase font-bold text-gray-900">Risk Scatter: Sales Consistency vs Pending Debt</p><canvas id="riskScatter"></canvas></div>
+                <div class="card p-0 overflow-hidden shadow-sm">
+                    <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Trader Risk Profiles</div>
+                    <table class="w-full text-xs divide-y divide-gray-100">
+                        <thead><tr class="bg-gray-50/50"><th class="px-4 py-3 text-left">BUSINESS</th><th class="px-4 py-3 text-center">CoV INDEX</th><th class="px-4 py-3 text-right">RISK LEVEL</th></tr></thead>
+                        <tbody>${(d.risk_profiles || []).map(m => `<tr><td class="p-4 font-bold text-gray-800">${m.name}</td><td class="p-4 text-center font-mono">${m.cov}</td><td class="p-4 text-right"><span class="pill ${m.status.includes('High') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">${m.status}</span></td></tr>`).join('')}</tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+    return '';
+}
+
+// ---- CHART INITIALIZER ----
+function initPortalVisuals(type, data) {
+    const ids = ["retailLine", "retailBar", "resilienceLine", "skuChart", "upliftBar", "gaugeChart", "riskScatter", "finLine"];
+    ids.forEach(id => { const c = Chart.getChart(id); if (c) c.destroy(); });
+
+    if (type === 'Trader') {
+        new Chart(document.getElementById('gaugeChart'), { type: 'doughnut', data: { datasets: [{ data: [data.credit?.score || 0, Math.max(0, 100 - (data.credit?.score || 0))], backgroundColor: ['#3b82f6', '#f1f5f9'], circumference: 180, rotation: 270, cutout: '85%' }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+        new Chart(document.getElementById('retailLine'), { type: 'line', data: { labels: data.line_labels || [], datasets: [{ data: data.line_values || [], borderColor: '#ea580c', fill: true, backgroundColor: 'rgba(234,88,12,0.05)', tension: 0.4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+        new Chart(document.getElementById('retailBar'), { type: 'bar', data: { labels: data.bar_labels || [], datasets: [{ data: data.bar_values || [], backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false } });
+    }
+    
+    if (type.includes('NGO') || type.includes('Development Partner')) {
+        const resData = data.resilience || { labels: [], values: [] };
+        new Chart(document.getElementById('resilienceLine'), { type: 'line', data: { labels: resData.labels, datasets: [{ label: 'Market Index', data: resData.values, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 4 }] }, options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(2) } } } } });
+    }
+
+    if (type === 'Fintech' || type === 'Micro-Lender') {
+        // 1. Aggregated Revenue Line
+        const lineData = data.fin_line || { labels: [], values: [] };
+        new Chart(document.getElementById('finLine'), {
+            type: 'line',
+            data: { labels: lineData.labels, datasets: [{ label: 'Ecosystem Sum', data: lineData.values, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)', fill: true, tension: 0.3 }] },
+            options: { plugins: { legend: { display: false } }, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => '$' + v.toLocaleString() } } } }
+        });
+
+        // 2. Risk Scatter Plot (Added safety check)
+        new Chart(document.getElementById('riskScatter'), {
+            type: 'scatter',
+            data: { datasets: [{ label: 'Trader Risk', data: (data.risk_profiles || []).map(m => ({ x: m.cov, y: m.pending })), backgroundColor: '#7c3aed', pointRadius: 7, hoverRadius: 10 }] },
+            options: { scales: { x: { title: { display: true, text: 'Inconsistency (Sales CoV)' } }, y: { title: { display: true, text: 'Pending Payments ($)' }, ticks: { callback: v => '$' + v } } }, plugins: { legend: { display: false } } }
+        });
+    }
+
+    if (type === 'FMCG') {
+        const colors = ['#ea580c', '#3b82f6', '#16a34a'];
+        if (data.forecast) {
+            new Chart(document.getElementById('skuChart'), { 
+                type: 'line', 
+                data: { labels: data.forecast.labels || [], datasets: (data.forecast.datasets || []).map((s, i) => ({ label: s.label, data: s.values, borderColor: colors[i % 3], tension: 0.4, pointRadius: 5, borderWidth: 3 })) },
+                options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10, weight: 'bold' } } } }, maintainAspectRatio: false }
+            });
+        }
+
+        if (data.uplift) {
+            new Chart(document.getElementById('upliftBar'), { 
+                type: 'bar', 
+                data: { 
+                    labels: data.uplift.labels || [], 
+                    datasets: [
+                        { label: 'Pre-Promo', data: data.uplift.pre || [], backgroundColor: '#e2e8f0', borderRadius: 4 },
+                        { label: 'Promo Vol', data: data.uplift.promo || [], backgroundColor: '#16a34a', borderRadius: 4 }
+                    ] 
+                }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
+            });
+        }
+    }
+}
     
     // ---- INSIGHTS & ADVISORY ENGINE ----
 async function loadInsights() {
@@ -1780,13 +1797,7 @@ async function submitReport() {
         }
     };
 
-    function resetFilters() {
-        document.querySelectorAll('#slicer_dates input, #slicer_biz input, #slicer_countries input').forEach(el => el.checked = false);
-        const searchInput = document.getElementById('filter_search');
-        if (searchInput) searchInput.value = '';
-        loadAnalytics();
-    }
-
+  
     async function loadTracking() {
     try {
         const data = await call('/api/v1/verification');
