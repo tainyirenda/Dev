@@ -464,6 +464,43 @@
 
   <!-- Add padding to account for fixed navbar -->
   <div class="pt-20">
+
+    <!-- NEW: MVP LIVE ANNOUNCEMENT SECTION -->
+        <div class="mt-20 transform hover:-translate-y-1 transition-transform duration-300">
+          <div class="relative bg-gray-900 rounded-2xl p-8 sm:p-10 shadow-2xl border border-gray-800 overflow-hidden">
+            <!-- Decorative Glow -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-600/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-green-600/20 rounded-full blur-3xl -ml-16 -mb-16"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start space-x-2 mb-2">
+                  <!-- Pulsing Dot Animation -->
+                  <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                  <span class="text-red-400 font-bold tracking-widest text-xs uppercase">System Status: Live</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-white italic">MVP LIVE NOW!</h2>
+                <p class="text-gray-400 mt-2 text-lg max-w-xl">
+                  The Afro Ubuntu TradeNet Pilot is active. Experience real-time AI inventory analysis, dynamic credit scoring, and trade intelligence today.
+                </p>
+              </div>
+              
+              <a href="portal.html" class="group relative inline-flex items-center gap-3 bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                <span>Launch Portal</span>
+                <i data-lucide="external-link" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- END NEW SECTION -->
+
+      </div>
+    </section>
+  </div>
+  
     <!-- Hero Section -->
     <section id="home" class="relative bg-gradient-orange-green-light py-20">
       <!-- Google Translate -->
@@ -1036,6 +1073,7 @@ function closeMobileMenu() {
 </body>
 
 </html>
+
 
 
 
