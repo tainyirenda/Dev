@@ -994,13 +994,15 @@ async function loadAnalytics() {
         const currencyCode = res.currency || 'USD';
         window.currentDashboardCurrency = currencyCode;
 
+
         const fmtMoney = (val) => {
                 return new Intl.NumberFormat('en-US', { 
                     style: 'currency', 
-                    currency: currency,
+                    currency: currencyCode,
                     maximumFractionDigits: 0 
                 }).format(val);
             };
+
 
         // 3. Update Headers
         if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
