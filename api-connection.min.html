@@ -990,7 +990,8 @@ async function loadAnalytics() {
         
         const type = res.type;
         const d = res.data || {};
-
+      
+        const currencyCode = res.currency || 'USD';
         window.currentDashboardCurrency = res.currency || 'USD';
 
         const fmtMoney = (val) => {
