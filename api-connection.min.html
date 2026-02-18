@@ -987,13 +987,11 @@ async function loadAnalytics() {
         // 2. Fetch Data
         const url = `/api/v1/analytics/dashboard?months=${encodeURIComponent(checkedMonths.join(','))}&biz=${encodeURIComponent(selectedTraders.join(','))}&countries=${encodeURIComponent(selectedCountries.join(','))}`;
         const res = await call(url);
-
-        // STORE CURRENCY GLOBALLY FOR RENDER FUNCTIONS
-        window.currentDashboardCurrency = res.currency || 'USD';
         
         const type = res.type;
         const d = res.data || {};
-        const currency = res.currency || 'USD';
+
+        window.currentDashboardCurrency = res.currency || 'USD';
 
         const fmtMoney = (val) => {
                 return new Intl.NumberFormat('en-US', { 
@@ -1075,12 +1073,14 @@ async function loadAnalytics() {
 // ---- GRID RENDERER ----
 function renderPortalGrid(type, d, country) {
 
+    const currencyCode = window.currentDashboardCurrency || 'USD';
     const fmt = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(v);
+  
     if (type === 'Trader') {
         return `
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
-                <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">${fmt(p.val)}</td></tr>`).join('')}</tbody></table></div></div>
+                <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">${fmt(p.val)}</td></tr>`).join('')}</tbody></table></div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
