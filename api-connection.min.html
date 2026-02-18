@@ -1078,7 +1078,7 @@ async function loadAnalytics() {
 function renderPortalGrid(type, d, country) {
 
     const currencyCode = window.currentDashboardCurrency || 'USD';
-    const fmt = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, , minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+    const fmt = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   
     if (type === 'Trader') {
         return `
