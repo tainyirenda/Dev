@@ -992,7 +992,7 @@ async function loadAnalytics() {
         const d = res.data || {};
       
         const currencyCode = res.currency || 'USD';
-        window.currentDashboardCurrency = res.currency || 'USD';
+        window.currentDashboardCurrency = currencyCode;
 
         const fmtMoney = (val) => {
                 return new Intl.NumberFormat('en-US', { 
