@@ -990,6 +990,15 @@ async function loadAnalytics() {
         
         const type = res.type;
         const d = res.data || {};
+        const currency = res.currency || 'USD';
+
+        const fmtMoney = (val) => {
+                return new Intl.NumberFormat('en-US', { 
+                    style: 'currency', 
+                    currency: currency,
+                    maximumFractionDigits: 0 
+                }).format(val);
+            };
 
         // 3. Update Headers
         if (titleDisplay) titleDisplay.innerText = `${type} Portal`;
@@ -1008,7 +1017,7 @@ async function loadAnalytics() {
                     <div class="card p-6 bg-gray-900 text-white shadow-xl relative overflow-hidden group">
                         <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-24 h-24"></i></div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Revenue</p>
-                        <h2 class="text-4xl font-black mt-2 leading-none">$${(d.revenue || 0).toLocaleString()}</h2>
+                        <h2 class="text-4xl font-black mt-2 leading-none">${fmtMoney(d.revenue || 0)}</h2>
                         <p class="text-[10px] mt-4 text-green-400 font-bold flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>Live Updated</p>
                     </div>
                     <div class="card p-6 bg-white border flex flex-col justify-center">
