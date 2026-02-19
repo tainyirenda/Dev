@@ -822,6 +822,53 @@
     </div>
 </div>
 
+<!-- Full Inventory Modal -->
+    <div id="inventory_modal" class="fixed inset-0 z-[80] hidden bg-black/60 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Full Inventory Report</h3>
+                        <p class="text-xs text-gray-500">Sales breakdown for selected period</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('inventory_modal').classList.add('hidden')" class="p-2 hover:bg-gray-200 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable List -->
+            <div class="p-0 overflow-y-auto custom-scrollbar flex-1">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase bg-gray-50 sticky top-0 z-10 shadow-sm">
+                        <tr>
+                            <th class="px-6 py-3 font-bold">Item Name</th>
+                            <th class="px-6 py-3 font-bold text-center">Qty Sold</th>
+                            <th class="px-6 py-3 font-bold text-right">Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory_table_body" class="divide-y divide-gray-100">
+                        <!-- Data Injected Here -->
+                    </tbody>
+                </table>
+                <!-- Loading State -->
+                <div id="inventory_loading" class="hidden py-12 text-center text-gray-400">
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2"></i>
+                    <p class="text-xs">Loading records...</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t bg-gray-50 text-right shrink-0">
+                <button onclick="document.getElementById('inventory_modal').classList.add('hidden')" class="btn-outline text-xs px-6 py-2">Close</button>
+            </div>
+        </div>
+    </div>
+
   
 
   <script>
@@ -1074,6 +1121,53 @@ async function loadAnalytics() {
     }
 }
 
+// ---- INVENTORY MODAL LOGIC ----
+async function viewFullInventory() {
+    const modal = document.getElementById('inventory_modal');
+    const tbody = document.getElementById('inventory_table_body');
+    const loader = document.getElementById('inventory_loading');
+    
+    // 1. Open Modal & Reset
+    modal.classList.remove('hidden');
+    tbody.innerHTML = '';
+    loader.classList.remove('hidden');
+    
+    // 2. Get Current Filters (Reuse the ones from dashboard)
+    const checkedMonths = Array.from(document.querySelectorAll('#slicer_dates input:checked')).map(i => i.value);
+    
+    try {
+        // 3. Fetch Data
+        const url = `/api/v1/analytics/inventory?months=${encodeURIComponent(checkedMonths.join(','))}`;
+        const res = await call(url);
+        
+        // 4. Formatters
+        const currency = res.currency || 'USD';
+        const fmt = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency, minimumFractionDigits: 2 }).format(v);
+
+        // 5. Render Rows
+        if (res.inventory && res.inventory.length > 0) {
+            res.inventory.forEach(item => {
+                const row = `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-3 font-medium text-gray-900">${item.item}</td>
+                        <td class="px-6 py-3 text-center text-gray-600 bg-gray-50/50 font-mono">${item.qty}</td>
+                        <td class="px-6 py-3 text-right font-bold text-gray-900">${fmt(item.val)}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-gray-400 italic">No sales data found for this period.</td></tr>`;
+        }
+    } catch(e) {
+        console.error(e);
+        tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-red-500">Error loading inventory.</td></tr>`;
+    } finally {
+        loader.classList.add('hidden');
+        lucide.createIcons(); // Refresh icons if any
+    }
+}
+
 // ---- GRID RENDERER ----
 function renderPortalGrid(type, d, country) {
 
@@ -1084,7 +1178,11 @@ function renderPortalGrid(type, d, country) {
         return `
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]"><p class="kpi-label w-full text-[10px] font-bold uppercase text-gray-400">Credit Score (100 Point Scale)</p><div class="relative h-40 w-full flex justify-center items-end"><canvas id="gaugeChart"></canvas><div class="absolute bottom-6 text-6xl font-black text-gray-900">${d.credit?.score || 0}</div></div><span class="pill bg-blue-100 text-blue-700 font-black px-6 py-1.5 rounded-full uppercase text-xs">Tier: ${d.credit?.tier || 'Bronze'}</span></div>
-                <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest">Top Selling Products</div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">${fmt(p.val)}</td></tr>`).join('')}</tbody></table></div>
+                <div class="card p-0 overflow-hidden col-span-2"><div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase tracking-widest"><span>Top Selling Products</span>
+                        <!-- NEW BUTTON HERE -->
+                        <button onclick="viewFullInventory()" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors">
+                            View All <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </button></div><table class="w-full text-sm"><tbody class="divide-y divide-gray-100">${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium text-gray-700">${p.item}</td><td class="px-6 py-4 text-right font-black text-gray-900">${fmt(p.val)}</td></tr>`).join('')}</tbody></table></div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <div class="card p-6 h-80"><p class="kpi-label mb-6 uppercase text-[10px] font-bold text-gray-400">Revenue Per Month</p><canvas id="retailLine"></canvas></div>
