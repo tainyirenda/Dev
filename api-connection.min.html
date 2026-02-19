@@ -2005,15 +2005,28 @@ async function submitReport() {
 
         const displayName = tierName.replace('_', ' ');
         if(!confirm(`Confirm selection of ${displayName} plan?`)) return;
+
+        const btn = document.activeElement;
+        const originalText = btn.innerText;
+        btn.innerText = "Processing..."; btn.disabled = true;
         
         try {
-            const res = await call('/api/v1/payments/activate-test', 'POST', { tier: tierName });
-            alert("Success! Package activated. You now have full access.");
-            window.location.reload(); 
+            // 2. Request Stripe URL from Backend
+            const res = await call('/api/v1/payments/create-checkout', 'POST', { tier: tierName });
+            
+            if (res.url) {
+                // 3. Redirect to Stripe
+                window.location.href = res.url;
+            } else {
+                throw new Error("No payment URL returned.");
+            }
         } catch(e) {
-            alert("Activation failed: " + e.message);
+            alert("Payment Error: " + e.message);
+            btn.innerText = originalText; btn.disabled = false;
         }
     }
+
+  
 
     // CONTACT SALES WITH REDIRECT
     async function contactSales(tierName) {
@@ -2032,6 +2045,34 @@ async function submitReport() {
         }
     }
 
+
+    async function checkPaymentReturn() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (sessionId) {
+            // Clear URL param so it doesn't run again on refresh
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            // Show a temporary loading state
+            const container = document.getElementById('portal_dynamic_container');
+            if(container) container.innerHTML = '<p class="text-center py-20 text-green-600 font-bold animate-pulse">Verifying Payment...</p>';
+
+            try {
+                // Verify with backend
+                await call('/api/v1/payments/verify', 'POST', { session_id: sessionId });
+                alert("Payment Successful! Your portal is now active.");
+                window.location.reload(); // Reload to refresh permissions
+            } catch (e) {
+                alert("Payment Verification Failed: " + e.message);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // ... existing init calls ...
+        checkPaymentReturn();
+    });
     
    
     // ---- VERIFICATION ----
