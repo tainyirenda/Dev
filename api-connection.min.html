@@ -2050,22 +2050,16 @@ async function submitReport() {
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
 
-        if (sessionId) {
-            // Clear URL param so it doesn't run again on refresh
-            window.history.replaceState({}, document.title, window.location.pathname);
+        if (!sessionId) return;
 
-            // Show a temporary loading state
-            const container = document.getElementById('portal_dynamic_container');
-            if(container) container.innerHTML = '<p class="text-center py-20 text-green-600 font-bold animate-pulse">Verifying Payment...</p>';
-
-            try {
-                // Verify with backend
-                await call('/api/v1/payments/verify', 'POST', { session_id: sessionId });
-                alert("Payment Successful! Your portal is now active.");
-                window.location.reload(); // Reload to refresh permissions
-            } catch (e) {
-                alert("Payment Verification Failed: " + e.message);
-            }
+        try {
+            // Verify with backend
+            await call('/api/v1/payments/verify', 'POST', { session_id: sessionId });
+            alert("Payment Successful! Your portal is now active.");
+            // Note: We do NOT reload here anymore, because init() handles the flow
+        } catch (e) {
+            alert("Payment Verification Failed: " + e.message);
+            // If failed, we just let the init() continue, which will likely show the "Billing" view again
         }
     }
 
@@ -2159,7 +2153,33 @@ async function submitReport() {
     
     // ---- INIT ----
     async function init() {
+
         lucide.createIcons();
+        
+        // 1. CHECK FOR PAYMENT RETURN FIRST
+        // the DB is updated to 'ACTIVE' before the UI checks permissions.
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('session_id')) {
+            console.log("Payment return detected. Verifying...");
+            
+            // Show a loading overlay so the user knows something is happening
+            document.body.innerHTML += `
+                <div id="payment_loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+                    <i data-lucide="loader-2" class="w-12 h-12 text-green-600 animate-spin mb-4"></i>
+                    <h2 class="text-xl font-bold text-gray-900">Finalising Activation...</h2>
+                    <p class="text-gray-500">Please wait while we confirm your payment.</p>
+                </div>
+            `;
+            lucide.createIcons();
+
+            // Run verification logic
+            await checkPaymentReturn(); 
+            
+            // Remove loader
+            const loader = document.getElementById('payment_loader');
+            if(loader) loader.remove();
+        }
+
         try {
             const me = await call('/api/v1/me');
             const name = me?.user?.name || '';
@@ -2173,10 +2193,21 @@ async function submitReport() {
             document.getElementById('welcomeName').innerText = display;
             document.getElementById('email').innerText = email;
             document.getElementById('status').innerText = 'Signed in';
+
+            if (urlParams.has('session_id')) {
+                // Clean the URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                switchView('dashboard');
+            }
         } catch(e) {
-            window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+            console.error("Init failed:", e);
+            // Only redirect to login if it's a true auth error, not a logic error
+            if(e.message.includes("401") || e.message.includes("No token")) {
+                window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+            }
         }
     }
+    
 
     window.addEventListener('load', googleTranslateElementInit);
 
