@@ -2011,6 +2011,7 @@ async function submitReport() {
         btn.innerText = "Processing..."; btn.disabled = true;
         
         try {
+            const currentUrl = window.location.href.split('?')[0];
             // 2. Request Stripe URL from Backend
             const res = await call('/api/v1/payments/create-checkout', 'POST', { tier: tierName });
             
