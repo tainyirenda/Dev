@@ -2011,9 +2011,13 @@ async function submitReport() {
         btn.innerText = "Processing..."; btn.disabled = true;
         
         try {
-            const currentUrl = window.location.href.split('?')[0];
+            const currentUrl = window.location.origin + window.location.pathname;
+          
             // 2. Request Stripe URL from Backend
-            const res = await call('/api/v1/payments/create-checkout', 'POST', { tier: tierName });
+            const res = await call('/api/v1/payments/create-checkout', 'POST', { 
+                tier: tierName,
+                return_url: currentUrl // Send explicit full URL
+            });
             
             if (res.url) {
                 // 3. Redirect to Stripe
@@ -2051,9 +2055,9 @@ async function submitReport() {
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
 
-        if (!sessionId) return false; // Return false if no payment to process
+        if (!sessionId) return false;
 
-        // Show visual feedback immediately
+        // 1. Show Full Screen Loader immediately
         document.body.innerHTML += `
             <div id="payment_loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
                 <i data-lucide="loader-2" class="w-12 h-12 text-green-600 animate-spin mb-4"></i>
@@ -2064,19 +2068,29 @@ async function submitReport() {
         lucide.createIcons();
 
         try {
-            // Verify with backend
+            // 2. Attempt Verification
             await call('/api/v1/payments/verify', 'POST', { session_id: sessionId });
+            
+            // 3. Success! Clean URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+            
             alert("Payment Successful! Your portal is now active.");
-            
-            // Clean URL so a refresh doesn't re-trigger this
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Remove loader
             document.getElementById('payment_loader')?.remove();
-            return true; // Return true = payment processed
+            return true; // Return success
+
         } catch (e) {
-            alert("Payment Verification Failed: " + e.message);
             document.getElementById('payment_loader')?.remove();
+            
+            // 4. Handle "Token Lost" specifically
+            if (e.message.includes("VERIFICATION_REQUIRED") || e.message.includes("401") || e.message.includes("No token")) {
+                alert("Session expired during payment. Please log in again to complete activation.");
+                // We keep the session_id in the URL so init() might try again after login? 
+                // Or just let them log in and see the active status if the backend worked.
+                window.location.href = SIGNIN_PAGE; 
+            } else {
+                alert("Payment Verification Failed: " + e.message);
+            }
             return false;
         }
     }
@@ -2169,7 +2183,7 @@ async function submitReport() {
 
         lucide.createIcons();
         
-        const paymentProcessed = await checkPaymentReturn();
+        const paymentJustFinished = await checkPaymentReturn();
 
         try {
             const me = await call('/api/v1/me');
@@ -2185,26 +2199,29 @@ async function submitReport() {
             document.getElementById('email').innerText = email;
             document.getElementById('status').innerText = 'Signed in';
 
-            if (paymentProcessed) {
-                // If we just verified payment, force them to Dashboard
+            if (paymentJustFinished) {
+                // Force Dashboard if they just paid
                 switchView('dashboard');
             } else {
-                // Otherwise, stay on Hub (or wherever you default to)
-                // If you want to load a specific view based on URL hash, handle that here
+                // Default routing
                 switchView('hub'); 
             }
 
         } catch(e) {
-            // Handle Login Redirects
+            // Handle Auth Failures
             if(e.message.includes("401") || e.message.includes("No token")) {
-                window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+                // If we have a session_id but no token, we need to preserve the session_id for after login
+                if (window.location.search.includes('session_id')) {
+                     window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+                } else {
+                     window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+                }
             } else {
                 console.error("Init Error:", e);
             }
         }
     }
 
-    // ---- 3. SINGLE EVENT LISTENER ----
     document.addEventListener('DOMContentLoaded', init);
 
     
