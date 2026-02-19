@@ -2050,24 +2050,36 @@ async function submitReport() {
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
 
-        if (!sessionId) return;
+        if (!sessionId) return false; // Return false if no payment to process
+
+        // Show visual feedback immediately
+        document.body.innerHTML += `
+            <div id="payment_loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+                <i data-lucide="loader-2" class="w-12 h-12 text-green-600 animate-spin mb-4"></i>
+                <h2 class="text-xl font-bold text-gray-900">Finalising Activation...</h2>
+                <p class="text-gray-500">Please wait while we confirm your payment.</p>
+            </div>
+        `;
+        lucide.createIcons();
 
         try {
             // Verify with backend
             await call('/api/v1/payments/verify', 'POST', { session_id: sessionId });
             alert("Payment Successful! Your portal is now active.");
-            // Note: We do NOT reload here anymore, because init() handles the flow
+            
+            // Clean URL so a refresh doesn't re-trigger this
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Remove loader
+            document.getElementById('payment_loader')?.remove();
+            return true; // Return true = payment processed
         } catch (e) {
             alert("Payment Verification Failed: " + e.message);
-            // If failed, we just let the init() continue, which will likely show the "Billing" view again
+            document.getElementById('payment_loader')?.remove();
+            return false;
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // ... existing init calls ...
-        checkPaymentReturn();
-    });
-    
    
     // ---- VERIFICATION ----
     async function loadVerification() {
@@ -2156,29 +2168,7 @@ async function submitReport() {
 
         lucide.createIcons();
         
-        // 1. CHECK FOR PAYMENT RETURN FIRST
-        // the DB is updated to 'ACTIVE' before the UI checks permissions.
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('session_id')) {
-            console.log("Payment return detected. Verifying...");
-            
-            // Show a loading overlay so the user knows something is happening
-            document.body.innerHTML += `
-                <div id="payment_loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
-                    <i data-lucide="loader-2" class="w-12 h-12 text-green-600 animate-spin mb-4"></i>
-                    <h2 class="text-xl font-bold text-gray-900">Finalising Activation...</h2>
-                    <p class="text-gray-500">Please wait while we confirm your payment.</p>
-                </div>
-            `;
-            lucide.createIcons();
-
-            // Run verification logic
-            await checkPaymentReturn(); 
-            
-            // Remove loader
-            const loader = document.getElementById('payment_loader');
-            if(loader) loader.remove();
-        }
+        const paymentProcessed = await checkPaymentReturn();
 
         try {
             const me = await call('/api/v1/me');
@@ -2194,19 +2184,28 @@ async function submitReport() {
             document.getElementById('email').innerText = email;
             document.getElementById('status').innerText = 'Signed in';
 
-            if (urlParams.has('session_id')) {
-                // Clean the URL
-                window.history.replaceState({}, document.title, window.location.pathname);
+            if (paymentProcessed) {
+                // If we just verified payment, force them to Dashboard
                 switchView('dashboard');
+            } else {
+                // Otherwise, stay on Hub (or wherever you default to)
+                // If you want to load a specific view based on URL hash, handle that here
+                switchView('hub'); 
             }
+
         } catch(e) {
-            console.error("Init failed:", e);
-            // Only redirect to login if it's a true auth error, not a logic error
+            // Handle Login Redirects
             if(e.message.includes("401") || e.message.includes("No token")) {
                 window.location.href = `${SIGNIN_PAGE}?continue=${encodeURIComponent(location.href)}`;
+            } else {
+                console.error("Init Error:", e);
             }
         }
     }
+
+    // ---- 3. SINGLE EVENT LISTENER ----
+    document.addEventListener('DOMContentLoaded', init);
+
     
 
     window.addEventListener('load', googleTranslateElementInit);
