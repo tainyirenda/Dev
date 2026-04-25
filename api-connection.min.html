@@ -64,6 +64,7 @@
   </style>
 </head>
 <body>
+  <div id="google_translate_element" style="display:none;"></div>
 
   <!-- Header -->
   <header class="bg-white border-b border-[color:var(--au-line)] sticky top-0 z-50">
@@ -869,51 +870,69 @@
         </div>
     </div>
 
-  
+  <!-- Google Translate API -->
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
 
-    // ---- 1. GOOGLE TRANSLATE & LANGUAGE LOGIC (CRITICAL) ----
-    function fireGoogleTranslateEvent(el, eventName) { 
-        try { 
-            if (document.createEvent) { 
-                var event = document.createEvent("HTMLEvents"); 
-                event.initEvent(eventName, true, true); 
-                el.dispatchEvent(event); 
-            } else { 
-                el.dispatchEvent(new Event(eventName)); 
-            } 
-        } catch (e) { console.error("Translate Event Error:", e); } 
+    // ---- GOOGLE TRANSLATE & LANGUAGE LOGIC ----
+
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        // Note: Google uses 'ig' for Igbo, 'ha' for Hausa, 'yo' for Yoruba. 
+        // Ensure codes match Google's supported list.
+        includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,nd', 
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
+function fireGoogleTranslateEvent(el, eventName) {
+    if (document.createEvent) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, true, true);
+        el.dispatchEvent(event);
+    } else {
+        el.dispatchEvent(new Event(eventName));
+    }
+}
+
+window.setLanguage = function(lang) {
+    // 1. Set the cookie so it persists after refresh
+    // Google format is /source_lang/target_lang
+    const cookieVal = "/en/" + lang;
+    document.cookie = "googtrans=" + cookieVal + "; path=/; SameSite=Lax";
+    document.cookie = "googtrans=" + cookieVal + "; domain=" + window.location.hostname + "; path=/; SameSite=Lax";
+    
+    // 2. Save to local storage for our own UI logic
+    localStorage.setItem("selectedLang", lang);
+
+    // 3. Try to find the Google dropdown and click it (for instant change)
+    const combo = document.querySelector(".goog-te-combo");
+    if (combo) {
+        combo.value = lang;
+        fireGoogleTranslateEvent(combo, "change");
     }
 
-    function setGoogleTransCookie(lang) { 
-        document.cookie = "googtrans=/en/" + lang + ";path=/;"; 
-        document.cookie = "googtrans=/en/" + lang + ";path=/;domain=" + window.location.hostname + ";"; 
-    }
+    // 4. Force a reload to ensure all dynamic content (charts/modals) 
+    // is re-processed by the translation engine
+    setTimeout(() => {
+        window.location.reload();
+    }, 150);
+};
 
-    window.setLanguage = function(lang) { 
-        function apply() { 
-            const c = document.querySelector(".goog-te-combo"); 
-            if (!c) return false; 
-            c.value = lang; 
-            fireGoogleTranslateEvent(c, "change"); 
-            try { localStorage.setItem("selectedLang", lang); } catch (e) {} 
-            return true; 
-        } 
-        if (apply()) return; 
-        const obs = new MutationObserver(() => { if (apply()) obs.disconnect(); }); 
-        obs.observe(document.body, { childList: true, subtree: true }); 
-        setGoogleTransCookie(lang); 
-        setTimeout(() => window.location.reload(), 300); 
-    };
-
-    function googleTranslateElementInit() { 
-        new google.translate.TranslateElement({ 
-            pageLanguage: 'en', 
-            includedLanguages: 'en,sw,sn,ny,yo,af,xh,zu,fr,ha,pcm,nd', 
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
-        }, 'google_translate_element'); 
+// Check for saved language on page load
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("selectedLang");
+    if (savedLang && savedLang !== 'en') {
+        // Ensure the cookie is still there
+        const cookieVal = "/en/" + savedLang;
+        if (!document.cookie.includes("googtrans")) {
+            document.cookie = "googtrans=" + cookieVal + "; path=/;";
+        }
     }
+});
 
     // ---- CONFIGURATION ----
     const API_BASE = 'https://afroauth-api-g7cqa9cvc4amhqh2.uksouth-01.azurewebsites.net';
