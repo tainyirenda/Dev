@@ -1100,6 +1100,30 @@ async function loadAnalytics() {
                     <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh Data</button></div>
                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]">
+                            <p class="text-[10px] font-bold uppercase text-gray-400">Credit Score</p>
+                            <div class="relative h-40 w-full flex justify-center items-end">
+                                <canvas id="gaugeChart"></canvas>
+                                <div class="absolute bottom-6 text-6xl font-black text-gray-900">${score}</div>
+                            </div>
+                            <span class="pill ${score >= 75 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'} font-black px-6 py-1.5 rounded-full uppercase text-xs">
+                                Tier: ${tier}
+                            </span>
+                        </div>
+                        <div class="card p-0 overflow-hidden col-span-2">
+                            <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase">Top Products</div>
+                            <table class="w-full text-sm">
+                                <tbody class="divide-y divide-gray-100">
+                                    ${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium">${p.item}</td><td class="px-6 py-4 text-right font-black">${fmt(p.val)}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        <div class="card p-6 h-80"><canvas id="retailLine"></canvas></div>
+                        <div class="card p-6 h-80"><canvas id="retailBar"></canvas></div>
+                    </div>
             `;
         } else {
             // Complex Filter Bar for Org/FMCG/Fintech
@@ -1337,100 +1361,49 @@ function initPortalVisuals(type, data) {
 }
     
     // ---- INSIGHTS & ADVISORY ENGINE ----
-async function loadInsights() {
-    const urgentContainer = document.getElementById('list_urgent_alerts');
-    const advisoryContainer = document.getElementById('list_ai_advisory');
-    if (!urgentContainer || !advisoryContainer) return;
+ async function loadInsights() {
+        const urgentContainer = document.getElementById('list_urgent_alerts');
+        const advisoryContainer = document.getElementById('list_ai_advisory');
+        if (!urgentContainer || !advisoryContainer) return;
 
-    // Show loading state
-    urgentContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse">Checking alerts...</p>';
-    advisoryContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse">Syncing AI advisory...</p>';
+        urgentContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse p-6">Checking security alerts...</p>';
+        advisoryContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse p-6">Analyzing trade patterns...</p>';
 
-    try {
-        const res = await call('/api/v1/analytics/insights');
-        const insights = res.insights || [];
+        try {
+            const res = await call('/api/v1/analytics/insights');
+            const insights = res.insights || [];
 
-        console.log("AI Engine Payload:", insights);
+            const urgentData = insights.filter(i => i.sev === 'URGENT' || i.sev === 'WARNING');
+            const advisoryData = insights.filter(i => i.sev === 'INFO' || !i.sev);
 
-        // 1. Clear placeholders
-        urgentContainer.innerHTML = '';
-        advisoryContainer.innerHTML = '';
+            urgentContainer.innerHTML = urgentData.length ? urgentData.map(i => createInsightCard(i, 'red')).join('') 
+                : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg"><p class="text-gray-400 text-sm">No urgent alerts detected.</p></div>`;
 
-        // 2. Filter Data
-        const urgentData = insights.filter(i => i.sev === 'URGENT' || i.sev === 'WARNING');
-        const advisoryData = insights.filter(i => i.sev === 'INFO' || !i.sev);
+            advisoryContainer.innerHTML = advisoryData.length ? advisoryData.map(i => createInsightCard(i, 'blue')).join('') 
+                : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg"><p class="text-gray-400 text-sm">AI is generating your growth advisory...</p></div>`;
 
-        // 3. Card Template with Dismiss Logic
-        const createInsightCard = (ins, color) => {
-            const isUrgent = ins.sev === 'URGENT';
-            const cardColor = isUrgent ? 'red' : 'blue';
-            const icon = isUrgent ? 'alert-triangle' : 'sparkles';
-            
-            // Generate unique ID for the DOM element so we can remove it
-            const domId = `insight-${ins.id}`;
+            lucide.createIcons();
+        } catch(e) { console.error(e); }
+    }
 
-            return `
-            <div id="${domId}" class="card relative p-5 border-l-4 border-${cardColor}-500 bg-${cardColor}-50/30 animate-fadeIn mb-4 shadow-sm group transition-all duration-300">
-                
-                <!-- Dismiss Button (Top Right) -->
-                <button onclick="dismissInsight('${ins.id}', '${domId}')" 
-                        class="absolute top-2 right-2 p-1 text-gray-300 hover:text-gray-500 rounded-full hover:bg-white transition-colors"
-                        title="Dismiss alert">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-
-                <div class="flex items-start justify-between pr-6"> <!-- Added padding-right to avoid overlap with close button -->
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full bg-${cardColor}-100 flex items-center justify-center text-${cardColor}-600 shrink-0">
-                            <i data-lucide="${icon}" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${ins.cat || 'AI System'}</p>
-                            <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
-                        </div>
+    function createInsightCard(ins, color) {
+        const icon = ins.sev === 'URGENT' ? 'alert-triangle' : 'sparkles';
+        return `
+        <div id="insight-${ins.id}" class="card relative p-5 border-l-4 border-${color}-500 bg-white mb-4 shadow-sm group">
+            <button onclick="dismissInsight('${ins.id}', 'insight-${ins.id}')" class="absolute top-2 right-2 p-1 text-gray-300 hover:text-gray-500"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-${color}-50 flex items-center justify-center text-${color}-600 shrink-0"><i data-lucide="${icon}" class="w-5 h-5"></i></div>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${ins.cat || 'AI'}</p>
+                    <p class="text-sm font-bold text-gray-800 leading-tight mt-1">${ins.msg}</p>
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-[9px] font-bold text-gray-400">${ins.date}</span>
+                        ${ins.link ? `<button onclick="handleAction('${ins.link}')" class="bg-${color}-600 text-white text-[10px] px-3 py-1.5 rounded-lg">Action</button>` : ''}
                     </div>
-                </div>
-                
-                <!-- Footer Section -->
-                <div class="flex items-center justify-between mt-4 pt-3 border-t border-${cardColor}-100">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase bg-white/50 px-2 py-1 rounded border">${ins.date}</span>
-                        <button onclick="openReportModal('SYSTEM_AI', 'Insight Error: ${ins.cat} - ID: ${ins.id}')" 
-                                class="text-[10px] text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors ml-2">
-                            <i data-lucide="flag" class="w-3 h-3"></i> Report
-                        </button>
-                    </div>
-
-                    ${ins.link ? `
-                        <button onclick="handleAction('${ins.link}')" 
-                                class="bg-${cardColor}-600 text-white text-[10px] font-bold px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-all">
-                            Take Action
-                        </button>
-                    ` : ''}
                 </div>
             </div>
-            `;
-        };
-
-        // 4. Inject Content
-        urgentContainer.innerHTML = urgentData.length 
-            ? urgentData.map(i => createInsightCard(i, 'red')).join('') 
-            : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg">
-                 <p class="text-gray-400 text-sm">No urgent alerts. Operations are normal.</p>
-               </div>`;
-
-        advisoryContainer.innerHTML = advisoryData.length 
-            ? advisoryData.map(i => createInsightCard(i, 'blue')).join('') 
-            : `<div class="p-6 text-center border-2 border-dashed border-gray-100 rounded-lg">
-                 <p class="text-gray-400 text-sm">Our AI is analyzing trade patterns...</p>
-               </div>`;
-
-        lucide.createIcons();
-
-    } catch(e) { 
-        console.error("Insights Load Error:", e);
+        </div>`;
     }
-}
 
 // ---- NEW HELPER FUNCTIONS ----
 
