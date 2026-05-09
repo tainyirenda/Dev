@@ -1342,6 +1342,10 @@ async function loadInsights() {
     const advisoryContainer = document.getElementById('list_ai_advisory');
     if (!urgentContainer || !advisoryContainer) return;
 
+    // Show loading state
+    urgentContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse">Checking alerts...</p>';
+    advisoryContainer.innerHTML = '<p class="text-xs text-gray-400 animate-pulse">Syncing AI advisory...</p>';
+
     try {
         const res = await call('/api/v1/analytics/insights');
         const insights = res.insights || [];
