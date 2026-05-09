@@ -1100,30 +1100,6 @@ async function loadAnalytics() {
                     <div class="flex items-center justify-end"><button class="btn-outline text-xs px-10 py-3 shadow-sm hover:bg-gray-50" onclick="resetFilters()">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2 inline"></i>Refresh Data</button></div>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card p-6 flex flex-col items-center justify-between min-h-[320px]">
-                            <p class="text-[10px] font-bold uppercase text-gray-400">Credit Score</p>
-                            <div class="relative h-40 w-full flex justify-center items-end">
-                                <canvas id="gaugeChart"></canvas>
-                                <div class="absolute bottom-6 text-6xl font-black text-gray-900">${score}</div>
-                            </div>
-                            <span class="pill ${score >= 75 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'} font-black px-6 py-1.5 rounded-full uppercase text-xs">
-                                Tier: ${tier}
-                            </span>
-                        </div>
-                        <div class="card p-0 overflow-hidden col-span-2">
-                            <div class="bg-gray-50 px-6 py-4 border-b font-bold text-[10px] text-gray-500 uppercase">Top Products</div>
-                            <table class="w-full text-sm">
-                                <tbody class="divide-y divide-gray-100">
-                                    ${(d.top_products || []).map(p => `<tr><td class="px-6 py-4 font-medium">${p.item}</td><td class="px-6 py-4 text-right font-black">${fmt(p.val)}</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="card p-6 h-80"><canvas id="retailLine"></canvas></div>
-                        <div class="card p-6 h-80"><canvas id="retailBar"></canvas></div>
-                    </div>
             `;
         } else {
             // Complex Filter Bar for Org/FMCG/Fintech
