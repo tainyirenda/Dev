@@ -220,6 +220,8 @@
     .feature-card:hover .feature-icon {
       transform: scale(1.1);
     }
+
+    .brand-icon{width:1.25rem;height:1.25rem;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
     
     /* Mobile responsiveness */
     @media (max-width: 640px) {
@@ -252,45 +254,48 @@
     <!-- Navigation -->
   <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-16 gap-4">
         <!-- Logo -->
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
+        <a href="index.html" class="flex items-center space-x-3 min-w-0">
+          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center flex-shrink-0">
             <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
-          <div>
+          <div class="min-w-0">
             <h1 class="text-lg sm:text-xl font-bold leading-tight text-gray-900">
-Afro Ubuntu<br class="block sm:hidden" />
-  TradeNet
-</h1>
-            <p class="text-sm text-gray-900 hidden sm:block">Making the Invisible Visible <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors"><i data-lucide="arrow-left" class="h-5 w-5"></i></a></p>
+              Afro Ubuntu<br class="block sm:hidden" /> TradeNet
+            </h1>
+            <p class="text-sm text-gray-900 hidden sm:block">Making the Invisible Visible</p>
           </div>
-        </div>
+        </a>
 
         <!-- Simple nav links -->
-        <div class="hidden md:flex items-center space-x-6">
+        <div class="hidden lg:flex items-center space-x-6">
           <a href="#features" class="text-gray-700 hover:text-orange-600 transition-colors">Features</a>
           <a href="#pricing" class="text-gray-700 hover:text-orange-600 transition-colors">Pricing</a>
           <a href="#journey" class="text-gray-700 hover:text-orange-600 transition-colors">Journey</a>
         </div>
-        
+
         <div class="flex items-center space-x-3">
-<div id="auth-buttons" class="flex items-center space-x-2">
-<!-- Converted to anchor -->
-<a href="API-connection.html" class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors">
-<i data-lucide="log-in" class="h-4 w-4"></i>
-<span>Sign In</span>
-</a>
-<!-- Converted to anchor -->
-<a href="API-connection.html" class="flex items-center space-x-2 px-6 py-2 btn-gradient text-white rounded-lg shadow-lg">
-<i data-lucide="user-plus" class="h-4 w-4"></i>
-<span>Get Started</span>
-</a>
-</div>
-<button id="dashboard-button" onclick="goToDashboard()" class="hidden flex items-center space-x-2 px-4 py-2 border border-orange-200 hover:bg-orange-50 rounded-lg transition-colors">
-<i data-lucide="bar-chart-3" class="h-4 w-4"></i>
-<span>Dashboard</span>
-</button>
+          <a href="index.html" class="hidden sm:inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
+            <i data-lucide="arrow-left" class="h-5 w-5"></i>
+            <span>Back to Home</span>
+          </a>
+
+          <div id="auth-buttons" class="flex items-center space-x-2">
+            <a href="API-connection.html" class="hidden sm:flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors">
+              <i data-lucide="log-in" class="h-4 w-4"></i>
+              <span>Sign In</span>
+            </a>
+            <a href="API-connection.html" class="flex items-center space-x-2 px-4 sm:px-6 py-2 btn-gradient text-white rounded-lg shadow-lg">
+              <i data-lucide="user-plus" class="h-4 w-4"></i>
+              <span>Get Started</span>
+            </a>
+          </div>
+
+          <button id="dashboard-button" onclick="goToDashboard()" class="hidden flex items-center space-x-2 px-4 py-2 border border-orange-200 hover:bg-orange-50 rounded-lg transition-colors">
+            <i data-lucide="bar-chart-3" class="h-4 w-4"></i>
+            <span>Dashboard</span>
+          </button>
         </div>
       </div>
     </div>
@@ -711,7 +716,7 @@ Afro Ubuntu<br class="block sm:hidden" />
 
       <!-- LEFT COLUMN: Company Info & Contact -->
       <div class="md:col-span-2">
-        
+
         <!-- Branding -->
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
@@ -719,7 +724,7 @@ Afro Ubuntu<br class="block sm:hidden" />
           </div>
           <div>
             <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
-            <p class="text-orange-400">Making the Invisible Visible</p>
+            <p class="text-white">Making the Invisible Visible</p>
           </div>
         </div>
 
@@ -729,8 +734,13 @@ Afro Ubuntu<br class="block sm:hidden" />
 
         <!-- Contact Info -->
         <div class="space-y-3">
-          <div class="flex items-center space-x-3">
-            <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+          <div class="flex items-center space-x-3 text-white">
+            <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.5 9.5v8"></path>
+              <path d="M6.5 6.5h.01"></path>
+              <path d="M10.5 17.5v-8"></path>
+              <path d="M10.5 12.8c0-1.8 1.2-3.3 3.2-3.3s3.3 1.4 3.3 3.8v4.2"></path>
+            </svg>
             <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet"
                class="text-gray-300 hover:text-white transition-colors">
               LinkedIn
@@ -738,15 +748,19 @@ Afro Ubuntu<br class="block sm:hidden" />
           </div>
 
           <div class="flex items-center space-x-3">
-            <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+            <i data-lucide="mail" class="h-5 w-5 text-white"></i>
             <a href="mailto:info@afroubuntutrade.co.uk"
                class="text-gray-300 hover:text-white transition-colors">
               info@afroubuntutrade.co.uk
             </a>
           </div>
 
-          <div class="flex items-center space-x-3">
-            <i data-lucide="twitter" class="h-5 w-5 text-white"></i>
+          <div class="flex items-center space-x-3 text-white">
+            <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4l16 16"></path>
+              <path d="M20 4L4 20"></path>
+              <path d="M7.5 4h3.2L20 16.5V20h-3.2L7.5 7.5V4z"></path>
+            </svg>
             <a href="https://x.com/afroubuntutrade"
                class="text-gray-300 hover:text-white transition-colors">
               Twitter/X
@@ -772,7 +786,7 @@ Afro Ubuntu<br class="block sm:hidden" />
       <!-- RIGHT COLUMN: Legal & Ethics -->
       <div>
 
-        <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+        <h4 class="text-lg font-semibold mb-4 text-white">Legal & Ethics</h4>
         <ul class="space-y-2">
           <li>
             <a href="#" onclick="document.getElementById('privacyModal').style.display='block'"
