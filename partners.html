@@ -255,16 +255,16 @@
 <body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
   <!-- Navigation -->
   <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 gap-3">
-        <!-- Brand -->
+        <!-- Clickable Brand -->
         <a href="index.html" class="flex items-center space-x-3 min-w-0">
           <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center flex-shrink-0">
             <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
           <div class="min-w-0">
-            <h1 class="text-lg sm:text-xl font-bold leading-tight text-gray-900 truncate">Afro Ubuntu TradeNet</h1>
-            <p class="text-sm text-gray-900 hidden sm:block">Making the Invisible Visible</p>
+            <h1 class="text-base sm:text-xl font-bold leading-tight text-gray-900 truncate">Afro Ubuntu TradeNet</h1>
+            <p class="text-xs sm:text-sm text-gray-900 hidden sm:block">Making the Invisible Visible</p>
           </div>
         </a>
 
@@ -275,10 +275,10 @@
           </a>
 
           <div id="nav-menu-wrapper" class="relative inline-block text-left">
-            <button id="nav-btn" class="compact-icon-btn" aria-label="Open navigation" title="Navigation" type="button">
+            <button id="nav-btn" class="compact-icon-btn" aria-label="Open navigation" title="Navigation">
               <i data-lucide="menu" class="h-5 w-5"></i>
             </button>
-            <div id="nav-menu" class="dropdown-panel hidden w-56 p-2">
+            <div id="nav-menu" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-2 z-50">
               <a href="index.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-orange-50 text-gray-700"><i data-lucide="home" class="h-4 w-4 text-orange-600"></i><span>Home</span></a>
               <a href="our-why.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-orange-50 text-gray-700"><i data-lucide="lightbulb" class="h-4 w-4 text-orange-600"></i><span>About</span></a>
               <a href="platform.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-50 text-gray-700"><i data-lucide="cpu" class="h-4 w-4 text-green-600"></i><span>Platform</span></a>
@@ -293,10 +293,10 @@
           </div>
 
           <div id="lang-menu-wrapper" class="relative inline-block text-left">
-            <button id="lang-btn" class="compact-icon-btn" aria-label="Change language" title="Language" type="button">
+            <button id="lang-btn" class="compact-icon-btn" aria-label="Open language menu" title="Language">
               <i data-lucide="globe" class="h-5 w-5"></i>
             </button>
-            <div id="lang-menu" class="dropdown-panel hidden w-40 p-1 max-h-60 overflow-y-auto">
+            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
               <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
               <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
               <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
@@ -318,6 +318,7 @@
     </div>
   </nav>
 
+  
   <!-- Hero Section -->
   <section class="py-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto text-center">
