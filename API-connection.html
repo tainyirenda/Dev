@@ -60,36 +60,31 @@
     #google_translate_element, .goog-te-gadget, .goog-te-gadget > div, .goog-te-combo { display: none !important; }
     #lang-btn.tab-like { padding-inline: 0.75rem; padding-block: 0.4rem; font-size: 0.75rem; }
 
-
     .brand-icon{width:1.25rem;height:1.25rem;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-    .auth-shell{min-height:calc(100vh - 96px);}
-
+    .auth-logo{max-width:min(100%,24rem);}
+    .feature-mini{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);}
     @media (max-width: 640px){
       body{background-attachment:fixed;}
-      .auth-shell{min-height:auto;}
-      .tab{padding:.6rem .5rem;}
-      .modal-panel{width:calc(100vw - 1.5rem);max-height:88vh;overflow-y:auto;}
-      .service-table th,.service-table td{padding:.75rem 1rem;font-size:.8125rem;}
+      .mobile-header-title{font-size:.95rem;}
+      .mobile-hide-text{display:none;}
     }
   </style>
 </head>
 <body class="min-h-full">
   <!-- Top nav -->
   <header class="mx-auto max-w-7xl px-4 sm:px-6 pt-4 sm:pt-6">
-    <nav class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <a href="index.html" class="flex items-center gap-3 min-w-0">
-        <div class="h-10 w-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-[color:var(--orange-600)] to-[color:var(--green-600)] grid place-items-center shadow">
-          <i data-lucide="globe" class="w-5 h-5"></i>
-        </div>
-        <span class="text-base sm:text-lg font-semibold truncate">Afro Ubuntu TradeNet</span>
+    <nav class="flex items-center justify-between gap-4">
+      <a href="https://www.afroubuntutrade.co.uk/index.html" class="flex items-center gap-3 min-w-0">
+        <img src="Logo2.jpg" alt="Afro Ubuntu TradeNet" class="h-10 sm:h-12 w-auto object-contain rounded-md shadow" />
+        <span class="mobile-header-title text-base sm:text-lg font-semibold truncate">Afro Ubuntu TradeNet</span>
       </a>
-      <ul class="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-6 text-xs sm:text-sm text-white/85">
-        <li><a class="hover:text-white" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
-        <li><a class="hover:text-white cursor-pointer" data-modal-target="servicesModal">Services</a></li>
+      <ul class="flex items-center gap-2 sm:gap-5 text-sm text-white/85">
+        <li><a class="hover:text-white px-2 py-2 rounded-lg hover:bg-white/10" href="https://www.afroubuntutrade.co.uk/index.html">Home</a></li>
+        <li><a class="hover:text-white cursor-pointer px-2 py-2 rounded-lg hover:bg-white/10" data-modal-target="servicesModal">Services</a></li>
         <!-- Language menu -->
-          <div id="lang-menu-wrapper" class="relative inline-block text-left">
+          <div id="lang-menu-wrapper" class="relative inline-block text-left sm:ml-2">
            <button id="lang-btn" class="tab tab-active flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs">
-             <i data-lucide="globe" class="h-4 w-4"></i><span>Language</span>
+             <i data-lucide="globe" class="h-4 w-4"></i><span class="mobile-hide-text">Language</span>
            </button>
            <div id="lang-menu" class="absolute right-0 mt-2 w-44 rounded-xl border border-white/15 bg-[#050b09]/95 backdrop-blur-xl shadow-xl hidden z-20 max-h-60 overflow-y-auto">
              <button onclick="window.setLanguage('en')" class="block w-full text-left px-4 py-2.5 text-xs text-white/80 hover:bg-white/10">English</button>
@@ -111,233 +106,198 @@
     </nav>
   </header>
 
-  <!-- Left / Welcome -->
-<div class="relative p-6 sm:p-8 lg:p-14 flex items-center">
+  <!-- Main card -->
+  <main class="auth-shell mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+    <section class="glass rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 shadow-2xl overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2">
 
-    <!-- Background glow -->
-    <div class="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-br from-[color:var(--orange-600)] via-[color:var(--green-600)] to-[color:var(--green-600)]"></div>
+        <!-- Left / Welcome -->
+        <div class="relative p-6 sm:p-8 lg:p-14 flex items-center min-h-[420px] lg:min-h-[680px]">
+          <div class="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-br from-[color:var(--orange-600)] via-[color:var(--green-600)] to-[color:var(--green-600)]"></div>
 
-    <div class="relative w-full">
-
-        <!-- Logo -->
-        <div class="mb-8 flex justify-center lg:justify-start">
-            <img
+          <div class="relative w-full">
+            <div class="mb-8 flex justify-center lg:justify-start">
+              <img
                 src="Logo2.jpg"
                 alt="Afro Ubuntu TradeNet"
-                class="h-32 sm:h-40 lg:h-48 w-auto object-contain drop-shadow-2xl rounded-xl"
-            />
-        </div>
-
-        <!-- Welcome -->
-        <h2 class="text-3xl sm:text-4xl font-bold leading-tight">
-            Welcome!
-        </h2>
-
-        <p class="mt-2 text-orange-300 font-medium">
-            Making the Invisible Visible
-        </p>
-
-        <p class="mt-6 max-w-lg text-white/85 text-[15px] leading-relaxed">
-            Welcome
-            <span id="welcomeName" class="font-semibold">Member</span>.
-            Access analytics, automate business decisions and connect with
-            partners across the Afro Ubuntu TradeNet ecosystem.
-        </p>
-
-        <p class="mt-4 max-w-lg text-white/70 leading-relaxed">
-            Sign in to access your personalised dashboard, AI-powered insights,
-            inventory intelligence, trade analytics and partner services.
-        </p>
-
-        <!-- Feature cards -->
-        <div class="mt-10 space-y-4">
-
-            <div class="flex items-start gap-4 rounded-xl bg-white/5 border border-white/10 p-4">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
-                </div>
-
-                <div>
-                    <h4 class="font-semibold text-white">
-                        Secure & Trusted
-                    </h4>
-                    <p class="text-sm text-white/70">
-                        Enterprise-grade authentication with secure cloud infrastructure.
-                    </p>
-                </div>
+                class="auth-logo h-28 sm:h-36 lg:h-44 w-auto object-contain drop-shadow-2xl rounded-xl"
+              />
             </div>
 
-            <div class="flex items-start gap-4 rounded-xl bg-white/5 border border-white/10 p-4">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="brain-circuit" class="w-5 h-5 text-white"></i>
-                </div>
+            <h2 class="text-3xl sm:text-4xl font-bold leading-tight">
+              Welcome!
+            </h2>
 
-                <div>
-                    <h4 class="font-semibold text-white">
-                        AI-Powered Intelligence
-                    </h4>
-                    <p class="text-sm text-white/70">
-                        Transforming informal trade into actionable business intelligence.
-                    </p>
+            <p class="mt-2 text-orange-300 font-medium">
+              Making the Invisible Visible
+            </p>
+
+            <p class="mt-6 max-w-lg text-white/85 text-[15px] leading-relaxed">
+              Welcome
+              <span id="welcomeName" class="font-semibold">Member</span>.
+              Access analytics, automate business decisions and connect with
+              partners across the Afro Ubuntu TradeNet ecosystem.
+            </p>
+
+            <p class="mt-4 max-w-lg text-white/70 leading-relaxed">
+              Sign in to access your personalised dashboard, AI-powered insights,
+              inventory intelligence, trade analytics and partner services.
+            </p>
+
+            <div class="mt-8 sm:mt-10 space-y-4">
+              <div class="feature-mini flex items-start gap-4 rounded-xl p-4">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
                 </div>
+                <div>
+                  <h4 class="font-semibold text-white">Secure & Trusted</h4>
+                  <p class="text-sm text-white/70">Enterprise-grade authentication with secure cloud infrastructure.</p>
+                </div>
+              </div>
+
+              <div class="feature-mini flex items-start gap-4 rounded-xl p-4">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="brain-circuit" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-white">AI-Powered Intelligence</h4>
+                  <p class="text-sm text-white/70">Transforming informal trade into actionable business intelligence.</p>
+                </div>
+              </div>
+
+              <div class="feature-mini flex items-start gap-4 rounded-xl p-4">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="map-pinned" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-white">Built for Africa</h4>
+                  <p class="text-sm text-white/70">Rooted in Ubuntu philosophy and designed for Africa's informal economy.</p>
+                </div>
+              </div>
             </div>
 
-            <div class="flex items-start gap-4 rounded-xl bg-white/5 border border-white/10 p-4">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="map-pinned" class="w-5 h-5 text-white"></i>
-                </div>
-
-                <div>
-                    <h4 class="font-semibold text-white">
-                        Built for Africa
-                    </h4>
-                    <p class="text-sm text-white/70">
-                        Rooted in Ubuntu philosophy and designed for Africa's informal economy.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Social icons -->
-        <div class="mt-10 flex items-center gap-5">
-
-            <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/80 hover:text-white transition">
-
+            <div class="mt-10 flex items-center gap-5 text-white/80">
+              <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="hover:text-white transition">
                 <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                    <rect x="2" y="9" width="4" height="12"></rect>
-                    <circle cx="4" cy="4" r="2"></circle>
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
                 </svg>
+              </a>
 
-            </a>
-
-            <a href="https://x.com/afroubuntutrade"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/80 hover:text-white transition">
-
+              <a href="https://x.com/afroubuntutrade" target="_blank" rel="noopener noreferrer" aria-label="Twitter/X" class="hover:text-white transition">
                 <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 4l11.5 16h4L8 4H4z"></path>
-                    <path d="M4 20L20 4"></path>
+                  <path d="M4 4l11.5 16h4L8 4H4z"></path>
+                  <path d="M4 20L20 4"></path>
                 </svg>
+              </a>
 
-            </a>
-
-            <a href="mailto:info@afroubuntutrade.co.uk"
-               class="text-white/80 hover:text-white transition">
-
+              <a href="mailto:info@afroubuntutrade.co.uk" aria-label="Email Afro Ubuntu TradeNet" class="hover:text-white transition">
                 <i data-lucide="mail" class="w-5 h-5"></i>
+              </a>
+            </div>
 
-            </a>
-
+            <footer class="mt-10 text-sm text-white/60">
+              © <span id="year"></span> Afro Ubuntu TradeNet
+            </footer>
+          </div>
         </div>
 
-        <footer class="mt-10 text-sm text-white/60">
-            © <span id="year"></span> Afro Ubuntu TradeNet
-        </footer>
-
-    </div>
-
-</div>
-        
         <!-- Right / Sign in -->
         <div class="p-6 sm:p-8 lg:p-14 bg-gradient-to-bl from-white/5 to-white/0">
-          <h3 class="text-2xl font-bold text-center">Sign In</h3>
+          <div class="max-w-md mx-auto lg:max-w-none">
+            <h3 class="text-2xl font-bold text-center">Sign In</h3>
 
-          <!-- Tabs -->
-          <div class="mt-6 grid grid-cols-2 bg-white/10 rounded-xl p-1">
-            <button id="tabEmail" type="button" class="tab tab-active">Email</button>
-            <button id="tabPhone" type="button" class="tab">Phone</button>
+            <!-- Tabs -->
+            <div class="mt-6 grid grid-cols-2 bg-white/10 rounded-xl p-1">
+              <button id="tabEmail" type="button" class="tab tab-active">Email</button>
+              <button id="tabPhone" type="button" class="tab">Phone</button>
+            </div>
+
+            <!-- Alert -->
+            <div id="alertBox" class="hidden mt-6 rounded-xl border border-red-300/40 bg-red-500/10 text-red-200 px-4 py-3 text-sm">
+              <span id="alertText">Error</span>
+            </div>
+
+            <!-- Email/Password form -->
+            <form id="loginForm" class="mt-6 space-y-5" novalidate>
+              <div>
+                <label for="emailInput" class="block text-sm text-white/85 mb-1">Email</label>
+                <div class="relative">
+                  <input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                  <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                </div>
+              </div>
+
+              <div>
+                <label for="passwordInput" class="block text-sm text-white/85 mb-1">Password</label>
+                <div class="relative">
+                  <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="••••••••" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                  <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                  <button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
+                    <span id="pwdIcon"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-white/85">
+                <label class="inline-flex items-center gap-2 select-none">
+                  <input type="checkbox" class="rounded border-white/20 bg-transparent" />
+                  Remember me
+                </label>
+                <a href="forgot-password.html" id="forgotLink" class="hover:underline text-white">Forgot password?</a>
+              </div>
+
+              <button id="loginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring transition-all">
+                Sign In
+              </button>
+            </form>
+
+            <!-- Phone/Code form -->
+            <form id="otpForm" class="mt-6 space-y-5 hidden" novalidate>
+              <div>
+                <label for="phoneInput" class="block text-sm text-white/85 mb-1">Phone number</label>
+                <div class="relative">
+                  <input id="phoneInput" type="tel" autocomplete="tel" placeholder="e.g. +44 7123 456789" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                  <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                </div>
+              </div>
+
+              <div>
+                <label for="codeInput" class="block text-sm text-white/85 mb-1">Verification code</label>
+                <div class="relative">
+                  <input id="codeInput" type="text" inputmode="numeric" pattern="[0-9]{4,8}" placeholder="Enter code" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
+                  <i data-lucide="hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
+                </div>
+                <button id="sendCodeBtn" type="button" class="mt-2 rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 focus-ring transition-all">Send code</button>
+              </div>
+
+              <button id="otpLoginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring transition-all">Sign In</button>
+
+              <a
+                id="whatsappLink"
+                href="https://wa.me/+447888867533?text=Hi, I want to join Afro Ubuntu TradeNet"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-white hover:bg-white/10 focus-ring"
+              >
+                <i data-lucide="smartphone" class="h-5 w-5 shrink-0 align-middle group-hover:scale-110 transition-transform"></i>
+                <span class="leading-none">Continue with WhatsApp</span>
+              </a>
+            </form>
+
+            <p class="mt-4 text-center text-sm text-white/85">Don't have an account?
+              <a href="#" data-modal-target="signUpModal" class="font-semibold text-white hover:underline">Sign up</a>
+            </p>
+
+            <div class="mt-6 text-xs text-white/70 flex flex-wrap items-center gap-3 justify-center">
+              <a href="#" class="hover:underline" data-modal-target="privacyModal">Privacy Policy</a>
+              <span class="opacity-40">•</span>
+              <a href="#" class="hover:underline" data-modal-target="termsModal">Terms of Service</a>
+              <span class="opacity-40">•</span>
+              <a href="#" class="hover:underline" data-modal-target="ethicalModal">Ethical Data &amp; AI Use</a>
+            </div>
           </div>
-
-          <!-- Alert -->
-          <div id="alertBox" class="hidden mt-6 rounded-xl border border-red-300/40 bg-red-500/10 text-red-200 px-4 py-3 text-sm">
-            <span id="alertText">Error</span>
-          </div>
-
-          <!-- Email/Password form -->
-          <form id="loginForm" class="mt-6 space-y-5" novalidate>
-            <div>
-              <label for="emailInput" class="block text-sm text-white/85 mb-1">Email</label>
-              <div class="relative">
-                <input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
-                <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
-              </div>
-            </div>
-
-            <div>
-              <label for="passwordInput" class="block text-sm text-white/85 mb-1">Password</label>
-              <div class="relative">
-                <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="••••••••" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
-                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
-                <button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/10" aria-label="Show password">
-                  <span id="pwdIcon"></span>
-                </button>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between text-sm text-white/85">
-              <label class="inline-flex items-center gap-2 select-none">
-                <input type="checkbox" class="rounded border-white/20 bg-transparent" />
-                Remember me
-              </label>
-              <a href="forgot-password.html" id="forgotLink" class="hover:underline text-white">Forgot password?</a>
-            </div>
-
-            <button id="loginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring transition-all">
-              Sign In
-            </button>
-          </form>
-
-          <!-- Phone/Code form -->
-          <form id="otpForm" class="mt-6 space-y-5 hidden" novalidate>
-            <div>
-              <label for="phoneInput" class="block text-sm text-white/85 mb-1">Phone number</label>
-              <div class="relative">
-                <input id="phoneInput" type="tel" autocomplete="tel" placeholder="e.g. +44 7123 456789" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
-                <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
-              </div>
-            </div>
-
-            <div>
-              <label for="codeInput" class="block text-sm text-white/85 mb-1">Verification code</label>
-              <div class="relative">
-                <input id="codeInput" type="text" inputmode="numeric" pattern="[0-9]{4,8}" placeholder="Enter code" class="focus-ring w-full rounded-xl border border-white/10 bg-white/10 px-10 py-3 text-white placeholder-white/60" />
-                <i data-lucide="hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"></i>
-              </div>
-              <button id="sendCodeBtn" type="button" class="mt-2 rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 focus-ring transition-all">Send code</button>
-            </div>
-
-            <button id="otpLoginBtn" type="submit" class="w-full rounded-xl btn-gradient px-4 py-3 font-medium text-white shadow-lg hover:opacity-95 focus-ring transition-all">Sign In</button>
-
-            <a
-              id="whatsappLink"
-              href="https://wa.me/+447888867533?text=Hi, I want to join Afro Ubuntu TradeNet"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-white hover:bg-white/10 focus-ring"
-            >
-              <i data-lucide="smartphone" class="h-5 w-5 shrink-0 align-middle group-hover:scale-110 transition-transform"></i>
-              <span class="leading-none">Continue with WhatsApp</span>
-            </a>
-          </form>
-
-          <p class="mt-4 text-center text-sm text-white/85">Don't have an account?
-            <a href="#" data-modal-target="signUpModal" class="font-semibold text-white hover:underline">Sign up</a>
-          </p>
-
-          <div class="mt-6 text-xs text-white/70 flex flex-wrap items-center gap-3 justify-center">
-            <a href="#" class="hover:underline" data-modal-target="privacyModal">Privacy Policy</a>
-            <span class="opacity-40">•</span>
-            <a href="#" class="hover:underline" data-modal-target="termsModal">Terms of Service</a>
-            <span class="opacity-40">•</span>
-            <a href="#" class="hover:underline" data-modal-target="ethicalModal">Ethical Data &amp; AI Use</a>
-          </div>
-
         </div>
       </div>
     </section>
@@ -345,13 +305,13 @@
 
   <!-- Sign Up Modal -->
   <div id="signUpModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div role="dialog" aria-modal="true" class="modal-panel glass w-full max-w-lg rounded-2xl border border-white/10 bg-white/10 p-4 sm:p-6 text-white">
+    <div role="dialog" aria-modal="true" class="glass w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-white/10 bg-white/10 p-5 sm:p-6 text-white">
       <div class="flex items-center justify-between">
         <h4 class="text-xl font-semibold">Create your account</h4>
         <button data-modal-close class="p-2 rounded-lg hover:bg-white/10" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div id="su_alert" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
-      <form id="signUpForm" class="mt-4 space-y-4 max-h-[65vh] overflow-y-auto pr-1 sm:pr-2">
+      <form id="signUpForm" class="mt-4 space-y-4 max-h-[60vh] overflow-y-auto pr-2">
         <!-- Personal -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -415,7 +375,7 @@
 
   <!-- Services / Pricing Modal -->
   <div id="servicesModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div role="dialog" aria-modal="true" class="modal-panel glass w-full max-w-5xl rounded-2xl border border-white/10 bg-white p-4 sm:p-6 text-gray-900 overflow-y-auto max-h-[88vh]">
+    <div role="dialog" aria-modal="true" class="glass w-[calc(100%-2rem)] max-w-5xl rounded-2xl border border-white/10 bg-white p-4 sm:p-6 text-gray-900 overflow-y-auto max-h-[85vh]">
       <div class="flex items-center justify-between mb-2">
         <h4 class="text-xl font-semibold">Services & Pricing</h4>
         <button data-modal-close class="p-2 rounded-lg hover:bg-gray-100" aria-label="Close">
@@ -430,10 +390,10 @@
           <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
             <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
           </div>
-          <h3 class="text-xl sm:text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
+          <h3 class="text-2xl font-bold text-green-700">FMCGs (Consumer Goods & Distributors)</h3>
         </div>
         <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
-          <table class="service-table min-w-full divide-y divide-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-green-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
@@ -468,10 +428,10 @@
           <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
             <i data-lucide="users" class="w-5 h-5 text-[color:var(--orange-600)]"></i>
           </div>
-          <h3 class="text-xl sm:text-2xl font-bold text-[color:var(--orange-700)]">NGOs & Development Partners</h3>
+          <h3 class="text-2xl font-bold text-[color:var(--orange-700)]">NGOs & Development Partners</h3>
         </div>
         <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
-          <table class="service-table min-w-full divide-y divide-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-orange-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
@@ -506,10 +466,10 @@
           <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
             <i data-lucide="banknote" class="w-5 h-5 text-blue-600"></i>
           </div>
-          <h3 class="text-xl sm:text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
+          <h3 class="text-2xl font-bold text-blue-700">FinTechs (Banks, Microfinance, Digital Lenders)</h3>
         </div>
         <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
-          <table class="service-table min-w-full divide-y divide-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-blue-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tier</th>
@@ -546,7 +506,7 @@
 
   <!-- Privacy, Terms, Ethical Modals -->
   <div id="privacyModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="modal-panel max-w-2xl w-full bg-white rounded-xl shadow-lg p-4 sm:p-6 relative">
+    <div class="max-w-2xl w-[calc(100%-2rem)] bg-white rounded-xl shadow-lg p-5 sm:p-6 relative">
        <div class="flex items-center justify-between mb-3">
          <div>
            <h2 class="text-lg font-semibold text-gray-900">Privacy Policy</h2>
@@ -562,7 +522,7 @@
   </div>
 
   <div id="termsModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="modal-panel max-w-2xl w-full bg-white rounded-xl shadow-lg p-4 sm:p-6 relative">
+    <div class="max-w-2xl w-[calc(100%-2rem)] bg-white rounded-xl shadow-lg p-5 sm:p-6 relative">
        <div class="flex items-center justify-between mb-3">
          <div>
            <h2 class="text-lg font-semibold text-gray-900">Terms of Service</h2>
@@ -578,7 +538,7 @@
   </div>
 
   <div id="ethicalModal" class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60" data-modal-overlay>
-    <div class="modal-panel max-w-2xl w-full bg-white rounded-xl shadow-lg p-4 sm:p-6 relative">
+    <div class="max-w-2xl w-[calc(100%-2rem)] bg-white rounded-xl shadow-lg p-5 sm:p-6 relative">
        <div class="flex items-center justify-between mb-3">
          <div>
            <h2 class="text-lg font-semibold text-gray-900">Ethical Data & AI</h2>
@@ -661,7 +621,7 @@
     const lBtn = document.getElementById('lang-btn'), lMenu = document.getElementById('lang-menu');
     if(lBtn && lMenu){
         lBtn.addEventListener('click', (e)=>{ e.stopPropagation(); lMenu.classList.toggle('hidden'); });
-        document.addEventListener('click', (e)=>{ if(!document.getElementById('lang-menu-wrapper')?.contains(e.target)) lMenu.classList.add('hidden'); });
+        document.addEventListener('click', (e)=>{ if(!lBtn.contains(e.target)) lMenu.classList.add('hidden'); });
     }
   });
 
