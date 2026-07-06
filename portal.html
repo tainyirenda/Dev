@@ -252,49 +252,76 @@
   </div>
 
     <!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 gap-4">
-        <!-- Logo -->
-        <a href="index.html" class="flex items-center space-x-3 min-w-0">
-          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center flex-shrink-0">
-            <i data-lucide="globe" class="h-6 w-6 text-white"></i>
+  <nav class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-3">
+        <!-- Clickable Logo -->
+        <a href="index.html" class="flex items-center gap-4 min-w-0 flex-1" aria-label="Back to Afro Ubuntu TradeNet homepage">
+          <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-orange-green rounded-full flex items-center justify-center flex-shrink-0">
+            <i data-lucide="network" class="h-7 w-7 sm:h-8 sm:w-8 text-white"></i>
           </div>
-          <div class="min-w-0">
-            <h1 class="text-lg sm:text-xl font-bold leading-tight text-gray-900">
-              Afro Ubuntu<br class="block sm:hidden" /> TradeNet
-            </h1>
-            <p class="text-sm text-gray-900 hidden sm:block">Making the Invisible Visible</p>
-          </div>
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-gray-900 truncate">
+            Afro Ubuntu TradeNet
+          </h1>
         </a>
 
-        <!-- Simple nav links -->
-        <div class="hidden lg:flex items-center space-x-6">
-          <a href="#features" class="text-gray-700 hover:text-orange-600 transition-colors">Features</a>
-          <a href="#pricing" class="text-gray-700 hover:text-orange-600 transition-colors">Pricing</a>
-          <a href="#journey" class="text-gray-700 hover:text-orange-600 transition-colors">Journey</a>
-        </div>
-
-        <div class="flex items-center space-x-3">
-          <a href="index.html" class="hidden sm:inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
-            <i data-lucide="arrow-left" class="h-5 w-5"></i>
-            <span>Back to Home</span>
+        <!-- Compact page controls: same on desktop and mobile -->
+        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <a href="index.html" class="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center rounded-lg hover:bg-gray-100 transition" aria-label="Back to Home">
+            <i data-lucide="arrow-left" class="h-6 w-6 text-gray-900"></i>
           </a>
 
-          <div id="auth-buttons" class="flex items-center space-x-2">
-            <a href="API-connection.html" class="hidden sm:flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors">
-              <i data-lucide="log-in" class="h-4 w-4"></i>
-              <span>Sign In</span>
-            </a>
-            <a href="API-connection.html" class="flex items-center space-x-2 px-4 sm:px-6 py-2 btn-gradient text-white rounded-lg shadow-lg">
-              <i data-lucide="user-plus" class="h-4 w-4"></i>
-              <span>Get Started</span>
+          <!-- Navigation dropdown -->
+          <div id="nav-menu-wrapper" class="relative inline-block text-left">
+            <button id="nav-btn" class="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition" aria-label="Open navigation menu" aria-expanded="false">
+              <i data-lucide="menu" class="h-6 w-6 text-gray-900"></i>
+            </button>
+
+            <div id="nav-menu" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-2 z-50">
+              <a href="index.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Home</a>
+              <a href="our-why.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">About</a>
+              <a href="platform.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Platform</a>
+              <a href="partners.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Partners</a>
+              <a href="values.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Values</a>
+              <a href="team.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Team</a>
+              <a href="where.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Where We Work</a>
+              <a href="impact.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Impact</a>
+              <a href="join.html" class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-700">Join Us</a>
+              <a href="portal.html" class="block px-3 py-2 rounded bg-orange-50 text-orange-700 font-semibold">Portal</a>
+            </div>
+          </div>
+
+          <!-- Language dropdown -->
+          <div id="lang-menu-wrapper" class="relative inline-block text-left">
+            <button id="lang-btn" class="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition" aria-label="Open language menu" aria-expanded="false">
+              <i data-lucide="globe" class="h-6 w-6 text-gray-900"></i>
+            </button>
+
+            <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
+              <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
+              <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
+              <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
+              <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
+              <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
+              <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
+              <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
+              <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
+              <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
+              <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
+              <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
+              <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
+            </div>
+          </div>
+
+          <!-- Get Started -->
+          <div id="auth-buttons" class="flex items-center">
+            <a href="API-connection.html" class="w-10 h-10 sm:w-16 sm:h-12 inline-flex items-center justify-center btn-gradient text-white rounded-lg shadow-lg" aria-label="Get Started">
+              <i data-lucide="user-plus" class="h-5 w-5 sm:h-6 sm:w-6"></i>
             </a>
           </div>
 
-          <button id="dashboard-button" onclick="goToDashboard()" class="hidden flex items-center space-x-2 px-4 py-2 border border-orange-200 hover:bg-orange-50 rounded-lg transition-colors">
-            <i data-lucide="bar-chart-3" class="h-4 w-4"></i>
-            <span>Dashboard</span>
+          <button id="dashboard-button" onclick="goToDashboard()" class="hidden w-10 h-10 sm:w-12 sm:h-12 items-center justify-center border border-orange-200 hover:bg-orange-50 rounded-lg transition-colors" aria-label="Dashboard">
+            <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
           </button>
         </div>
       </div>
@@ -306,32 +333,6 @@
     
     <!-- Hero Section -->
     <div class="pt-16 pb-20 text-center relative">
-       <div id="lang-menu-wrapper"
-     class="absolute right-4 top-4 sm:right-8 sm:top-6 md:top-10 lg:top-12 z-20 inline-block text-left">
-    <button id="lang-btn" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-white shadow border">
-      <i data-lucide="globe" class="h-4 w-4"></i>
-      <span>Language</span>
-    </button>
-
-    <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
-  <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
-  <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
-  <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
-  
-  <!-- Newly Added -->
-  <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
-  <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
-  <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
-  
-  <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
-  <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
-  <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
-  <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
-  <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
-  <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
-</div>
-  </div>
-      
       <div class="mb-8">
         <span class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-green-100 text-blue-900 border border-orange-200 mb-6">
           <i data-lucide="rocket" class="h-3 w-3 mr-1"></i>
@@ -1014,6 +1015,14 @@
     </div>
   </div>
 
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top"
+          class="hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-gradient-orange-green text-white shadow-lg items-center justify-center hover:shadow-xl transition"
+          aria-label="Back to top">
+    <i data-lucide="arrow-up" class="h-6 w-6"></i>
+  </button>
+
 <script>
   // Fire a change event in the older "HTMLEvents" style Google expects
   function fireGoogleTranslateEvent(el, eventName) {
@@ -1242,31 +1251,64 @@
 
     
 
-  document.addEventListener("DOMContentLoaded", function () {
-  const btn = document.getElementById("lang-btn");
-  const menu = document.getElementById("lang-menu");
 
-  // Toggle dropdown
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
+  </script>
 
-  // Clicking outside closes the menu
-  document.addEventListener("click", (e) => {
-    if (!document.getElementById("lang-menu-wrapper").contains(e.target)) {
-      menu.classList.add("hidden");
-    }
-  });
 
-  // Hook language buttons into Google Translate
-  menu.querySelectorAll("button[data-lang]").forEach(item => {
-    item.addEventListener("click", () => {
-      const lang = item.getAttribute("data-lang");
-      window.setLanguage(lang);   // ✅ call the global helper via window
-      menu.classList.add("hidden");
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const navBtn = document.getElementById("nav-btn");
+      const navMenu = document.getElementById("nav-menu");
+      const navWrapper = document.getElementById("nav-menu-wrapper");
+      const langBtn = document.getElementById("lang-btn");
+      const langMenu = document.getElementById("lang-menu");
+      const langWrapper = document.getElementById("lang-menu-wrapper");
+      const backToTop = document.getElementById("back-to-top");
+
+      if (navBtn && navMenu) {
+        navBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          navMenu.classList.toggle("hidden");
+          if (langMenu) langMenu.classList.add("hidden");
+        });
+      }
+
+      if (langBtn && langMenu) {
+        langBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          langMenu.classList.toggle("hidden");
+          if (navMenu) navMenu.classList.add("hidden");
+        });
+      }
+
+      document.addEventListener("click", function (e) {
+        if (navMenu && navWrapper && !navWrapper.contains(e.target)) {
+          navMenu.classList.add("hidden");
+        }
+        if (langMenu && langWrapper && !langWrapper.contains(e.target)) {
+          langMenu.classList.add("hidden");
+        }
+      });
+
+      window.addEventListener("scroll", function () {
+        if (!backToTop) return;
+        if (window.scrollY > 300) {
+          backToTop.classList.remove("hidden");
+          backToTop.classList.add("flex");
+        } else {
+          backToTop.classList.add("hidden");
+          backToTop.classList.remove("flex");
+        }
+      });
+
+      if (backToTop) {
+        backToTop.addEventListener("click", function () {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+
+      if (window.lucide) lucide.createIcons();
     });
-  });
-});
   </script>
 
 </body>
