@@ -209,55 +209,85 @@
       transform: translateY(-5px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
+      .brand-icon{width:1.25rem;height:1.25rem;display:block;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   </style>
 </head>
 
 <body class="font-sans text-gray-900 bg-gradient-orange-green-light min-h-screen">
   <!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-40">
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <!-- Back Button -->
-        <a href="index.html" class="flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors">
-          <i data-lucide="arrow-left" class="h-5 w-5"></i>
-          <span>Back to Home</span>
-        </a>
-        
-        <!-- Page Title -->
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-gradient-orange-green rounded-full flex items-center justify-center">
-            <i data-lucide="lightbulb" class="h-4 w-4 text-white"></i>
+  <nav id="navbar" class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-2">
+        <!-- Brand -->
+        <a href="index.html" class="flex items-center space-x-3 min-w-0">
+          <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center flex-shrink-0">
+            <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
-          <span class="text-xl font-bold text-gray-900">Our Why</span>
+          <div class="min-w-0">
+            <h1 class="text-base sm:text-xl font-bold leading-tight text-gray-900 truncate">
+              Afro Ubuntu<span class="hidden sm:inline"> TradeNet</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-gray-900 hidden sm:block">Making the Invisible Visible</p>
+          </div>
+        </a>
+
+        <!-- Compact Actions -->
+        <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+          <a href="index.html"
+             class="w-10 h-10 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center transition-colors"
+             aria-label="Back to Home">
+            <i data-lucide="arrow-left" class="h-5 w-5 text-gray-800"></i>
+          </a>
+
+          <!-- Navigation menu -->
+          <div id="nav-menu-wrapper" class="relative inline-block text-left">
+            <button id="nav-btn"
+                    class="w-10 h-10 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center transition-colors"
+                    aria-label="Open navigation menu">
+              <i data-lucide="menu" class="h-5 w-5 text-gray-800"></i>
+            </button>
+
+            <div id="nav-menu"
+                 class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-2 z-50">
+              <a href="index.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Home</a>
+              <a href="our-why.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Our Why</a>
+              <a href="platform.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Platform</a>
+              <a href="impact.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Impact</a>
+              <a href="where.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Where We Work</a>
+              <a href="values.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Values</a>
+              <a href="partners.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Partners</a>
+              <a href="team.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Meet the Team</a>
+              <a href="join.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Join Us</a>
+              <a href="portal.html" class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Portal</a>
+            </div>
+          </div>
+
           <!-- Language menu -->
-  <div id="lang-menu-wrapper" class="relative inline-block text-left ml-4">
-    <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded-md bg-white border text-sm shadow-sm">
-      <i data-lucide="globe" class="h-4 w-4"></i>
-      <span>Language</span>
-    </button>
+          <div id="lang-menu-wrapper" class="relative inline-block text-left">
+            <button id="lang-btn"
+                    class="w-10 h-10 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center transition-colors"
+                    aria-label="Open language menu">
+              <i data-lucide="globe" class="h-5 w-5 text-gray-800"></i>
+            </button>
 
-    <div id="lang-menu" class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
-  <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
-  <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
-  <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
-  
-  <!-- Newly Added -->
-  <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
-  <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
-  <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
-  
-  <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
-  <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
-  <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
-  <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
-  <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
-  <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
-</div>
-  </div>
+            <div id="lang-menu"
+                 class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl hidden p-1 z-50 max-h-60 overflow-y-auto">
+              <button onclick="window.setLanguage('en')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">English</button>
+              <button onclick="window.setLanguage('sw')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Swahili</button>
+              <button onclick="window.setLanguage('fr')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">French</button>
+              <button onclick="window.setLanguage('ha')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Hausa</button>
+              <button onclick="window.setLanguage('pcm')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Pidgin</button>
+              <button onclick="window.setLanguage('nd')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Ndebele</button>
+              <button onclick="window.setLanguage('yo')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Yoruba</button>
+              <button onclick="window.setLanguage('zu')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Zulu</button>
+              <button onclick="window.setLanguage('xh')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Xhosa</button>
+              <button onclick="window.setLanguage('sn')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Shona</button>
+              <button onclick="window.setLanguage('ny')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Nyanja</button>
+              <button onclick="window.setLanguage('af')" class="block w-full text-left px-3 py-2 text-xs hover:bg-gray-50 rounded">Afrikaans</button>
+            </div>
+          </div>
 
-  <!-- Hidden actual Google Translate container -->
-  <div id="google_translate_element" class="hidden"></div>
+          <div id="google_translate_element" class="hidden"></div>
         </div>
       </div>
     </div>
@@ -418,26 +448,27 @@
 
       <!-- LEFT COLUMN: Company Info & Contact -->
       <div class="md:col-span-2">
-        
-        <!-- Branding -->
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-10 h-10 bg-gradient-orange-green rounded-full flex items-center justify-center">
             <i data-lucide="globe" class="h-6 w-6 text-white"></i>
           </div>
           <div>
-            <h3 class="text-xl font-bold">Afro Ubuntu TradeNet</h3>
-            <p class="text-orange-400">Making the Invisible Visible</p>
+            <h3 class="text-xl font-bold text-white">Afro Ubuntu TradeNet</h3>
+            <p class="text-white">Making the Invisible Visible</p>
           </div>
         </div>
 
-        <p class="text-gray-300 mb-6 max-w-md">
+        <p class="text-white mb-6 max-w-md">
           Rooted in Africa, Connected to the World.
         </p>
 
-        <!-- Contact Info -->
         <div class="space-y-3">
           <div class="flex items-center space-x-3">
-            <i data-lucide="linkedin" class="h-5 w-5 text-orange-400"></i>
+            <svg class="brand-icon text-white" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
             <a href="https://www.linkedin.com/company/afro-ubuntu-tradenet"
                class="text-gray-300 hover:text-white transition-colors">
               LinkedIn
@@ -445,7 +476,7 @@
           </div>
 
           <div class="flex items-center space-x-3">
-            <i data-lucide="mail" class="h-5 w-5 text-orange-400"></i>
+            <i data-lucide="mail" class="h-5 w-5 text-white"></i>
             <a href="mailto:info@afroubuntutrade.co.uk"
                class="text-gray-300 hover:text-white transition-colors">
               info@afroubuntutrade.co.uk
@@ -453,7 +484,10 @@
           </div>
 
           <div class="flex items-center space-x-3">
-            <i data-lucide="twitter" class="h-5 w-5 text-white"></i>
+            <svg class="brand-icon text-white" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4l11.5 16h4L8 4H4z"></path>
+              <path d="M4 20L20 4"></path>
+            </svg>
             <a href="https://x.com/afroubuntutrade"
                class="text-gray-300 hover:text-white transition-colors">
               Twitter/X
@@ -465,7 +499,6 @@
             <span class="text-gray-300">+44(0)2045725363 / +44(0)7888867533</span>
           </div>
 
-          <!-- Combined Locations -->
           <div class="flex items-start space-x-3">
             <i data-lucide="map-pin" class="h-5 w-5 text-white mt-1"></i>
             <div class="flex flex-col text-gray-300">
@@ -478,8 +511,7 @@
 
       <!-- RIGHT COLUMN: Legal & Ethics -->
       <div>
-
-        <h4 class="text-lg font-semibold mb-4 text-orange-400">Legal & Ethics</h4>
+        <h4 class="text-lg font-semibold mb-4 text-white">Legal & Ethics</h4>
         <ul class="space-y-2">
           <li>
             <a href="#" onclick="document.getElementById('privacyModal').style.display='block'"
@@ -501,9 +533,8 @@
           </li>
         </ul>
 
-        <!-- QR CODE -->
         <div class="mt-6">
-          <h5 class="font-semibold mb-3 text-gray-300">Scan to Connect</h5>
+          <h5 class="font-semibold mb-3 text-white">Scan to Connect</h5>
           <div class="flex items-center gap-4">
             <img src="QR.jpeg" 
                  alt="Afro Ubuntu TradeNet QR Code" 
@@ -515,12 +546,10 @@
             </a>
           </div>
         </div>
-
       </div>
 
     </div>
 
-    <!-- Footer Base -->
     <div class="border-t border-gray-800 mt-8 pt-8 text-center">
       <p class="text-gray-400">
         © 2025 Afro Ubuntu TradeNet Ltd. All rights reserved. Built with Ubuntu philosophy.
@@ -529,6 +558,11 @@
   </div>
 </footer>
 
+<button id="back-to-top"
+        class="hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-gradient-orange-green text-white shadow-lg items-center justify-center hover:shadow-xl transition"
+        aria-label="Back to top">
+  <i data-lucide="arrow-up" class="h-6 w-6"></i>
+</button>
 
   <!-- Privacy Policy Modal -->
   <div id="privacyModal" class="modal">
@@ -562,37 +596,59 @@
     // Initialize Lucide icons
     lucide.createIcons();
 
-    // Language dropdown behaviour
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn = document.getElementById("lang-btn");
-    const menu = document.getElementById("lang-menu");
-    const wrapper = document.getElementById("lang-menu-wrapper");
+    document.addEventListener("DOMContentLoaded", function () {
+      const navBtn = document.getElementById("nav-btn");
+      const navMenu = document.getElementById("nav-menu");
+      const navWrapper = document.getElementById("nav-menu-wrapper");
+      const langBtn = document.getElementById("lang-btn");
+      const langMenu = document.getElementById("lang-menu");
+      const langWrapper = document.getElementById("lang-menu-wrapper");
+      const backToTop = document.getElementById("back-to-top");
 
-    if (!btn || !menu || !wrapper) return;
-
-    // Toggle dropdown
-    btn.addEventListener("click", () => {
-      menu.classList.toggle("hidden");
-    });
-
-    // Clicking outside closes the menu
-    document.addEventListener("click", (e) => {
-      if (!wrapper.contains(e.target)) {
-        menu.classList.add("hidden");
+      if (navBtn && navMenu && navWrapper) {
+        navBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          navMenu.classList.toggle("hidden");
+          if (langMenu) langMenu.classList.add("hidden");
+        });
       }
-    });
 
-    // Hook language buttons into global setLanguage
-    menu.querySelectorAll("button[data-lang]").forEach(item => {
-      item.addEventListener("click", () => {
-        const lang = item.getAttribute("data-lang");
-        if (window.setLanguage) {
-          window.setLanguage(lang);
+      if (langBtn && langMenu && langWrapper) {
+        langBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          langMenu.classList.toggle("hidden");
+          if (navMenu) navMenu.classList.add("hidden");
+        });
+      }
+
+      document.addEventListener("click", function (e) {
+        if (navWrapper && !navWrapper.contains(e.target) && navMenu) {
+          navMenu.classList.add("hidden");
         }
-        menu.classList.add("hidden");
+        if (langWrapper && !langWrapper.contains(e.target) && langMenu) {
+          langMenu.classList.add("hidden");
+        }
       });
+
+      window.addEventListener("scroll", function () {
+        if (!backToTop) return;
+        if (window.scrollY > 300) {
+          backToTop.classList.remove("hidden");
+          backToTop.classList.add("flex");
+        } else {
+          backToTop.classList.add("hidden");
+          backToTop.classList.remove("flex");
+        }
+      });
+
+      if (backToTop) {
+        backToTop.addEventListener("click", function () {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+
+      if (window.lucide) lucide.createIcons();
     });
-  });
   </script>
 </body>
 </html>
