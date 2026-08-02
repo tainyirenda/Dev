@@ -561,17 +561,50 @@
     lucide.createIcons();
   }
 
-  async function api(path, body, method = 'POST') {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: method === 'GET' ? null : JSON.stringify(body || {})
-    });
-    let data = null; try { data = await res.json(); } catch(e) {}
-    if (!res.ok) throw new Error((data && (data.error || data.message)) || `Request failed (${res.status})`);
+  async function api(path, body, method = "POST") {
+    if (!navigator.onLine) {
+        throw new Error(
+            "No internet connection. Please check your network and try again."
+        );
+    }
+
+    let res;
+
+    try {
+        res = await fetch(`${API_BASE}${path}`, {
+            method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: method === "GET"
+                ? null
+                : JSON.stringify(body || {})
+        });
+    } catch (error) {
+        throw new Error(
+            "Unable to connect. Please check your network connection and try again."
+        );
+    }
+
+    let data = null;
+
+    try {
+        data = await res.json();
+    } catch {
+        // Response did not contain JSON.
+    }
+
+    if (!res.ok) {
+        throw new Error(
+            data?.error ||
+            data?.message ||
+            `Request failed (${res.status})`
+        );
+    }
+
     return data;
-  }
+}
   function isPhone(x){ return /^[+0-9()\\-\\s]{7,}$/.test((x||'').trim()); }
 
   // ===== Icons & year =====
