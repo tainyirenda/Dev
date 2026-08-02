@@ -15,6 +15,17 @@
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#111827">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AUTN">
+
+<link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+  
+
   <!-- Google Translate -->
   <script type="text/javascript">
   function fireGoogleTranslateEvent(el, eventName) { try { if (document.createEvent) { var event = document.createEvent("HTMLEvents"); event.initEvent(eventName, true, true); el.dispatchEvent(event); } else { el.dispatchEvent(new Event(eventName)); } } catch (e) {} }
@@ -743,5 +754,20 @@
     };
   })();
   </script>
+  
+  <script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .catch(error => {
+                console.error(
+                    "Service worker registration failed:",
+                    error
+                );
+            });
+    });
+}
+</script>
 </body>
 </html>
