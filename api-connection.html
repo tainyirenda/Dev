@@ -122,6 +122,18 @@
     </nav>
   </header>
 
+  <div
+    id="network_status_banner"
+    class="hidden bg-amber-50 border-b border-amber-200 px-4 py-3 text-center text-sm text-amber-900"
+    role="status"
+    aria-live="polite"
+>
+    <span class="inline-flex items-center gap-2">
+        <i data-lucide="wifi-off" class="w-4 h-4"></i>
+        You are offline. Live data and account actions are temporarily unavailable.
+    </span>
+</div>
+
   <!-- Main card -->
   <main class="auth-shell mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
     <section class="glass rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 shadow-2xl overflow-hidden">
@@ -606,6 +618,45 @@
     return data;
 }
   function isPhone(x){ return /^[+0-9()\\-\\s]{7,}$/.test((x||'').trim()); }
+
+    function updateNetworkStatus() {
+    const banner =
+        document.getElementById("network_status_banner");
+
+    if (!banner) {
+        return;
+    }
+
+    banner.classList.toggle("hidden", navigator.onLine);
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+window.addEventListener("online", () => {
+    updateNetworkStatus();
+
+    // Refresh the currently visible live-data view.
+    if (
+        document
+            .getElementById("view-dashboard")
+            ?.classList.contains("active")
+    ) {
+        loadAnalytics();
+    }
+
+    if (
+        document
+            .getElementById("view-insights")
+            ?.classList.contains("active")
+    ) {
+        loadInsights();
+    }
+});
+
+window.addEventListener("offline", updateNetworkStatus);
+window.addEventListener("DOMContentLoaded", updateNetworkStatus);
 
   // ===== Icons & year =====
   document.addEventListener('DOMContentLoaded', () => {
