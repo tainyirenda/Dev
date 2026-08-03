@@ -118,6 +118,18 @@
     <div class="h-[3px] bg-gradient-to-r from-[color:var(--au-accent)] to-[color:var(--au-ink)]"></div>
   </header>
 
+  <div
+    id="network_status_banner"
+    class="hidden bg-amber-50 border-b border-amber-200 px-4 py-3 text-center text-sm text-amber-900"
+    role="status"
+    aria-live="polite"
+>
+    <span class="inline-flex items-center gap-2">
+        <i data-lucide="wifi-off" class="w-4 h-4"></i>
+        You are offline. Live data and account actions are temporarily unavailable.
+    </span>
+</div>
+
   <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 py-8">
 
@@ -990,26 +1002,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ---- API HELPER ----
-    async function call(path, method='GET', body=null) {
-        const t = localStorage.getItem('token');
-        if(!t) throw new Error("No token");
-        
-        const opts = {
-            method,
-            headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' }
-        };
-        if(body) opts.body = JSON.stringify(body);
+    async function call(path, method = "GET", body = null) {
+    const token = localStorage.getItem("token");
 
-        const res = await fetch(API_BASE + path, opts);
-        const data = await res.json().catch(()=>null);
-        
-        // Return explicit error for access control
-        if (res.status === 403) throw new Error("VERIFICATION_REQUIRED");
-        if (!res.ok) throw new Error((data && (data.error||data.message)) || 'HTTP ' + res.status);
-        
-        return data;
+    if (!token) {
+        throw new Error("Your session has expired. Please sign in again.");
     }
 
+    if (!navigator.onLine) {
+        const offlineError = new Error(
+            "No internet connection. Some information may be unavailable."
+        );
+
+        offlineError.code = "OFFLINE";
+        throw offlineError;
+    }
+
+    const options = {
+        method,
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    };
+
+    if (body !== null) {
+        options.body = JSON.stringify(body);
+    }
+
+    let response;
+
+    try {
+        response = await fetch(API_BASE + path, options);
+    } catch (error) {
+        const networkError = new Error(
+            "Unable to reach the AUTN service. Check your network connection and try again."
+        );
+
+        networkError.code = "NETWORK_ERROR";
+        throw networkError;
+    }
+
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch {
+        // Keep data as null.
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data?.error ||
+            data?.message ||
+            `Request failed (${response.status})`
+        );
+    }
+
+    return data;
+}
     // ---- VIEW ROUTER ----
     // ---- VIEW ROUTER & ACCESS CONTROL ----
     async function switchView(viewName) {
@@ -1087,6 +1138,7 @@ window.resetFilters = function() {
     loadAnalytics();
 }
 
+    
 async function loadAnalytics() {
     const container = document.getElementById('portal_dynamic_container');
     const titleDisplay = document.getElementById('portal_title_display');
@@ -2390,6 +2442,45 @@ async function submitReport() {
             btn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     });
+
+    function updateNetworkStatus() {
+    const banner =
+        document.getElementById("network_status_banner");
+
+    if (!banner) {
+        return;
+    }
+
+    banner.classList.toggle("hidden", navigator.onLine);
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+window.addEventListener("online", () => {
+    updateNetworkStatus();
+
+    // Refresh the currently visible live-data view.
+    if (
+        document
+            .getElementById("view-dashboard")
+            ?.classList.contains("active")
+    ) {
+        loadAnalytics();
+    }
+
+    if (
+        document
+            .getElementById("view-insights")
+            ?.classList.contains("active")
+    ) {
+        loadInsights();
+    }
+});
+
+window.addEventListener("offline", updateNetworkStatus);
+window.addEventListener("DOMContentLoaded", updateNetworkStatus);
 
     
     // ---- INIT ----
