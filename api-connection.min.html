@@ -79,7 +79,7 @@
   <header class="bg-white border-b border-[color:var(--au-line)] sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
       <!-- Clicking Logo returns to Hub -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
+      <div class="flex items-center gap-3 cursor-pointer" a href="index.html">
         <div class="w-9 h-9 rounded-lg bg-[color:var(--au-ink)] grid place-items-center text-white text-[11px] font-bold">AUTN</div>
         <div class="hidden sm:block">
           <p class="text-sm font-semibold text-[color:var(--au-ink)]">Afro Ubuntu TradeNet</p>
@@ -110,7 +110,7 @@
         </div>
         
         <!-- Home Button -->
-        <a href="index.html" class="btn-outline text-xs text-gray-700 hover:text-black">Home</a>
+        <class="btn-outline text-xs text-gray-700 hover:text-black onclick="switchView('hub')">Home</a>
         
         <button id="logoutBtn" class="btn-outline text-xs text-red-600 border-red-100 hover:bg-red-50">Log out</button>
       </nav>
