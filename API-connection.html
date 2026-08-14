@@ -781,7 +781,7 @@ window.addEventListener("DOMContentLoaded", updateNetworkStatus);
     });
   });
 
-  // ===== Sign Up =====
+
   // ===== Sign Up =====
 document.addEventListener('DOMContentLoaded', () => {
     const suForm = document.getElementById('signUpForm');
@@ -849,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 suForm.reset();
 
-                // Close modal after 2.5 seconds
+                // Close modal after 5.5 seconds
                 setTimeout(() => {
                     const signUpModal =
                         document.getElementById('signUpModal');
@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     suAlert.innerHTML = '';
 
-                }, 2500);
+                }, 5500);
 
             } catch (err) {
                 suAlert.classList.remove('hidden');
