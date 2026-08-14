@@ -781,50 +781,110 @@ window.addEventListener("DOMContentLoaded", updateNetworkStatus);
     });
   });
 
+
   // ===== Sign Up =====
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const suForm = document.getElementById('signUpForm');
     const suAlert = document.getElementById('su_alert');
     const suSubmit = document.getElementById('su_submit');
 
     if (suForm) {
-      suForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); 
-        
-        // Gather all fields
-        const payload = {
-            name: document.getElementById('su_name').value,
-            email: document.getElementById('su_email').value,
-            password: document.getElementById('su_password').value,
-            // New Fields
-            phone: document.getElementById('su_phone').value,
-            business_name: document.getElementById('su_biz_name').value,
-            business_location: document.getElementById('su_biz_loc').value,
-            business_type: document.getElementById('su_biz_type').value
-        };
+        suForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const p2 = document.getElementById('su_password2').value;
-        const agree = document.getElementById('su_agree').checked;
+            const payload = {
+                name: document.getElementById('su_name').value,
+                email: document.getElementById('su_email').value,
+                password: document.getElementById('su_password').value,
+                phone: document.getElementById('su_phone').value,
+                business_name: document.getElementById('su_biz_name').value,
+                business_location: document.getElementById('su_biz_loc').value,
+                business_type: document.getElementById('su_biz_type').value
+            };
 
-        if(payload.password !== p2) return alert("Passwords do not match");
-        if(!agree) return alert("Please agree to terms.");
+            const p2 = document.getElementById('su_password2').value;
+            const agree = document.getElementById('su_agree').checked;
 
-        setBusy(suSubmit, 'Creating...'); 
-        try{
-          await api('/api/v1/signup', payload); // Send full payload
-          suAlert.classList.remove('hidden');
-          suAlert.textContent = 'Account created! Check your email to verify.';
-          suAlert.className = "mt-4 p-3 rounded-xl border text-sm bg-green-500/10 border-green-300/40 text-green-200";
-        }catch(err){ 
-            suAlert.classList.remove('hidden');
-            suAlert.textContent = err.message;
-            suAlert.className = "mt-4 p-3 rounded-xl border text-sm bg-red-500/10 border-red-300/40 text-red-200";
-        }
-        finally{ clearBusy(suSubmit); }
-      });
+            if (payload.password !== p2) {
+                return alert("Passwords do not match");
+            }
+
+            if (!agree) {
+                return alert("Please agree to terms.");
+            }
+
+            setBusy(suSubmit, 'Creating...');
+
+            try {
+                await api('/api/v1/signup', payload);
+
+                // Hide form after successful account creation
+                suForm.classList.add('hidden');
+
+                // Success state
+                suAlert.className =
+                    "mt-6 flex flex-col items-center justify-center text-center py-8 px-4";
+
+                suAlert.innerHTML = `
+                    <div class="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mb-4">
+                        <i data-lucide="check" class="w-9 h-9 text-green-300"></i>
+                    </div>
+
+                    <h5 class="text-xl font-semibold text-white">
+                        Account created!
+                    </h5>
+
+                    <p class="mt-2 text-sm text-white/75 max-w-sm">
+                        Check your email to verify your account.
+                    </p>
+
+                    <p class="mt-4 text-xs text-white/50">
+                        Closing automatically...
+                    </p>
+                `;
+
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+
+                suForm.reset();
+
+                // Close modal after 5.5 seconds
+                setTimeout(() => {
+                    const signUpModal =
+                        document.getElementById('signUpModal');
+
+                    if (signUpModal) {
+                        signUpModal.classList.add('hidden');
+                    }
+
+                    // Restore modal for future use
+                    suForm.classList.remove('hidden');
+
+                    suAlert.className =
+                        "hidden mt-4 p-3 rounded-xl border text-sm";
+
+                    suAlert.innerHTML = '';
+
+                }, 5500);
+
+            } catch (err) {
+                suAlert.classList.remove('hidden');
+
+                suAlert.textContent =
+                    err.message || 'Unable to create account.';
+
+                suAlert.className =
+                    "mt-4 p-3 rounded-xl border text-sm bg-red-500/10 border-red-300/40 text-red-200";
+
+            } finally {
+                clearBusy(suSubmit);
+            }
+        });
     }
-  });
+});
 
+    
   // ===== Modal Logic & Token Saver =====
   (function(){
     function openModal(id){ document.getElementById(id)?.classList.remove('hidden'); }
