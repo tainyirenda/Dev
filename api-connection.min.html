@@ -1541,22 +1541,33 @@ function initPortalVisuals(type, data) {
 
 // 1. Handle Navigation for Action Buttons
 function handleAction(link) {
-    if (!link) return;
 
-    // Connect Hub action
-    if (link === '#connect') {
+    console.log("Insight action link:", link);
+
+    // Stock / inventory insight actions should
+    // always take the user to Connect Hub.
+    if (
+        !link ||
+        link === '#inventory' ||
+        link === '#connect' ||
+        link.startsWith('#connect?')
+    ) {
         switchView('connect');
         return;
     }
 
-    // Other internal portal views
+    // Other internal portal links
     if (link.startsWith('#')) {
-        const view = link.substring(1);
+
+        const view = link
+            .substring(1)
+            .split('?')[0];
+
         switchView(view);
         return;
     }
 
-    // External links
+    // External URLs
     window.open(
         link,
         '_blank',
