@@ -1541,16 +1541,27 @@ function initPortalVisuals(type, data) {
 
 // 1. Handle Navigation for Action Buttons
 function handleAction(link) {
-    if(link.startsWith('#')) {
-        // Internal navigation
-        window.location.hash = link;
-        // Parse the part after # (e.g., connect?search=Sugar)
-        const view = link.substring(1).split('?')[0]; 
-        switchView(view);
-    } else {
-        // External link
-        window.open(link, '_blank');
+    if (!link) return;
+
+    // Connect Hub action
+    if (link === '#connect') {
+        switchView('connect');
+        return;
     }
+
+    // Other internal portal views
+    if (link.startsWith('#')) {
+        const view = link.substring(1);
+        switchView(view);
+        return;
+    }
+
+    // External links
+    window.open(
+        link,
+        '_blank',
+        'noopener,noreferrer'
+    );
 }
 
 // 2. Dismiss Logic
