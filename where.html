@@ -252,6 +252,87 @@
       pointer-events: auto;
       transform: translateY(0);
     }
+
+  /* =====================================
+   CLEAN AFRICA MAP
+===================================== */
+
+#africa-svg {
+  display: block;
+}
+
+.africa-country {
+  fill: #f8fafc;
+  stroke: #94a3b8;
+  stroke-width: 0.7;
+  transition:
+    fill 0.2s ease,
+    opacity 0.2s ease,
+    stroke 0.2s ease;
+}
+
+.africa-country:hover {
+  fill: #eef2f7;
+}
+
+/* Phase 1 country highlighting */
+
+.phase-nigeria {
+  fill: rgba(234, 88, 12, 0.16);
+  stroke: #ea580c;
+}
+
+.phase-kenya {
+  fill: rgba(22, 163, 74, 0.16);
+  stroke: #16a34a;
+}
+
+.phase-south-africa {
+  fill: rgba(37, 99, 235, 0.14);
+  stroke: #2563eb;
+}
+
+.phase-zimbabwe {
+  fill: rgba(124, 58, 237, 0.14);
+  stroke: #7c3aed;
+}
+
+.phase-zambia {
+  fill: rgba(245, 158, 11, 0.16);
+  stroke: #f59e0b;
+}
+
+.phase-malawi {
+  fill: rgba(239, 68, 68, 0.14);
+  stroke: #ef4444;
+}
+
+
+/* Pins */
+
+.map-marker {
+  cursor: pointer;
+}
+
+.map-marker circle {
+  stroke: white;
+  stroke-width: 3;
+  transition:
+    r 0.2s ease,
+    filter 0.2s ease;
+}
+
+.map-marker:hover circle {
+  r: 16;
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,.22));
+}
+
+.map-marker text {
+  fill: white;
+  font-size: 9px;
+  font-weight: 700;
+  pointer-events: none;
+}
   </style>
 </head>
 
@@ -492,12 +573,28 @@
     
     <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
       <!-- Map Container -->
-      <div class="relative bg-gradient-to-br from-blue-50 to-green-50 rounded-xl overflow-hidden" style="height: 600px;">
-        <!-- Africa Continent Outline -->
-        <svg viewBox="0 0 800 600" class="w-full h-full">
-          <!-- Africa continent path -->
-          <path d="M400 50 C450 60, 500 80, 520 120 C540 160, 550 200, 560 240 C570 280, 580 320, 570 360 C560 400, 540 440, 520 480 C500 520, 480 540, 450 550 C420 560, 380 565, 340 560 C300 555, 260 545, 230 525 C200 505, 180 475, 170 440 C160 405, 165 370, 175 335 C185 300, 200 265, 220 235 C240 205, 265 180, 295 160 C325 140, 360 125, 400 50 Z" 
-                fill="#f0fdf4" stroke="#16a34a" stroke-width="2" opacity="0.3"/>
+      <!-- Clean Africa Map -->
+<div
+  id="africa-map"
+  class="relative bg-gradient-to-br from-blue-50 to-green-50 rounded-xl overflow-hidden"
+  style="height: 600px;"
+>
+  <svg
+    id="africa-svg"
+    viewBox="0 0 800 600"
+    class="w-full h-full"
+    role="img"
+    aria-label="Map of Africa showing six Phase 1 Afro Ubuntu TradeNet launch markets"
+  ></svg>
+
+  <!-- Country info panel -->
+  <div
+    id="country-info"
+    class="absolute top-4 right-4 w-80 max-w-[calc(100%-2rem)] bg-white rounded-xl shadow-lg border border-gray-200 p-6 opacity-0 pointer-events-none transition-all duration-300 transform translate-x-4"
+  >
+    <div id="country-content"></div>
+  </div>
+</div>
           
           <!-- Country Markers -->
           <!-- Nigeria -->
@@ -564,7 +661,7 @@
         </div>
         <div class="flex items-center space-x-2">
           <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
-          <span class="text-sm text-gray-600">Phase 1 Priority</span>
+          <span class="text-sm text-gray-600">South-East Africa</span>
         </div>
       </div>
     </div>
@@ -967,153 +1064,529 @@
     });
   });
 
-  // ========= Interactive Map Functionality =========
-  const countryData = {
-    nigeria: {
-      name: "Nigeria",
-      flag: "🇳🇬",
-      cities: "Lagos, Kano, Abuja",
-      population: "220M+",
-      economy: "Largest African economy",
-      features: ["Tech innovation leader", "Massive informal markets", "High mobile penetration"],
-      color: "orange"
-    },
-    kenya: {
-      name: "Kenya",
-      flag: "🇰🇪", 
-      cities: "Nairobi, Mombasa",
-      population: "54M+",
-      economy: "M-Pesa pioneer",
-      features: ["Duka shop ecosystem", "Mobile money leader", "Agricultural trade hub"],
-      color: "green"
-    },
-    "south-africa": {
-      name: "South Africa",
-      flag: "🇿🇦",
-      cities: "Johannesburg, Cape Town",
-      population: "60M+",
-      economy: "Advanced infrastructure",
-      features: ["Spaza shop networks", "Financial services hub", "Diverse economy"],
-      color: "blue"
-    },
-    zimbabwe: {
-      name: "Zimbabwe",
-      flag: "🇿🇼",
-      cities: "Harare, Bulawayo", 
-      population: "15M+",
-      economy: "Strong informal sector",
-      features: ["Resilient traders", "Cross-border commerce", "Mobile adoption"],
-      color: "purple"
-    },
-    zambia: {
-      name: "Zambia",
-      flag: "🇿🇲",
-      cities: "Lusaka, Kitwe",
-      population: "19M+", 
-      economy: "Cross-border trade hub",
-      features: ["Mining economy", "Regional connector", "Growing digital adoption"],
-      color: "yellow"
-    },
-    malawi: {
-      name: "Malawi",
-      flag: "🇲🇼",
-      cities: "Lilongwe, Blantyre",
-      population: "20M+",
-      economy: "Agricultural focus", 
-      features: ["Smallholder farmers", "Market towns", "Community-based trade"],
-      color: "red"
-    }
-  };
-
-  const colorClasses = {
-    orange: "border-orange-500 bg-orange-50",
-    green: "border-green-500 bg-green-50", 
-    blue: "border-blue-500 bg-blue-50",
-    purple: "border-purple-500 bg-purple-50",
-    yellow: "border-yellow-500 bg-yellow-50",
-    red: "border-red-500 bg-red-50"
-  };
-
-  // Add click handlers to country markers
-  document.querySelectorAll('.country-marker').forEach(marker => {
-    marker.addEventListener('click', function() {
-      const countryKey = this.dataset.country;
-      const country = countryData[countryKey];
-      const infoCard = document.getElementById('country-info');
-      const content = document.getElementById('country-content');
-      
-      if (country) {
-        content.innerHTML = `
-          <div class="text-center mb-4">
-            <div class="text-4xl mb-2">${country.flag}</div>
-            <h3 class="text-xl font-bold text-gray-900">${country.name}</h3>
-          </div>
-          
-          <div class="space-y-3">
-            <div class="flex items-center space-x-2">
-              <i data-lucide="map-pin" class="h-4 w-4 text-${country.color}-600"></i>
-              <span class="text-sm"><strong>Cities:</strong> ${country.cities}</span>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-              <i data-lucide="users" class="h-4 w-4 text-${country.color}-600"></i>
-              <span class="text-sm"><strong>Population:</strong> ${country.population}</span>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-              <i data-lucide="trending-up" class="h-4 w-4 text-${country.color}-600"></i>
-              <span class="text-sm"><strong>Economy:</strong> ${country.economy}</span>
-            </div>
-            
-            <div class="mt-4">
-              <h4 class="font-semibold text-gray-900 mb-2">Key Features:</h4>
-              <ul class="space-y-1">
-                ${country.features.map(feature => `
-                  <li class="flex items-center space-x-2">
-                    <i data-lucide="check" class="h-3 w-3 text-${country.color}-600"></i>
-                    <span class="text-xs text-gray-600">${feature}</span>
-                  </li>
-                `).join('')}
-              </ul>
-            </div>
-            
-            <div class="mt-4 pt-4 border-t border-gray-200">
-              <div class="text-center">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colorClasses[country.color]}">
-                  Phase 1 Launch Market
-                </span>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        // Show the info card
-        infoCard.classList.remove('opacity-0', 'translate-x-4');
-        infoCard.classList.add('opacity-100', 'translate-x-0');
-        
-        // Re-initialize Lucide icons for the new content
-        lucide.createIcons();
-      }
-    });
-    
-    // Hover effects
-    marker.addEventListener('mouseenter', function() {
-      this.querySelector('.marker-circle').setAttribute('r', '16');
-    });
-    
-    marker.addEventListener('mouseleave', function() {
-      this.querySelector('.marker-circle').setAttribute('r', '12');
-    });
-  });
-
-  // Close info card when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.country-marker') && !e.target.closest('#country-info')) {
-      const infoCard = document.getElementById('country-info');
-      infoCard.classList.add('opacity-0', 'translate-x-4');
-      infoCard.classList.remove('opacity-100', 'translate-x-0');
-    }
-  });
 </script>
+
+<script type="module">
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm";
+import world from "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json/+esm";
+
+
+/* ======================================
+   COUNTRY INFORMATION
+====================================== */
+
+const countryData = {
+
+  nigeria: {
+    name: "Nigeria",
+    code: "NG",
+    numericId: "566",
+    flag: "🇳🇬",
+    cities: "Lagos, Kano, Abuja",
+    population: "220M+",
+    economy: "Largest African economy",
+    features: [
+      "Tech innovation leader",
+      "Massive informal markets",
+      "High mobile penetration"
+    ],
+    lat: 9.082,
+    lng: 8.6753,
+    color: "#ea580c"
+  },
+
+  kenya: {
+    name: "Kenya",
+    code: "KE",
+    numericId: "404",
+    flag: "🇰🇪",
+    cities: "Nairobi, Mombasa",
+    population: "54M+",
+    economy: "M-Pesa pioneer",
+    features: [
+      "Duka shop ecosystem",
+      "Mobile money leader",
+      "Agricultural trade hub"
+    ],
+    lat: -0.0236,
+    lng: 37.9062,
+    color: "#16a34a"
+  },
+
+  "south-africa": {
+    name: "South Africa",
+    code: "ZA",
+    numericId: "710",
+    flag: "🇿🇦",
+    cities: "Johannesburg, Cape Town",
+    population: "60M+",
+    economy: "Advanced infrastructure",
+    features: [
+      "Spaza shop networks",
+      "Financial services hub",
+      "Diverse economy"
+    ],
+    lat: -30.5595,
+    lng: 22.9375,
+    color: "#2563eb"
+  },
+
+  zimbabwe: {
+    name: "Zimbabwe",
+    code: "ZW",
+    numericId: "716",
+    flag: "🇿🇼",
+    cities: "Harare, Bulawayo",
+    population: "15M+",
+    economy: "Strong informal sector",
+    features: [
+      "Resilient traders",
+      "Cross-border commerce",
+      "Mobile adoption"
+    ],
+    lat: -19.0154,
+    lng: 29.1549,
+    color: "#7c3aed"
+  },
+
+  zambia: {
+    name: "Zambia",
+    code: "ZM",
+    numericId: "894",
+    flag: "🇿🇲",
+    cities: "Lusaka, Kitwe",
+    population: "19M+",
+    economy: "Cross-border trade hub",
+    features: [
+      "Mining economy",
+      "Regional connector",
+      "Growing digital adoption"
+    ],
+    lat: -13.1339,
+    lng: 27.8493,
+    color: "#f59e0b"
+  },
+
+  malawi: {
+    name: "Malawi",
+    code: "MW",
+    numericId: "454",
+    flag: "🇲🇼",
+    cities: "Lilongwe, Blantyre",
+    population: "20M+",
+    economy: "Agricultural focus",
+    features: [
+      "Smallholder farmers",
+      "Market towns",
+      "Community-based trade"
+    ],
+    lat: -13.2543,
+    lng: 34.3015,
+    color: "#ef4444"
+  }
+
+};
+
+
+/* ======================================
+   CONVERT TO GEOJSON
+====================================== */
+
+const countries =
+  feature(world, world.objects.countries);
+
+
+/*
+  Restrict the world dataset to Africa.
+
+  Geographic centre filtering is used here
+  so only African land areas are shown.
+*/
+
+const africanCountries =
+  countries.features.filter(country => {
+
+    const centroid = d3.geoCentroid(country);
+
+    const lng = centroid[0];
+    const lat = centroid[1];
+
+    return (
+      lng >= -20 &&
+      lng <= 55 &&
+      lat >= -36 &&
+      lat <= 38
+    );
+
+  });
+
+
+const africaCollection = {
+  type: "FeatureCollection",
+  features: africanCountries
+};
+
+
+/* ======================================
+   SVG + PROJECTION
+====================================== */
+
+const svg = d3.select("#africa-svg");
+
+const width = 800;
+const height = 600;
+
+
+/*
+  geoMercator gives a familiar geographic
+  shape while fitExtent sizes Africa
+  automatically inside the SVG.
+*/
+
+const projection =
+  d3.geoMercator()
+    .fitExtent(
+      [
+        [80, 30],
+        [720, 570]
+      ],
+      africaCollection
+    );
+
+
+const geoPath =
+  d3.geoPath(projection);
+
+
+/* ======================================
+   MAP BACKGROUND
+====================================== */
+
+svg
+  .append("rect")
+  .attr("width", width)
+  .attr("height", height)
+  .attr("fill", "transparent");
+
+
+/* ======================================
+   DRAW COUNTRIES
+====================================== */
+
+const phaseLookup = {};
+
+Object.entries(countryData).forEach(
+  ([key, country]) => {
+
+    phaseLookup[country.numericId] = key;
+
+  }
+);
+
+
+svg
+  .append("g")
+  .attr("class", "africa-countries")
+  .selectAll("path")
+  .data(africanCountries)
+  .join("path")
+
+  .attr("d", geoPath)
+
+  .attr("class", d => {
+
+    const id =
+      String(d.id).padStart(3, "0");
+
+    const phaseCountry =
+      phaseLookup[id];
+
+    if (phaseCountry) {
+
+      return `
+        africa-country
+        phase-${phaseCountry}
+      `;
+
+    }
+
+    return "africa-country";
+
+  });
+
+
+/* ======================================
+   COUNTRY MARKERS
+====================================== */
+
+const markers =
+  svg
+    .append("g")
+    .attr("class", "country-markers");
+
+
+Object.entries(countryData).forEach(
+  ([key, country]) => {
+
+    const point =
+      projection([
+        country.lng,
+        country.lat
+      ]);
+
+
+    if (!point) return;
+
+
+    const marker =
+      markers
+        .append("g")
+        .attr("class", "map-marker")
+        .attr(
+          "transform",
+          `translate(${point[0]},${point[1]})`
+        )
+        .attr("data-country", key);
+
+
+    marker
+      .append("circle")
+      .attr("r", 12)
+      .attr(
+        "fill",
+        country.color
+      );
+
+
+    marker
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .text(country.code);
+
+
+    marker.on("click", function(event) {
+
+      event.stopPropagation();
+
+      showCountryInfo(
+        key,
+        country
+      );
+
+    });
+
+  }
+);
+
+
+/* ======================================
+   INFO CARD
+====================================== */
+
+function showCountryInfo(
+  key,
+  country
+) {
+
+  const infoCard =
+    document.getElementById(
+      "country-info"
+    );
+
+  const content =
+    document.getElementById(
+      "country-content"
+    );
+
+
+  content.innerHTML = `
+
+    <div class="text-center mb-4">
+
+      <div class="text-4xl mb-2">
+        ${country.flag}
+      </div>
+
+      <h3 class="text-xl font-bold text-gray-900">
+        ${country.name}
+      </h3>
+
+    </div>
+
+
+    <div class="space-y-3">
+
+      <div class="flex items-start gap-2">
+
+        <span style="color:${country.color};">
+          ●
+        </span>
+
+        <span class="text-sm text-gray-700">
+          <strong>Cities:</strong>
+          ${country.cities}
+        </span>
+
+      </div>
+
+
+      <div class="flex items-start gap-2">
+
+        <span style="color:${country.color};">
+          ●
+        </span>
+
+        <span class="text-sm text-gray-700">
+          <strong>Population:</strong>
+          ${country.population}
+        </span>
+
+      </div>
+
+
+      <div class="flex items-start gap-2">
+
+        <span style="color:${country.color};">
+          ●
+        </span>
+
+        <span class="text-sm text-gray-700">
+          <strong>Economy:</strong>
+          ${country.economy}
+        </span>
+
+      </div>
+
+
+      <div class="pt-2">
+
+        <h4 class="font-semibold text-gray-900 mb-2">
+          Key Features:
+        </h4>
+
+        <ul class="space-y-1">
+
+          ${country.features.map(
+            feature => `
+
+              <li class="flex items-start gap-2">
+
+                <span
+                  style="
+                    color:${country.color};
+                    font-weight:700;
+                  "
+                >
+                  ✓
+                </span>
+
+                <span class="text-xs text-gray-600">
+                  ${feature}
+                </span>
+
+              </li>
+
+            `
+          ).join("")}
+
+        </ul>
+
+      </div>
+
+
+      <div
+        class="
+          mt-4
+          pt-4
+          border-t
+          border-gray-200
+          text-center
+        "
+      >
+
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            py-1
+            rounded-full
+            text-xs
+            font-medium
+          "
+          style="
+            color:${country.color};
+            background:${country.color}15;
+            border:1px solid ${country.color}45;
+          "
+        >
+          Phase 1 Launch Market
+        </span>
+
+      </div>
+
+    </div>
+  `;
+
+
+  infoCard.classList.remove(
+    "opacity-0",
+    "translate-x-4",
+    "pointer-events-none"
+  );
+
+
+  infoCard.classList.add(
+    "opacity-100",
+    "translate-x-0"
+  );
+
+}
+
+
+/* ======================================
+   CLOSE INFO PANEL
+====================================== */
+
+document
+  .getElementById("africa-map")
+  .addEventListener(
+    "click",
+    function(event) {
+
+      if (
+        event.target.closest(".map-marker") ||
+        event.target.closest("#country-info")
+      ) {
+        return;
+      }
+
+
+      const infoCard =
+        document.getElementById(
+          "country-info"
+        );
+
+
+      infoCard.classList.add(
+        "opacity-0",
+        "translate-x-4",
+        "pointer-events-none"
+      );
+
+
+      infoCard.classList.remove(
+        "opacity-100",
+        "translate-x-0"
+      );
+
+    }
+  );
+
+</script>
+  
 </body>
 </html>
