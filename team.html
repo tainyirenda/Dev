@@ -969,30 +969,34 @@
       if (window.lucide) lucide.createIcons();
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
   const carousel = document.getElementById("partnersCarousel");
   const prevButton = document.getElementById("partnersPrev");
   const nextButton = document.getElementById("partnersNext");
   const dotsContainer = document.getElementById("partnersDots");
 
-  if (!carousel || !prevButton || !nextButton) return;
+  if (!carousel || !prevButton || !nextButton || !dotsContainer) return;
 
   const cards = Array.from(
     carousel.querySelectorAll(".partner-card")
   );
 
+  if (!cards.length) return;
+
   let currentIndex = 0;
-  let autoSlide;
+  let autoSlide = null;
+  let scrollTimer = null;
+
   const autoSlideDelay = 4500;
 
 
   /*
-   * Scroll to selected logo
+   * Move ONLY the horizontal carousel.
+   * This deliberately avoids scrollIntoView(),
+   * which can move the whole webpage vertically.
    */
   function goToCard(index) {
-
-    if (!cards.length) return;
 
     if (index < 0) {
       index = cards.length - 1;
@@ -1004,10 +1008,16 @@
 
     currentIndex = index;
 
-    cards[currentIndex].scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest"
+    const card = cards[currentIndex];
+
+    const targetLeft =
+      card.offsetLeft -
+      (carousel.clientWidth / 2) +
+      (card.offsetWidth / 2);
+
+    carousel.scrollTo({
+      left: Math.max(0, targetLeft),
+      behavior: "smooth"
     });
 
     updateDots();
@@ -1015,7 +1025,7 @@
 
 
   /*
-   * Create navigation dots
+   * Navigation dots
    */
   cards.forEach((card, index) => {
 
@@ -1029,13 +1039,15 @@
       `Show partner ${index + 1}`
     );
 
-    dot.addEventListener("click", function () {
+    dot.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      stopAutoSlide();
       goToCard(index);
-      restartAutoSlide();
+      startAutoSlide();
     });
 
     dotsContainer.appendChild(dot);
-
   });
 
 
@@ -1045,78 +1057,88 @@
       dotsContainer.querySelectorAll(".partner-dot");
 
     dots.forEach((dot, index) => {
+
       dot.classList.toggle(
         "active",
         index === currentIndex
       );
-    });
 
+    });
   }
 
 
   /*
-   * Previous
+   * Previous partner
    */
-  prevButton.addEventListener("click", function () {
+  prevButton.addEventListener("click", function (event) {
 
+    event.preventDefault();
+
+    stopAutoSlide();
     goToCard(currentIndex - 1);
-    restartAutoSlide();
+    startAutoSlide();
 
   });
 
 
   /*
-   * Next
+   * Next partner
    */
-  nextButton.addEventListener("click", function () {
+  nextButton.addEventListener("click", function (event) {
 
+    event.preventDefault();
+
+    stopAutoSlide();
     goToCard(currentIndex + 1);
-    restartAutoSlide();
+    startAutoSlide();
 
   });
 
 
   /*
-   * Auto sliding
+   * Automatic sliding
    */
   function startAutoSlide() {
 
-    autoSlide = setInterval(function () {
-      goToCard(currentIndex + 1);
-    }, autoSlideDelay);
+    /*
+     * Important:
+     * prevent multiple intervals being created.
+     */
+    stopAutoSlide();
 
+    autoSlide = window.setInterval(function () {
+
+      goToCard(currentIndex + 1);
+
+    }, autoSlideDelay);
   }
 
 
   function stopAutoSlide() {
 
-    if (autoSlide) {
-      clearInterval(autoSlide);
+    if (autoSlide !== null) {
+
+      window.clearInterval(autoSlide);
+      autoSlide = null;
+
     }
-
-  }
-
-
-  function restartAutoSlide() {
-
-    stopAutoSlide();
-    startAutoSlide();
-
   }
 
 
   /*
-   * Pause when user interacts
+   * Pause while the user is interacting
    */
   carousel.addEventListener(
     "mouseenter",
     stopAutoSlide
   );
 
+
   carousel.addEventListener(
     "mouseleave",
     startAutoSlide
   );
+
 
   carousel.addEventListener(
     "touchstart",
@@ -1124,37 +1146,60 @@
     { passive: true }
   );
 
+
   carousel.addEventListener(
     "touchend",
-    restartAutoSlide,
+    startAutoSlide,
     { passive: true }
   );
 
 
   /*
-   * Determine which card is closest
-   * after manual swiping / scrolling
+   * Pause while user manually scrolls
+   * the carousel with mouse / trackpad.
    */
-  let scrollTimer;
+  carousel.addEventListener(
+    "pointerdown",
+    stopAutoSlide
+  );
 
+
+  carousel.addEventListener(
+    "pointerup",
+    startAutoSlide
+  );
+
+
+  /*
+   * Work out which card is currently
+   * closest to the carousel centre.
+   *
+   * This only observes horizontal scrolling.
+   */
   carousel.addEventListener("scroll", function () {
 
     clearTimeout(scrollTimer);
 
     scrollTimer = setTimeout(function () {
 
+      const carouselRect =
+        carousel.getBoundingClientRect();
+
       const carouselCenter =
-        carousel.scrollLeft +
-        carousel.clientWidth / 2;
+        carouselRect.left +
+        carouselRect.width / 2;
 
       let closestIndex = 0;
       let closestDistance = Infinity;
 
       cards.forEach((card, index) => {
 
+        const cardRect =
+          card.getBoundingClientRect();
+
         const cardCenter =
-          card.offsetLeft +
-          card.offsetWidth / 2;
+          cardRect.left +
+          cardRect.width / 2;
 
         const distance =
           Math.abs(
@@ -1162,8 +1207,10 @@
           );
 
         if (distance < closestDistance) {
+
           closestDistance = distance;
           closestIndex = index;
+
         }
 
       });
@@ -1174,6 +1221,24 @@
     }, 100);
 
   });
+
+
+  /*
+   * Stop carousel activity while the
+   * browser tab isn't visible.
+   */
+  document.addEventListener(
+    "visibilitychange",
+    function () {
+
+      if (document.hidden) {
+        stopAutoSlide();
+      } else {
+        startAutoSlide();
+      }
+
+    }
+  );
 
 
   /*
