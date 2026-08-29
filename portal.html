@@ -234,6 +234,72 @@
         font-size: 1.125rem;
       }
     }
+
+      /* Hide horizontal scrollbar while retaining scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Partner dots */
+  .partner-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: #6b7280;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition:
+      width 0.25s ease,
+      background-color 0.25s ease,
+      opacity 0.25s ease;
+    opacity: 0.7;
+  }
+
+  .partner-dot:hover {
+    opacity: 1;
+  }
+
+  .partner-dot.active {
+    width: 20px;
+    background: #0ea5e9;
+    opacity: 1;
+  }
+
+  /* Optional subtle fade on carousel edges */
+  #partnersCarousel {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
+
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
+  }
+
+  @media (max-width: 640px) {
+    #partnersCarousel {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .partner-card {
+      width: 160px;
+    }
+  }
   </style>
 </head>
 
@@ -836,77 +902,225 @@
 
     </div>
 
-    <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-      <!-- Recognition & Compliance -->
+  <!-- Supported by & Partnered With -->
 <div class="border-t border-gray-800 mt-10 pt-8">
+
   <div class="flex flex-col items-center">
-    <h5 class="text-sm uppercase tracking-wider text-gray-400 mb-4">
-      Supported by:
+
+    <h5 class="text-sm uppercase tracking-wider text-gray-400 mb-6 text-center">
+      Supported by and Partnered With:
     </h5>
 
-    <div class="flex flex-wrap justify-center items-center gap-6">
+    <!-- Carousel Wrapper -->
+    <div class="relative w-full max-w-7xl mx-auto px-10">
 
-      <!-- Startup Awards -->
-      <div class="flex flex-col items-center">
-        <a href="https://startupawards.uk/shortlist"
-       target="_blank"
-       rel="noopener noreferrer"
-       title="View the UK StartUp Awards 2026 Shortlist">
+      <!-- Previous Button -->
+      <button
+        type="button"
+        id="partnersPrev"
+        aria-label="Previous partners"
+        class="
+          absolute left-0 top-1/2 -translate-y-1/2 z-10
+          w-9 h-9
+          rounded-full
+          border border-gray-700
+          bg-gray-900/80
+          text-gray-300
+          hover:bg-gray-800
+          hover:text-white
+          transition
+          flex items-center justify-center
+        "
+      >
+        &#10094;
+      </button>
 
-        <img
-            src="assets/StartUpAwardsFinalistLogo.jpg"
-            alt="Wales StartUp Awards 2026 Finalist"
-            class="h-28 w-auto hover:scale-105 transition duration-300"
-        />
+      <!-- Slider -->
+      <div
+        id="partnersCarousel"
+        class="
+          flex
+          items-start
+          gap-8
+          overflow-x-auto
+          scroll-smooth
+          snap-x
+          snap-mandatory
+          scrollbar-hide
+          py-4
+        "
+      >
 
-    </a>
-        <span class="mt-2 text-xs text-gray-300 text-center">
-          Wales StartUp Awards<br>
-          2026 Finalist
-        </span>
-      </div>
+        <!-- South Wales Business Awards -->
+        <div class="partner-card flex-none w-52 snap-center flex flex-col items-center">
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="South Wales Business Awards"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/SWBA.png"
+              alt="South Wales Business Awards 2026 Finalist"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
 
-      <!-- ICO -->
-      <div class="flex flex-col items-center">
-        <a href="https://ico.org.uk/ESDWebPages/Entry/ZB973387"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   title="View our ICO registration">
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            South Wales Business Awards<br>
+            2026 Finalist
+          </span>
+        </div>
 
-                    <img
-                        src="assets/ICO.png"
-                        alt="ICO Registered"
-                        class="h-28 w-auto hover:scale-105 transition duration-300"
-                    />
+        <!-- Wales StartUp Awards -->
+        <div class="partner-card flex-none w-44 snap-center flex flex-col items-center">
+          <a
+            href="https://startupawards.uk/shortlist"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View the UK StartUp Awards 2026 Shortlist"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/StartUpAwardsFinalistLogo.jpg"
+              alt="Wales StartUp Awards 2026 Finalist"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
 
-                </a>
-        <span class="mt-2 text-xs text-gray-300 text-center">
-          ICO Registered<br>
-          UK GDPR Compliant
-        </span>
-      </div>
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            UK StartUp Awards<br>
+            2026 Finalist
+          </span>
+        </div>
+
+
+        <!-- ICO -->
+        <div class="partner-card flex-none w-44 snap-center flex flex-col items-center">
+          <a
+            href="https://ico.org.uk/ESDWebPages/Entry/ZB973387"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View our ICO registration"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/ICO.png"
+              alt="ICO Registered"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
+
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            ICO Registered<br>
+            UK GDPR Compliant
+          </span>
+        </div>
+
 
         <!-- Startup Stiwdio -->
-      <div class="flex flex-col items-center">
-        <a href="https://entrepreneurship.wales/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   title="View Startup Stiwdio">
+        <div class="partner-card flex-none w-52 snap-center flex flex-col items-center">
+          <a
+            href="https://entrepreneurship.wales/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Visit Startup Stiwdio"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/StartupStiwdio.png"
+              alt="Startup Stiwdio"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
 
-                    <img
-                        src="assets/StartupStiwdio.png"
-                        alt="Startup Stiwdio"
-                        class="h-28 w-auto hover:scale-105 transition duration-300"
-                    />
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            Startup Stiwdio<br>
+            Member
+          </span>
+        </div>
 
-                </a>
-        <span class="mt-2 text-xs text-gray-300 text-center">
-          Startup Stiwdio<br>
-          Member
-        </span>
+
+        <!-- Crossborder Traders Association -->
+        <div class="partner-card flex-none w-44 snap-center flex flex-col items-center">
+          <a
+            href="https://www.facebook.com/p/Cross-Border-Traders-Association-of-Malawi-100063841104030/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Crossborder Traders Association"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/CBTA.png"
+              alt="Crossborder Traders Association"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
+
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            Cross Border Traders<br>
+            Association (CBTA)
+          </span>
+        </div>
+
+
+
+        <!-- CREAMS -->
+        <div class="partner-card flex-none w-44 snap-center flex flex-col items-center">
+          <a
+            href="https://creamsmw.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="CREAMS"
+            class="flex items-center justify-center h-28"
+          >
+            <img
+              src="assets/CREAMS.png"
+              alt="CREAMS"
+              class="max-h-28 max-w-full w-auto object-contain hover:scale-105 transition duration-300"
+            />
+          </a>
+
+          <span class="mt-3 text-xs text-gray-300 text-center leading-relaxed">
+            Clinical Research <br>
+            Education And Management<br> 
+            Services (CREAMS)
+          </span>
+        </div>
+
       </div>
 
+      <!-- Next Button -->
+      <button
+        type="button"
+        id="partnersNext"
+        aria-label="Next partners"
+        class="
+          absolute right-0 top-1/2 -translate-y-1/2 z-10
+          w-9 h-9
+          rounded-full
+          border border-gray-700
+          bg-gray-900/80
+          text-gray-300
+          hover:bg-gray-800
+          hover:text-white
+          transition
+          flex items-center justify-center
+        "
+      >
+        &#10095;
+      </button>
+
     </div>
+
+    <!-- Slider Dots -->
+    <div
+      id="partnersDots"
+      class="flex justify-center items-center gap-2 mt-4"
+      aria-label="Partner carousel navigation"
+    ></div>
+
   </div>
 </div>
 
@@ -1393,6 +1607,221 @@
 
       if (window.lucide) lucide.createIcons();
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+  const carousel = document.getElementById("partnersCarousel");
+  const prevButton = document.getElementById("partnersPrev");
+  const nextButton = document.getElementById("partnersNext");
+  const dotsContainer = document.getElementById("partnersDots");
+
+  if (!carousel || !prevButton || !nextButton) return;
+
+  const cards = Array.from(
+    carousel.querySelectorAll(".partner-card")
+  );
+
+  let currentIndex = 0;
+  let autoSlide;
+  const autoSlideDelay = 4500;
+
+
+  /*
+   * Scroll to selected logo
+   */
+  function goToCard(index) {
+
+    if (!cards.length) return;
+
+    if (index < 0) {
+      index = cards.length - 1;
+    }
+
+    if (index >= cards.length) {
+      index = 0;
+    }
+
+    currentIndex = index;
+
+    cards[currentIndex].scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest"
+    });
+
+    updateDots();
+  }
+
+
+  /*
+   * Create navigation dots
+   */
+  cards.forEach((card, index) => {
+
+    const dot = document.createElement("button");
+
+    dot.type = "button";
+    dot.className = "partner-dot";
+
+    dot.setAttribute(
+      "aria-label",
+      `Show partner ${index + 1}`
+    );
+
+    dot.addEventListener("click", function () {
+      goToCard(index);
+      restartAutoSlide();
+    });
+
+    dotsContainer.appendChild(dot);
+
+  });
+
+
+  function updateDots() {
+
+    const dots =
+      dotsContainer.querySelectorAll(".partner-dot");
+
+    dots.forEach((dot, index) => {
+      dot.classList.toggle(
+        "active",
+        index === currentIndex
+      );
+    });
+
+  }
+
+
+  /*
+   * Previous
+   */
+  prevButton.addEventListener("click", function () {
+
+    goToCard(currentIndex - 1);
+    restartAutoSlide();
+
+  });
+
+
+  /*
+   * Next
+   */
+  nextButton.addEventListener("click", function () {
+
+    goToCard(currentIndex + 1);
+    restartAutoSlide();
+
+  });
+
+
+  /*
+   * Auto sliding
+   */
+  function startAutoSlide() {
+
+    autoSlide = setInterval(function () {
+      goToCard(currentIndex + 1);
+    }, autoSlideDelay);
+
+  }
+
+
+  function stopAutoSlide() {
+
+    if (autoSlide) {
+      clearInterval(autoSlide);
+    }
+
+  }
+
+
+  function restartAutoSlide() {
+
+    stopAutoSlide();
+    startAutoSlide();
+
+  }
+
+
+  /*
+   * Pause when user interacts
+   */
+  carousel.addEventListener(
+    "mouseenter",
+    stopAutoSlide
+  );
+
+  carousel.addEventListener(
+    "mouseleave",
+    startAutoSlide
+  );
+
+  carousel.addEventListener(
+    "touchstart",
+    stopAutoSlide,
+    { passive: true }
+  );
+
+  carousel.addEventListener(
+    "touchend",
+    restartAutoSlide,
+    { passive: true }
+  );
+
+
+  /*
+   * Determine which card is closest
+   * after manual swiping / scrolling
+   */
+  let scrollTimer;
+
+  carousel.addEventListener("scroll", function () {
+
+    clearTimeout(scrollTimer);
+
+    scrollTimer = setTimeout(function () {
+
+      const carouselCenter =
+        carousel.scrollLeft +
+        carousel.clientWidth / 2;
+
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      cards.forEach((card, index) => {
+
+        const cardCenter =
+          card.offsetLeft +
+          card.offsetWidth / 2;
+
+        const distance =
+          Math.abs(
+            carouselCenter - cardCenter
+          );
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+
+      });
+
+      currentIndex = closestIndex;
+      updateDots();
+
+    }, 100);
+
+  });
+
+
+  /*
+   * Initial state
+   */
+  updateDots();
+  startAutoSlide();
+
+});
   </script>
 
 </body>
