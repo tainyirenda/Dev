@@ -632,7 +632,7 @@
 
     return data;
 }
-  function isPhone(x){ return /^[+0-9()\\-\\s]{7,}$/.test((x||'').trim()); }
+
 
     function updateNetworkStatus() {
     const banner =
@@ -737,7 +737,8 @@ window.addEventListener("DOMContentLoaded", updateNetworkStatus);
   });
 
   // ===== Phone + OTP login =====
-  document.addEventListener('DOMContentLoaded', () => {
+  // ===== Phone + OTP login =====
+document.addEventListener('DOMContentLoaded', () => {
     const alertBox = document.getElementById('alertBox');
     const alertText = document.getElementById('alertText');
     const phoneInput = document.getElementById('phoneInput');
@@ -745,42 +746,199 @@ window.addEventListener("DOMContentLoaded", updateNetworkStatus);
     const sendBtn = document.getElementById('sendCodeBtn');
     const loginBtn = document.getElementById('otpLoginBtn');
 
-    function showError(msg){ if(alertText) alertText.textContent = msg; if(alertBox) alertBox.classList.remove('hidden'); }
+    function showError(msg) {
+        if (alertText) {
+            alertText.textContent = msg;
+        }
 
-    document.getElementById('sendCodeBtn')?.addEventListener('click', async () => {
-      const phone = phoneInput.value.trim();
-      if (!isPhone(phone)) return showError('Enter valid phone number.');
-      
-      setBusy(sendBtn, 'Sending...'); 
-      try{
-        await Promise.all([
-             api(OTP_REQUEST_PATH, { phone }),
-             minDelay(1200)
-        ]);
-        alertBox?.classList.add('hidden');
-        alert("Code sent to WhatsApp!");
-        codeInput.focus();
-      }catch(err){ showError(err.message); }
-      finally{ clearBusy(sendBtn); }
+        if (alertBox) {
+            alertBox.classList.remove('hidden');
+        }
+    }
+
+    function clearError() {
+        if (alertBox) {
+            alertBox.classList.add('hidden');
+        }
+    }
+
+    function normalizePhone(raw) {
+        return String(raw || '')
+            .trim()
+            .replace(/[\s()-]/g, '');
+    }
+
+    function isValidInternationalPhone(phone) {
+        // E.164-style number:
+        // + followed by 8–15 digits
+        // first digit after + must not be 0
+        return /^\+[1-9]\d{7,14}$/.test(phone);
+    }
+
+    // Clear stale errors while user edits
+    phoneInput?.addEventListener('input', clearError);
+    codeInput?.addEventListener('input', clearError);
+
+    // --------------------------------------------------
+    // SEND OTP
+    // --------------------------------------------------
+    sendBtn?.addEventListener('click', async () => {
+        clearError();
+
+        let phone = normalizePhone(
+            phoneInput?.value
+        );
+
+        if (!phone) {
+            showError(
+                'Please enter your phone number.'
+            );
+            return;
+        }
+
+        // Reject local format such as 07395801564
+        if (phone.startsWith('0')) {
+            showError(
+                'Please include your country code, e.g. +44 7395 801564.'
+            );
+            return;
+        }
+
+        // Accept international digits without +
+        // and normalize them automatically.
+        if (!phone.startsWith('+')) {
+            phone = '+' + phone;
+        }
+
+        if (!isValidInternationalPhone(phone)) {
+            showError(
+                'Please enter a valid international phone number, e.g. +44 7395 801564.'
+            );
+            return;
+        }
+
+        // Keep the field visually normalized too
+        phoneInput.value = phone;
+
+        setBusy(
+            sendBtn,
+            'Sending...'
+        );
+
+        try {
+            await Promise.all([
+                api(
+                    OTP_REQUEST_PATH,
+                    {
+                        phone: phone
+                    }
+                ),
+                minDelay(1200)
+            ]);
+
+            clearError();
+
+            alert(
+                'Code sent to WhatsApp!'
+            );
+
+            codeInput?.focus();
+
+        } catch (err) {
+            showError(
+                err.message ||
+                'We could not send the verification code. Please try again.'
+            );
+
+        } finally {
+            clearBusy(sendBtn);
+        }
     });
 
-    document.getElementById('otpForm')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = phoneInput.value.trim();
-      const code = codeInput.value.trim();
-      
-      setBusy(loginBtn, 'Verifying...'); 
-      try{
-        await Promise.all([
-             api(OTP_VERIFY_PATH, { phone, code }),
-             minDelay(1200)
-        ]);
-        location.href = CONTINUE_URL;
-      }catch(err){ showError(err.message || 'Invalid code.'); }
-      finally{ clearBusy(loginBtn); }
-    });
-  });
+    // --------------------------------------------------
+    // VERIFY OTP
+    // --------------------------------------------------
+    document
+        .getElementById('otpForm')
+        ?.addEventListener('submit', async (e) => {
 
+            e.preventDefault();
+
+            clearError();
+
+            let phone = normalizePhone(
+                phoneInput?.value
+            );
+
+            const code = String(
+                codeInput?.value || ''
+            ).trim();
+
+            if (!phone) {
+                showError(
+                    'Please enter your phone number.'
+                );
+                return;
+            }
+
+            if (phone.startsWith('0')) {
+                showError(
+                    'Please include your country code, e.g. +44 7395 801564.'
+                );
+                return;
+            }
+
+            if (!phone.startsWith('+')) {
+                phone = '+' + phone;
+            }
+
+            if (!isValidInternationalPhone(phone)) {
+                showError(
+                    'Please enter a valid international phone number, e.g. +44 7395 801564.'
+                );
+                return;
+            }
+
+            if (!/^\d{4,8}$/.test(code)) {
+                showError(
+                    'Please enter a valid verification code.'
+                );
+                return;
+            }
+
+            phoneInput.value = phone;
+
+            setBusy(
+                loginBtn,
+                'Verifying...'
+            );
+
+            try {
+                await Promise.all([
+                    api(
+                        OTP_VERIFY_PATH,
+                        {
+                            phone: phone,
+                            code: code
+                        }
+                    ),
+                    minDelay(1200)
+                ]);
+
+                location.href =
+                    CONTINUE_URL;
+
+            } catch (err) {
+                showError(
+                    err.message ||
+                    'Invalid verification code.'
+                );
+
+            } finally {
+                clearBusy(loginBtn);
+            }
+        });
+});
 
   // ===== Sign Up =====
 document.addEventListener('DOMContentLoaded', () => {
